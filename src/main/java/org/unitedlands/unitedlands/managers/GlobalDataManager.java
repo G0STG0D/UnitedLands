@@ -285,7 +285,8 @@ public class GlobalDataManager {
     // Database operations
 
     public void createRegionDbData(Region region) {
-        DatabaseManager.instance().getRegionChunkService().createAllAsync(region.getChunks());
+        for (var chunk : region.getChunks())
+            DatabaseManager.instance().getRegionChunkService().createAsync(chunk);
         DatabaseManager.instance().getRegionService().createAsync(region);
         registerRegion(region);
     }
@@ -295,7 +296,8 @@ public class GlobalDataManager {
     }
 
     public void removeRegionDbData(Region region) {
-        DatabaseManager.instance().getRegionChunkService().deleteAllAsync(region.getChunks());
+        for (var chunk : region.getChunks())
+            DatabaseManager.instance().getRegionChunkService().deleteAsync(chunk);
         DatabaseManager.instance().getRegionService().deleteAsync(region);
         unregisterRegion(region);
     }
