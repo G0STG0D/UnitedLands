@@ -1,0 +1,36 @@
+name: UnitedLands
+version: 0.0.1
+main: org.unitedlands.unitedlands.UnitedLands
+api-version: 1.18
+description: UnitedLands Core claiming and geopol plugin
+author: Theriel_
+depend: [UnitedLib]
+commands:
+   uladmin:
+      description: UnitedLands admin commands.
+      permission: united.lands.admin
+      aliases: [ula]
+   country:
+      description: UnitedLands country commands.
+      permission: united.lands.admin
+      aliases: [c]
+   region:
+      description: UnitedLands region commands.
+      permission: united.lands.admin
+      aliases: [r]
+   regionchunk:
+      description: UnitedLands region chunk commands.
+      permission: united.lands.admin
+      aliases: [rc]
+   settlement:
+      description: UnitedLands settlement commands.
+      permission: united.lands.admin
+      aliases: [s]
+   approve:
+      description: General confirmation command.
+      permission: united.lands.admin
+      aliases: [confirm]   
+   settlementchunk:
+      description: UnitedLands region chunk commands.
+      permission: united.lands.admin
+      aliases: [plot]

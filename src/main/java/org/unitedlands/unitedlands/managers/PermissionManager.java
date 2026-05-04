@@ -1,0 +1,227 @@
+package org.unitedlands.unitedlands.managers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.Citizen;
+import org.unitedlands.unitedlands.classes.LocationMembership;
+import org.unitedlands.unitedlands.classes.PermissionHolder;
+import org.unitedlands.unitedlands.classes.PermissionType;
+import org.unitedlands.unitedlands.classes.PlayerCache;
+import org.unitedlands.unitedlands.classes.Region;
+import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.utils.CoordinateUtils;
+import org.unitedlands.utils.Logger;
+
+public class PermissionManager {
+
+    private static PermissionManager instance;
+
+    public static PermissionManager instance() {
+        return instance;
+    }
+
+    private final UnitedLands plugin;
+
+    public PermissionManager(UnitedLands plugin) {
+        this.plugin = plugin;
+        instance = this;
+
+        reloadRankPermissions();
+    }
+
+    List<String> settlementRanks = new ArrayList<>();
+    List<String> countryRanks = new ArrayList<>();
+
+    Map<String, Set<String>> rankPermissions = new HashMap<>();
+
+    // *************************************************************
+    // Global admin overrides
+    // *************************************************************
+
+    public boolean hasGlobalOverrides(Player player) {
+        if (player.hasPermission("united.regions.admin"))
+            return true;
+        return false;
+    }
+
+    // *************************************************************
+    // Permissions related to settlement, region and country ranks
+    // *************************************************************
+
+    public void reloadRankPermissions() {
+
+        rankPermissions = new HashMap<>();
+
+        var config = plugin.getPermissionConfig().get();
+
+        var settlementRankSection = config.getConfigurationSection("settlement");
+        for (var key : settlementRankSection.getKeys(false)) {
+            settlementRanks.add(key);
+            var perms = settlementRankSection.getStringList(key);
+            for (String perm : perms) {
+                var rankList = rankPermissions.computeIfAbsent(perm, k -> new HashSet<>());
+                rankList.add(key);
+            }
+        }
+
+        var countryRankSection = config.getConfigurationSection("country");
+        for (var key : countryRankSection.getKeys(false)) {
+            countryRanks.add(key);
+            var perms = countryRankSection.getStringList(key);
+            for (String perm : perms) {
+                var rankList = rankPermissions.computeIfAbsent(perm, k -> new HashSet<>());
+                rankList.add(key);
+            }
+        }
+
+        Logger.log("Permissions loaded.", "UnitedLands");
+    }
+
+    public boolean hasRankPermission(String permission, Citizen citizen) {
+        var requiredRanks = new HashSet<>(rankPermissions.computeIfAbsent(permission, k -> new HashSet<>()));
+        var citizenRanks = new HashSet<>();
+        citizenRanks.addAll(citizen.getSettlementRanks());
+        citizenRanks.addAll(citizen.getCountryRanks());
+        citizenRanks.retainAll(requiredRanks);
+        return citizenRanks.size() > 0;
+    }
+
+    public List<String> getSettlementRanks() {
+        return settlementRanks;
+    }
+
+    public List<String> getCountryRanks() {
+        return countryRanks;
+    }
+
+    // *************************************************************
+    // Permissions related to a specific location (settlement chunk or region)
+    // *************************************************************
+
+    public boolean checkLocationPermissions(Player player, Location eventLocation, PermissionType type) {
+        var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(eventLocation);
+        var settlementChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
+        if (settlementChunk != null) {
+            var playerCache = UnitedLands.getInstance().getPlayerCache().computeIfAbsent(player.getUniqueId(),
+                    k -> new PlayerCache(player, UnitedLands.getInstance()));
+            if (settlementChunk.equals(playerCache.getCachedSettlementChunk())) {
+                return hasLocationPermissions(settlementChunk, playerCache.getChunkMembership(), type);
+            } else {
+                var eventLocationMembership = calculateChunkMembership(settlementChunk, player);
+                return hasLocationPermissions(settlementChunk, eventLocationMembership, type);
+            }
+        } else {
+            var regionCoords = CoordinateUtils.locationToRegionCoordinates(eventLocation);
+            var region = GlobalDataManager.instance().getRegion(regionCoords);
+            if (region != null) {
+                var playerCache = UnitedLands.getInstance().getPlayerCache().computeIfAbsent(player.getUniqueId(),
+                        k -> new PlayerCache(player, UnitedLands.getInstance()));
+                if (region.equals(playerCache.getCachedRegion())) {
+                    return hasLocationPermissions(region, playerCache.getRegionMembership(), type);
+                } else {
+                    var eventLocationMembership = calculateRegionMembership(region, player);
+                    return hasLocationPermissions(region, eventLocationMembership, type);
+                }
+            }
+        }
+        return Settings.protectUnclaimedLand();
+    }
+
+    public boolean hasLocationPermissions(PermissionHolder holder, int membership, PermissionType type) {
+        return (getLocationPermissions(holder, type) & membership) != 0;
+    }
+
+    public int getLocationPermissions(PermissionHolder holder, PermissionType type) {
+        switch (type) {
+            case BREAK:
+                return holder.getBreakPermissions();
+            case PLACE:
+                return holder.getPlacePermissions();
+            case CONTAINER:
+                return holder.getContainerPermissions();
+            case SWITCH:
+                return holder.getSwitchPermissions();
+            case BLOCK_USE:
+                return holder.getBlockUsePermissions();
+            case INTERACT:
+                return holder.getInteractPermissions();
+            default:
+                return 0;
+        }
+    }
+
+    public int calculateChunkMembership(SettlementChunk settlementChunk, Player player) {
+
+        var citizen = GlobalDataManager.instance().getCitizen(player);
+        if (citizen == null) {
+            Logger.logError("CRITICAL: Could not retrieve citizen data of player " + player.getName());
+            return 0;
+        }
+
+        if (settlementChunk.hasOwner() && settlementChunk.getOwner().equals(citizen)) {
+            return LocationMembership.OWNER;
+        }
+
+        // TODO: Chunk trusted
+
+        var settlement = settlementChunk.getSettlement();
+
+        // Settlement mayor
+        if (settlement.getMayor() != null && settlement.getMayor().equals(citizen)) {
+            return LocationMembership.OWNER;
+        }
+
+        // TODO: Settlement Trusted
+
+        // Settlement Resident
+        if (settlement.getCitizens().contains(citizen)) {
+            return LocationMembership.SETTLEMENT_RESIDENT;
+        }
+
+        // Region Resident
+        if (settlement.hasRegion() && citizen.hasSettlement() && citizen.getSettlement().hasRegion()) {
+            if (settlement.getRegion().equals(citizen.getSettlement().getRegion())) {
+                return LocationMembership.REGION_RESIDENT;
+            }
+        }
+
+        // TODO: Country Resident
+        // if (settlement.hasRegion() && settlement.getRegion().hasCountry() &&
+        // citizen.hasSettlement() && citizen.getSettlement().hasC()) {
+        // if (settlement.getRegion().equals(citizen.getSettlement().getRegion())) {
+        // return LocationMembership.REGION_RESIDENT;
+        // }
+        // }
+
+        // TODO: Outlaw
+
+        return LocationMembership.FOREIGNER;
+    }
+
+    public int calculateRegionMembership(Region region, Player player) {
+
+        if (region.hasFounder() && region.getFounderUuid().equals(player.getUniqueId())) {
+            return LocationMembership.OWNER;
+        }
+
+        // TODO: Trusted
+
+        // TODO: Region resident
+
+        // TODO: Country resident
+
+        // TODO: Outlaw
+
+        return LocationMembership.FOREIGNER;
+    }
+
+}

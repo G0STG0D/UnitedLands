@@ -1,0 +1,29 @@
+# Note:
+# These permission aren't actual server permissions nodes (setting them e.g. in LuckPerms doesn't make a difference)
+# These are human-readable identifiers used in rank permission checks.
+
+settlement:
+  mayor:
+    - settlement.claim
+    - settlement.unclaim
+    - settlement.manage.perms
+    - settlement.manage.toggle
+    - settlement.manage.ranks.mayor
+    - settlement.manage.ranks.other
+    - settlement.rename
+    - settlement.delete
+    - settlement.setboard
+    - settlement.invite
+    - settlement.kick
+
+  co-mayor:
+    - settlement.claim
+    - settlement.manage.perms
+    - settlement.manage.toggle
+    - settlement.manage.ranks.other
+    - settlement.setboard
+    - settlement.invite
+
+country:
+  country-leader:
+    - country.delete

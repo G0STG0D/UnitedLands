@@ -1,0 +1,109 @@
+###################################################
+# +---------------------------------------------+ #
+# |             Database Connection             | #
+# +---------------------------------------------+ #
+###################################################
+
+# CAUTION! Developer mode will drop all database tables on startup. DO NOT USE IN PRODUCTION.
+developer-mode: false
+
+# Database connection settings.
+mysql:
+  host: localhost
+  port: 3306
+  username: unitedregions
+  password: unitedregions
+  database: unitedregions
+
+general:
+  # The width / height of a region chunk in 16x16 minecraft chunks,
+  # e.g. a region chunk size of 8 equals a width / Height of 8 * 16 = 128 blocks
+  region-chunk-size: 8
+  # Colours as int values (e.g. https://argb-int-calculator.netlify.app/) 
+  
+  protect-unclaimed-land: true
+
+  allow-town-claims-outside-home-region: false
+
+
+  # Default map colors
+
+  country-default-stroke-colour: -13399809
+  country-default-fill-colour: 540248319
+  country-default-stroke-width: 5
+
+  region-default-stroke-colour: 536870912
+  region-default-fill-colour: 0
+  region-default-stroke-width: 2
+  region-default-dash: "1"
+
+  region-country-stroke-width: 1
+  region-country-dash: "4,4"
+
+  settlement-default-fill-colour: 540787967
+  settlement-default-stroke-colour: -13399809
+  settlement-default-stroke-width: 2
+  settlement-default-dash: "1"
+
+  settlement-country-stroke-colour: -1073741824
+  settlement-country-fill-colour: 540248319
+  settlement-country-stroke-width: 2
+  settlement-country-dash: "4,4"
+
+
+protection:
+  containers:
+  - CHEST
+  - TRAPPED_CHEST
+  - ENDER_CHEST
+  - BARREL
+  - COPPER_CHEST
+  - EXPOSED_COPPER_CHEST
+  - WEATHERED_COPPER_CHEST
+  - OXIDIZED_COPPER_CHEST
+  - WAXED_COPPER_CHEST
+  - WAXED_EXPOSED_COPPER_CHEST
+  - WAXED_WEATHERED_COPPER_CHEST
+  - WAXED_OXIDIZED_COPPER_CHEST
+  use-blocks:
+  - CRAFTING_TABLE
+  - SMITHING_TABLE
+  - ENCHANTING_TABLE
+  - FLETCHING_TABLE
+  - FURNACE
+  - BLAST_FURNACE
+  - CARTOGRAPHY_TABLE
+  - BREWING_STAND
+  switch-tags: # Minecraft material tags
+  - doors
+  - trapdoors
+  - buttons
+  switch-blocks: 
+  - LEVER
+  interact:
+  - VILLAGER
+  - COW
+  - SHEEP
+  monsters:
+  - ZOMBIE
+  - ZOMBIE_VILLAGER
+  - HUSK
+  - SKELETON
+  - CREEPER
+  - SPIDER
+  - CAVE_SPIDER
+  - SLIME
+  - PARCHED
+  - DROWNED
+  - PHANTOM
+  - PILLAGER
+  - RAVAGER
+  - VINDICATOR
+  - ENDERMAN
+  animals:
+  - CHICKEN
+  - COW
+  - SHEEP
+  - PIG
+
+

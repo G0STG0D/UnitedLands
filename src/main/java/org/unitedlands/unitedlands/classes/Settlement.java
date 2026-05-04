@@ -1,0 +1,527 @@
+package org.unitedlands.unitedlands.classes;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.awt.Color;
+
+import javax.annotation.Nullable;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.utils.ColorUtils;
+import org.unitedlands.unitedlands.utils.SerializationUtils;
+import org.unitedlands.utils.Logger;
+
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
+
+public class Settlement extends GeopolObject implements PermissionHolder {
+
+    @DatabaseField(canBeNull = true, columnName = "stroke_color")
+    private @Nullable Integer strokeColor;
+    @DatabaseField(canBeNull = true, columnName = "fill_color")
+    private @Nullable Integer fillColor;
+
+    @DatabaseField(canBeNull = true, columnName = "home_chunk_x")
+    private int homeChunkCoordinatesX;
+    @DatabaseField(canBeNull = true, columnName = "home_chunk_z")
+    private int homeChunkCoordinatesZ;
+    @DatabaseField(canBeNull = true, columnName = "spawn_serialized")
+    private String spawnSerialized;
+
+    @DatabaseField(width = 36, columnName = "region_uuid")
+    private UUID regionUuid;
+    @DatabaseField(width = 36, columnName = "country_uuid")
+    private UUID countryUuid;
+
+    @DatabaseField(canBeNull = true, columnName = "town_board")
+    private String townBoard;
+
+    @DatabaseField(canBeNull = false, columnName = "tax")
+    private float tax = 0.0f;
+    @DatabaseField(canBeNull = false, columnName = "use_tax_percent")
+    private boolean useTaxPercent = true;
+
+    @DatabaseField(canBeNull = false, columnName = "public")
+    private boolean isPublic = true;
+
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized")
+    private String metaData_serialized;
+
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "citizens_serialized")
+    private String citizensSerialized;
+    private transient Set<Citizen> citizens;
+
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "trust_list_serialized")
+    private String trustListSerialized;
+    private transient Set<Citizen> trustList;
+
+    @DatabaseField(canBeNull = false, columnName = "break_permissions")
+    private int breakPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    @DatabaseField(canBeNull = false, columnName = "place_permissions")
+    private int placePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    @DatabaseField(canBeNull = false, columnName = "container_permissions")
+    private int containerPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    @DatabaseField(canBeNull = false, columnName = "switch_permissions")
+    private int switchPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    @DatabaseField(canBeNull = false, columnName = "block_use_permissions")
+    private int blockUsePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    @DatabaseField(canBeNull = false, columnName = "interact_permissions")
+    private int interactPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+
+    @DatabaseField(columnName = "allow_pvp", canBeNull = true)
+    private @Nullable Boolean allowPvp;
+    @DatabaseField(columnName = "allow_monsters", canBeNull = true)
+    private @Nullable Boolean allowMonsters;
+    @DatabaseField(columnName = "allow_animals", canBeNull = true)
+    private @Nullable Boolean allowAnimals;
+    @DatabaseField(columnName = "allow_fire", canBeNull = true)
+    private @Nullable Boolean allowFire;
+    @DatabaseField(columnName = "allow_explosions", canBeNull = true)
+    private @Nullable Boolean allowExplosions;
+
+    private transient Coordinates homeChunkCoordinates;
+    private transient Location spawn;
+    private transient Region region;
+    private transient Country country;
+    private transient Set<SettlementChunk> chunks = new HashSet<>();
+
+    public Settlement() {
+
+    }
+
+    public @Nullable Integer getStrokeColor() {
+        return strokeColor;
+    }
+
+    public void setStrokeColor(String hexColor) {
+        this.strokeColor = ColorUtils.hexToColor(hexColor).getRGB();
+    }
+
+    public void setStrokeColor(int strokeColor) {
+        this.strokeColor = strokeColor;
+    }
+
+    public void setStrokeColor(Color strokeColor) {
+        this.strokeColor = strokeColor.getRGB();
+    }
+
+    public @Nullable Integer getFillColor() {
+        return fillColor;
+    }
+
+    public void setFillColor(String hexColor) {
+        this.fillColor = ColorUtils.hexToColor(hexColor).getRGB();
+    }
+
+    public void setFillColor(int fillColor) {
+        this.fillColor = fillColor;
+    }
+
+    public void setFillColor(Color fillColor) {
+        this.fillColor = fillColor.getRGB();
+    }
+
+    public int getHomeChunkCoordinatesX() {
+        return homeChunkCoordinatesX;
+    }
+
+    public void setHomeChunkCoordinatesX(int homeChunkCoordinatedX) {
+        this.homeChunkCoordinatesX = homeChunkCoordinatedX;
+    }
+
+    public int getHomeChunkCoordinatesZ() {
+        return homeChunkCoordinatesZ;
+    }
+
+    public void setHomeChunkCoordinatesZ(int homeChunkCoordinatesZ) {
+        this.homeChunkCoordinatesZ = homeChunkCoordinatesZ;
+    }
+
+    public String getSpawnSerialized() {
+        return spawnSerialized;
+    }
+
+    public void setSpawnSerialized(String spawnSerialized) {
+        this.spawnSerialized = spawnSerialized;
+    }
+
+    public void setSpawn(Location location) {
+        this.spawn = location;
+        this.spawnSerialized = SerializationUtils.serializeLocation(location);
+    }
+
+    public Location getSpawn() {
+        if (spawn == null && spawnSerialized != null)
+            this.spawn = SerializationUtils.deserializeLocation(spawnSerialized);
+        return spawn;
+    }
+
+    public void setHomeChunkCoordinates(Coordinates coordinates) {
+        this.homeChunkCoordinates = coordinates;
+        this.homeChunkCoordinatesX = coordinates.getX();
+        this.homeChunkCoordinatesZ = coordinates.getZ();
+    }
+
+    public Coordinates getHomeChunkCoordinates() {
+        if (this.homeChunkCoordinates == null)
+            homeChunkCoordinates = new Coordinates(this.homeChunkCoordinatesX, this.homeChunkCoordinatesZ,
+                    this.worldName);
+        return homeChunkCoordinates;
+    }
+
+    public Set<SettlementChunk> getChunks() {
+        return chunks;
+    }
+
+    public void setChunks(Set<SettlementChunk> chunks) {
+        this.chunks = chunks;
+    }
+
+    public void addChunk(SettlementChunk chunk) {
+        this.chunks.add(chunk);
+    }
+
+    public void removeChunk(PermissionHolder chunk) {
+        this.chunks.remove(chunk);
+    }
+
+    public boolean hasChunkAtCoordinates(Coordinates coords) {
+        return chunks.stream().anyMatch(c -> c.getCoordinates().equals(coords));
+    }
+
+    public SettlementChunk getChunkAtCoordinates(Coordinates coords) {
+        return chunks.stream().filter(c -> c.getCoordinates().equals(coords)).findFirst().orElse(null);
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+        this.regionUuid = region.getUuid();
+    }
+
+    public Region getRegion() {
+        if (this.region == null && this.regionUuid != null)
+            this.region = GlobalDataManager.instance().getRegion(regionUuid);
+        return this.region;
+    }
+
+    public UUID getRegionUuid() {
+        return this.regionUuid;
+    }
+
+    public Boolean hasCountry() {
+        return getCountryUuid() != null;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+        this.countryUuid = country.getUuid();
+    }
+
+    public Country getCountry() {
+        if (this.country == null && this.countryUuid != null)
+            this.country = GlobalDataManager.instance().getCountry(countryUuid);
+        return this.country;
+    }
+
+    public void removeCountry() {
+        this.country = null;
+        this.countryUuid = null;
+    }
+
+    public UUID getCountryUuid() {
+        return this.countryUuid;
+    }
+
+    public Boolean hasRegion() {
+        return getRegion() != null;
+    }
+
+    public String getTownBoard() {
+        return townBoard;
+    }
+
+    public void setTownBoard(String townBoard) {
+        this.townBoard = townBoard;
+    }
+
+    public float getTax() {
+        return tax;
+    }
+
+    public void setTax(float tax) {
+        this.tax = tax;
+    }
+
+    public boolean isUseTaxPercent() {
+        return useTaxPercent;
+    }
+
+    public void setUseTaxPercent(boolean useTaxPercent) {
+        this.useTaxPercent = useTaxPercent;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void addCitizen(Citizen citizen) {
+        var c = new HashSet<>(getCitizens());
+        c.add(citizen);
+        setCitizens(c);
+    }
+
+    public void removeCitizen(Citizen citizen) {
+        var c = new HashSet<>(getCitizens());
+        c.remove(citizen);
+        setCitizens(c);
+    }
+
+    public Set<Citizen> getCitizens() {
+        if (citizens == null) {
+            if (citizensSerialized != null) {
+                try {
+                    citizens = Arrays.stream(citizensSerialized.split("#"))
+                            .map(c -> GlobalDataManager.instance().getCitizen(UUID.fromString(c)))
+                            .collect(Collectors.toSet());
+                } catch (Exception ex) {
+                    Logger.logError("Unable to parse citizens_serialized of " + getName() + ": " + ex.getMessage());
+                    citizens = new HashSet<>();
+                }
+            } else {
+                citizens = new HashSet<>();
+            }
+        }
+        return citizens;
+    }
+
+    public void setCitizens(Set<Citizen> citizens) {
+        this.citizens = citizens;
+        if (citizens != null && !citizens.isEmpty()) {
+            try {
+                this.citizensSerialized = citizens.stream()
+                        .map(c -> c.getUuid().toString())
+                        .collect(Collectors.joining("#"));
+            } catch (Exception ex) {
+                Logger.logError("Unable to parse citizens for " + getName() + ": " + ex.getMessage());
+                this.citizensSerialized = null;
+            }
+        } else {
+            this.citizensSerialized = null;
+        }
+    }
+
+    public Set<Player> getOnlinePlayers() {
+        return getCitizens().stream().map(c -> c.getPlayer()).filter(p -> p.isOnline()).map(p -> p.getPlayer())
+                .collect(Collectors.toSet());
+    }
+
+    public void addTrusted(Citizen citizen) {
+        var t = new HashSet<>(getTrustList());
+        t.add(citizen);
+        setTrustList(t);
+    }
+
+    public void removeTrusted(Citizen citizen) {
+        var t = new HashSet<>(getTrustList());
+        t.remove(citizen);
+        setTrustList(t);
+    }
+
+    public Set<Citizen> getTrustList() {
+        if (trustList == null) {
+            if (trustListSerialized != null) {
+                try {
+                    trustList = Arrays.stream(trustListSerialized.split("#"))
+                            .map(c -> GlobalDataManager.instance().getCitizen(UUID.fromString(c)))
+                            .collect(Collectors.toSet());
+                } catch (Exception ex) {
+                    Logger.logError("Unable to parse trustList of " + getName() + ": " + ex.getMessage());
+                    trustList = new HashSet<>();
+                }
+            } else {
+                trustList = new HashSet<>();
+            }
+        }
+        return trustList;
+    }
+
+    public void setTrustList(Set<Citizen> trustList) {
+        this.trustList = trustList;
+        if (trustList != null && !trustList.isEmpty()) {
+            try {
+                this.trustListSerialized = trustList.stream()
+                        .map(c -> c.getUuid().toString())
+                        .collect(Collectors.joining("#"));
+            } catch (Exception ex) {
+                Logger.logError("Unable to parse listList for " + getName() + ": " + ex.getMessage());
+                this.trustListSerialized = null;
+            }
+        } else {
+            this.trustListSerialized = null;
+        }
+    }
+
+    public Citizen getMayor() {
+        if (getCitizens() == null)
+            return null;
+        return getCitizens().stream().filter(c -> c.getSettlementRanks().contains("mayor")).findFirst().orElse(null);
+    }
+
+    public int getBreakPermissions() {
+        return breakPermissions;
+    }
+
+    public int getPlacePermissions() {
+        return placePermissions;
+    }
+
+    public int getContainerPermissions() {
+        return containerPermissions;
+    }
+
+    public int getSwitchPermissions() {
+        return switchPermissions;
+    }
+
+    public int getBlockUsePermissions() {
+        return blockUsePermissions;
+    }
+
+    public int getInteractPermissions() {
+        return interactPermissions;
+    }
+
+    public void setBreakPermissions(int breakPermissions) {
+        this.breakPermissions = breakPermissions;
+    }
+
+    public void setPlacePermissions(int placePermissions) {
+        this.placePermissions = placePermissions;
+    }
+
+    public void setContainerPermissions(int containerPermissions) {
+        this.containerPermissions = containerPermissions;
+    }
+
+    public void setSwitchPermissions(int switchPermissions) {
+        this.switchPermissions = switchPermissions;
+    }
+
+    public void setBlockUsePermissions(int blockUsePermissions) {
+        this.blockUsePermissions = blockUsePermissions;
+    }
+
+    public void setInteractPermissions(int interactPermissions) {
+        this.interactPermissions = interactPermissions;
+    }
+
+    public Boolean allowPvp() {
+        if (allowPvp == null) {
+            if (region != null) {
+                return region.allowPvp();
+            } else {
+                return false;
+            }
+        }
+        return allowPvp;
+    }
+
+    public void setAllowPvp(Boolean allowPvp) {
+        this.allowPvp = allowPvp;
+    }
+
+    public Boolean allowMonsters() {
+        if (allowMonsters == null) {
+            if (region != null) {
+                return region.allowMonsters();
+            } else {
+                return false;
+            }
+        }
+        return allowMonsters;
+    }
+
+    public void setAllowMonsters(Boolean allowMonsters) {
+        this.allowMonsters = allowMonsters;
+    }
+
+    public Boolean allowAnimals() {
+        if (allowAnimals == null) {
+            if (region != null) {
+                return region.allowAnimals();
+            } else {
+                return false;
+            }
+        }
+        return allowAnimals;
+    }
+
+    public void setAllowAnimals(Boolean allowAnimals) {
+        this.allowAnimals = allowAnimals;
+    }
+
+    public Boolean allowFire() {
+        if (allowFire == null) {
+            if (region != null) {
+                return region.allowFire();
+            } else {
+                return false;
+            }
+        }
+        return allowFire;
+    }
+
+    public void setAllowFire(Boolean allowFire) {
+        this.allowFire = allowFire;
+    }
+
+    public Boolean allowExplosions() {
+        if (allowExplosions == null) {
+            if (region != null) {
+                return region.allowExplosions();
+            } else {
+                return false;
+            }
+        }
+        return allowExplosions;
+    }
+
+    public void setAllowExplosions(Boolean allowExplosions) {
+        this.allowExplosions = allowExplosions;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Settlement other = (Settlement) obj;
+        if (uuid == null) {
+            if (other.uuid != null)
+                return false;
+        } else if (!uuid.equals(other.uuid))
+            return false;
+        return true;
+    }
+
+}

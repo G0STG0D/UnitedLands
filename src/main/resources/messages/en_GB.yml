@@ -1,0 +1,108 @@
+prefix: "<bold><red>U</red><white>L</white> <dark_gray>» </dark_gray></bold>"
+reload: "<dark_green>Plugin reloaded.</dark_green>"
+teleport:
+  start: "Teleporting in 3 seconds. Move to cancel."
+  cancel: "Teleport cancelled."
+  no-spawn: "<red>The target has no spawn point set."
+
+errors:
+  player-not-found: "<red>Could not find player {name}.</red>"
+  no-citizen-data: "<red>Critical error: No citizen data found for {name}. This should never happen. Please contact an admin.</red>"
+  not-in-settlement: "<red>You are not part of a settlement.</red>"
+  not-in-country: "<red>You are not part of a country.</red>"
+  already-in-settlement: "<red>You can't do that, you are already in {settlement}.</red>"
+  settlement-not-found: "<red>Couldn't find settlement {settlement}</red>"
+  no-settlement-permission: "<red>You don't have the necessary settlement rank do this ({perm})"
+
+settlement:
+  create:
+    player: "<green>Congratulations, you have crated the settlement of <bold>{settlement}</bold>! Find out how to manage your town on our /wiki and don't hesitate to ask other players in the chat.</green>"
+    broadcast: "<aqua>{player} has just created the settlement of <blue>{settlement}</blue> (Region: <red>{region}</red> | Country: <green>{country}</green>)"
+  delete:
+    is-capital: "<red>You cannot delete a country capital. Move the capital or delete the country first.</red>"
+    deleted-broadcast: "<aqua>The settlement of {settlement} has ceased to exist!</aqua>"
+  rename: "<green>You have renamed your settlement to {name}</green>"
+  setboard:
+    cleared: "<aqua>Your settlement's board has been cleared."
+    set: "<aqua>Your settlement's board has been updated. Use \"/settlement setboard EMPTY\" to clear it.</aqua>"
+  permission:
+    unknown-membership: "<red>Unknown group: {membership}"
+    unknown-permission: "<red>Unknown permission: {permission}"
+    set: "<yellow>Permission {permission} for {membership} set to {state}</yellow>"
+  toggle:
+    unknown-toggle: "<red>Unknown toggle: {toggle}"
+    set: "<yellow>Toggled {field} to {state}</yellow>"
+  claim: 
+    already-claimed: "<red>This chunk is already claimed</red>"
+    success: "<aqua>Claimed chunk at {chunk} for {settlement}</aqua>"
+    has-country: "<red>This chunk belongs to a region owned by {country}, and they do not allow foreign towns to claim.</red>"
+    outside-of-region: "<red>Claiming outside of a settlement's home region is not allowed.</red>"
+  unclaim:
+    is-home-chunk: "<yellow>You cannot unclaim your settlement's home chunk</yellow>"
+    not-in-settlement: "<yellow>This chunk does not belong to your settlement</yellow>"
+    not-claimed: "<yellow>This chunk is not claimed</yellow>"
+    success: "<aqua>Unclaimed chunk at {chunk}</aqua>"
+  invite:
+    player-joined: "<aqua>{name} has joined the town!</aqua>"
+    settlement-joined: "<aqua>You have joined {settlement}! User [<yellow>/s spawn</yellow>] to go there.</aqua>"
+  leave:
+    is-mayor: "<red>You're the mayor of this settlement, you can't leave.</red>"
+    player-left: "<aqua>{name} has left the town!</aqua>"
+    settlement-left: "<aqua>You have left {settlement}.</aqua>"
+  ranks:
+    unknown-rank: "<red>Unknown rank: {rank}</red>"
+    cannot-remove-mayor: "<red>You cannot remove the mayor rank. You can only pass it to another citizen.</red>"
+    rank-already-owned: "<yellow>Player {name} already has the rank {rank}</yellow>"
+    rank-not-owned: "<yellow>Player {name} doesn't have the rank {rank}</yellow>"
+    added: "<aqua>Added settlement rank <bold>{rank}</bold> to player {name}.</aqua>"
+    removed: "<aqua>Removed settlement rank <bold>{rank}</bold> from player {name}.</aqua>"
+    received: "<aqua>You received the town rank <bold>{rank}</bold>.</aqua>"
+    lost: "<aqua>You lost the town rank <bold>{rank}</bold>.</aqua>"
+  kick:
+    cannot-kick-yourself: "<yellow>You can't kick yourself from the settlement.</yellow>"
+    not-in-settlement: "<yellow>The player is not a citizen of this settlement.</yellow>"
+    success: "<aqua>Player {name} has been kicked from the settlement.</aqua>"
+    kicked: "<yellow>You have been kicked from {settlement}.</yellow>"
+
+country:
+  create:
+    no-region: "<red>Your settlement is not in any region, you can't create a country here.</red>"
+    region-occupied: "<red>This region is already under the control of {country}, you can't create a country here.</red>"
+    player: "<green>Congratulations, you have crated the country of {country}}! Find out how to manage it on our /wiki and don't hesitate to ask other players in the chat.</green>"
+    broadcast: "<aqua>{player} has just created the country of <blue>{country}</blue> (Region: <red>{region}</red>)"
+  delete:
+    deleted-broadcast: "<aqua>The country of {country} no longer exists!</aqua>"
+  claim:
+    success: "<aqua>You claimed the region of {region} for {country}</aqua>"
+    broadcast: "<aqua>{player} has just claimed the region of <red>{region}</red> for <blue>{country}</blue>"
+    no-region: "<red>There is no region to claim at this location.</red>"
+    already-claimed: "<red>This region is already claimed</red>"
+  setcolor:
+    wrong-format: "<red>You must supply a hexadecimal color (e.g. #FF0000)</red>"
+    success: "<aqua>Successfully changed your nation color.</aqua>"
+
+approval:
+  no-approval-pending: "<yellow>You don't have any pending requests to approve.</yellow>"
+  multiple-approvals: "<yellow>There is more than one request of this type pending. Please specify the request you wish to approve.</yellow>"
+
+# Info Screens
+
+info-screens:
+  header:
+    max-chars: 55
+    filler-start: ".oOo."
+    filler: "_"
+    filler-end: ".oOo."
+    filler-color: "gold"
+    title-color: "white"
+    title-start: ".[ "
+    title-end: " ]."
+  settlement:
+    board: "<gray><bold>Board:</bold> {board}"
+    region: "<dark_gray><gray><bold>Region:</bold> {region}</gray> | <gray><bold>Country:</bold> -</gray></dark_gray>"
+    founded: "<dark_gray><gray><bold>Founded:</bold> {founded}</gray> | <gray><bold>By:</bold> {founder} </gray></dark_gray>"
+    mayor: "<gray><bold>Mayor:</bold> {mayor}"
+    toggles: "<gray><bold>Toggles:</bold> <dark_gray>{pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>"
+    perm-1: "<dark_gray><gray><bold>Perms:</bold></gray>  <gray>Break</gray> {break} | <gray>Place</gray> {place} | <gray>Open</gray> {open}<dark_gray>"
+    perm-2: "<dark_gray><gray><bold>         </bold></gray><gray>Switch</gray> {switch} | <gray>Use</gray> {use}   | <gray>Interact</gray> {interact}<dark_gray>"
+    citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"
