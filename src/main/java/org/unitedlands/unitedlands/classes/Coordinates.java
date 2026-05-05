@@ -53,6 +53,10 @@ public class Coordinates {
         return "{ x: " + x + ", z: " + z + ", world: " + worldName + " }";
     }
 
+    public String toCleanString() {
+        return x + ", " + z + " (" + worldName + ")";
+    }
+
     public Location toLocation() {
         var world = Bukkit.getWorld(this.worldName);
         var y = world.getHighestBlockYAt(x, z);

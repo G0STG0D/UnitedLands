@@ -68,6 +68,7 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
         chunk.setUuid(UUID.randomUUID());
         chunk.setCoordinates(chunkCoords);
         chunk.setWorld(player.getLocation().getWorld());
+        chunk.setClaimTimestamp(System.currentTimeMillis());
         chunk.setSettlement(settlement);
 
         settlement.addChunk(chunk);

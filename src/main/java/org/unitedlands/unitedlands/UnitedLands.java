@@ -1,13 +1,8 @@
 package org.unitedlands.unitedlands;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.classes.ConfigFile;
-import org.unitedlands.unitedlands.classes.PlayerCache;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.commands.AdminCommands;
 import org.unitedlands.unitedlands.commands.ApprovalCommand;
@@ -28,6 +23,7 @@ import org.unitedlands.unitedlands.managers.DatabaseManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
+import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 
 import com.j256.ormlite.logger.LoggerFactory;
@@ -48,8 +44,7 @@ public class UnitedLands extends JavaPlugin {
     DisplayManager displayManager;
     ConfirmationManager confirmationManager;
     PermissionManager permissionManager;
-
-    private Map<UUID, PlayerCache> playerCache = new HashMap<>();
+    PlayerCacheManager playerCacheManager;
 
     private Pl3xMapRenderer mapRenderer;
 
@@ -92,6 +87,7 @@ public class UnitedLands extends JavaPlugin {
         globalDataManager = new GlobalDataManager(databaseManager, mapRenderer);
         displayManager = new DisplayManager(this);
         confirmationManager = new ConfirmationManager(this);
+        playerCacheManager = new PlayerCacheManager(this);
     }
 
     private void registerCommands() {
@@ -152,10 +148,6 @@ public class UnitedLands extends JavaPlugin {
 
     public ConfigFile getPermissionConfig() {
         return permissionConfig;
-    }
-
-    public Map<UUID, PlayerCache> getPlayerCache() {
-        return playerCache;
     }
 
     public DisplayManager getDisplayManager() {

@@ -16,6 +16,8 @@ settlement:
     - settlement.setspawn
     - settlement.invite
     - settlement.kick
+    - settlement.plot.sell
+    - settlement.plot.evict
 
   co-mayor:
     - settlement.claim
@@ -23,8 +25,9 @@ settlement:
     - settlement.manage.toggle
     - settlement.manage.ranks.other
     - settlement.setboard
-    - settlement.setspawn
     - settlement.invite
+    - settlement.plot.sell
+    - settlement.plot.evict
 
 country:
   country-leader:

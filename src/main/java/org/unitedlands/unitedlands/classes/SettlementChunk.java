@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
 import org.unitedlands.unitedlands.classes.interfaces.CoordinateHolder;
@@ -37,8 +36,11 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
 
     @DatabaseField(width = 36, columnName = "owner_uuid")
     private UUID ownerUuid;
-    @DatabaseField(width = 128, columnName = "owner_name")
-    private String ownerName;
+    @DatabaseField(canBeNull = false, columnName = "claim_timestamp")
+    protected long claimTimestamp;
+
+    @DatabaseField(canBeNull = true, columnName = "sale_price")
+    private Integer salePrice = null;
 
     @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "trust_list_serialized")
     private String trustListSerialized;
@@ -68,9 +70,10 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
     @DatabaseField(columnName = "allow_explosions", canBeNull = true)
     private @Nullable Boolean allowExplosions;
 
-    private World world;
-    private Settlement settlement;
-    private Coordinates coordinates;
+    private transient World world;
+    private transient Settlement settlement;
+    private transient Coordinates coordinates;
+    private transient Citizen owner;
 
     private final int size = 16;
 
@@ -145,32 +148,49 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         return settlementUuid;
     }
 
-    public void setOwner(OfflinePlayer player) {
-        this.ownerUuid = player.getUniqueId();
-        this.ownerName = player.getName();
+    public void setOwner(Citizen owner) {
+        this.ownerUuid = owner.getUuid();
+        this.owner = owner;
     }
 
     public void removeOwner() {
         this.ownerUuid = null;
-        this.ownerName = null;
+        this.owner = null;
     }
 
     public Citizen getOwner() {
-        if (ownerUuid != null)
-            return GlobalDataManager.instance().getCitizen(ownerUuid);
-        return null;
+        if (owner == null && ownerUuid != null)
+            owner = GlobalDataManager.instance().getCitizen(ownerUuid);
+        return owner;
     }
 
     public UUID getOwnerUuid() {
         return this.ownerUuid;
     }
 
-    public String getOwnerName() {
-        return this.ownerName;
-    }
-
     public boolean hasOwner() {
         return ownerUuid != null;
+    }
+
+    public long getClaimTimestamp() {
+        return claimTimestamp;
+    }
+
+    public void setClaimTimestamp(long claimTimestamp) {
+        this.claimTimestamp = claimTimestamp;
+    }
+
+    public Integer getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(Integer salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public boolean isForSale()
+    {
+        return salePrice != null;
     }
 
     public void addTrusted(Citizen citizen) {
@@ -295,6 +315,30 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         if (interactPermissions == 0)
             return settlement.getInteractPermissions();
         return interactPermissions;
+    }
+
+    public void setBreakPermissions(int breakPermissions) {
+        this.breakPermissions = breakPermissions;
+    }
+
+    public void setPlacePermissions(int placePermissions) {
+        this.placePermissions = placePermissions;
+    }
+
+    public void setContainerPermissions(int containerPermissions) {
+        this.containerPermissions = containerPermissions;
+    }
+
+    public void setSwitchPermissions(int switchPermissions) {
+        this.switchPermissions = switchPermissions;
+    }
+
+    public void setBlockUsePermissions(int blockUsePermissions) {
+        this.blockUsePermissions = blockUsePermissions;
+    }
+
+    public void setInteractPermissions(int interactPermissions) {
+        this.interactPermissions = interactPermissions;
     }
 
     @Override

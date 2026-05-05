@@ -5,14 +5,18 @@ teleport:
   cancel: "Teleport cancelled."
   no-spawn: "<red>The target has no spawn point set.</red>"
   not-public: "<yellow>The target spawn is not public.</yellow>"
+  wrong-number-format: "<red>{input} is not a number.</red>"
+  no-funds: "<yellow>You don't have enough money to do this.</yellow>"
 
 errors:
   player-not-found: "<red>Could not find player {name}.</red>"
   no-citizen-data: "<red>Critical error: No citizen data found for {name}. This should never happen. Please contact an admin.</red>"
+  not-in-claim: "<red>You are not in a claimed chunk.</red>"
   not-in-settlement: "<red>You are not part of a settlement.</red>"
   not-in-country: "<red>You are not part of a country.</red>"
   already-in-settlement: "<red>You can't do that, you are already in {settlement}.</red>"
   settlement-not-found: "<red>Couldn't find settlement {settlement}</red>"
+  no-claim-permission: "<red>You don't have any permissions in this chunk."
   no-settlement-permission: "<red>You don't have the necessary settlement rank do this ({perm})"
 
 settlement:
@@ -32,10 +36,10 @@ settlement:
   permission:
     unknown-membership: "<red>Unknown group: {membership}"
     unknown-permission: "<red>Unknown permission: {permission}"
-    set: "<yellow>Permission {permission} for {membership} set to {state}</yellow>"
+    set: "<aqua>Settlement permission {permission} for {membership} set to {state}</aqua>"
   toggle:
     unknown-toggle: "<red>Unknown toggle: {toggle}"
-    set: "<yellow>Toggled {field} to {state}</yellow>"
+    set: "<aqua>Toggled settlement {field} to {state}</aqua>"
   claim: 
     already-claimed: "<red>This chunk is already claimed</red>"
     success: "<aqua>Claimed chunk at {chunk} for {settlement}</aqua>"
@@ -68,6 +72,28 @@ settlement:
     not-in-settlement: "<yellow>The player is not a citizen of this settlement.</yellow>"
     success: "<aqua>Player {name} has been kicked from the settlement.</aqua>"
     kicked: "<yellow>You have been kicked from {settlement}.</yellow>"
+
+settlementchunk:
+  toggle:
+    unknown-toggle: "<red>Unknown toggle: {toggle}"
+    set: "<aqua>Toggled plot {field} to {state}</aqua>"
+  permission:
+    unknown-membership: "<red>Unknown group: {membership}"
+    unknown-permission: "<red>Unknown permission: {permission}"
+    set: "<aqua>Plot permission {permission} for {membership} set to {state}</aqua>"
+  sell:
+    has-owner: "<yellow>This plot is already owned by {owner}. Evict the current owner before putting this plot up for sale.</yellow>"
+    success: "<aqua>This plot is now for sale for {price}. Use [<yellow>/plot forsale clear</yellow>] to cancel the sale.</aqua>"
+    cleared: "<aqua>This plot is no longer for sale.</aqua>"
+  buy:
+    not-for-sale: "<yellow>This plot is not for sale.</yellow>"
+    success: "<green>You successfully bought the plot.</green>"
+  evict:
+    no-owner: "<yellow>This plot is not owned by anyone.</yellow>"
+    success: "<aqua>You evicted the current owner of this plot.</aqua>"
+  abandon:
+    not-owner: "<yellow>You are not the owner of this plot.</yellow>"
+    success: "<aqua>You abandoned this plot.</aqua>"
 
 country:
   create:
@@ -111,3 +137,9 @@ info-screens:
     perm-1: "<dark_gray><gray><bold>Perms:</bold></gray>  <gray>Break</gray> {break} | <gray>Place</gray> {place} | <gray>Open</gray> {open}<dark_gray>"
     perm-2: "<dark_gray><gray><bold>         </bold></gray><gray>Switch</gray> {switch} | <gray>Use</gray> {use}   | <gray>Interact</gray> {interact}<dark_gray>"
     citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"
+  settlementchunk:
+    owner: "<dark_gray><gray><bold>Owner:</bold> {owner}</gray> | <gray><bold>Claimed:</bold> {claimed}</gray></dark_gray>"
+    sale: "<dark_gray><gray><bold>For sale:</bold> {forsale}</gray> | <gray><bold>Price:</bold> {price}</gray></dark_gray>"
+    toggles: "<gray><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>"
+    perm-1: "<dark_gray><gray><bold>Perms:</bold></gray>  <gray>Break</gray> {break} | <gray>Place</gray> {place} | <gray>Open</gray> {open}<dark_gray>"
+    perm-2: "<dark_gray><gray><bold>         </bold></gray><gray>Switch</gray> {switch} | <gray>Use</gray> {use}   | <gray>Interact</gray> {interact}<dark_gray>"

@@ -22,7 +22,7 @@ public class GeopolObject implements Identifiable {
     protected UUID founderUuid;
     @DatabaseField(width = 128, columnName = "founder_name")
     protected String founderName;
-    @DatabaseField(width = 128, columnName = "founding_timestamp")
+    @DatabaseField(columnName = "founding_timestamp")
     protected long foundingTimestamp;
 
     protected transient World world;

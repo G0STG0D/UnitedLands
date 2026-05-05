@@ -14,7 +14,6 @@ import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.PermissionHolder;
 import org.unitedlands.unitedlands.classes.PermissionType;
-import org.unitedlands.unitedlands.classes.PlayerCache;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
@@ -111,8 +110,7 @@ public class PermissionManager {
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(eventLocation);
         var settlementChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementChunk != null) {
-            var playerCache = UnitedLands.getInstance().getPlayerCache().computeIfAbsent(player.getUniqueId(),
-                    k -> new PlayerCache(player, UnitedLands.getInstance()));
+            var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
             if (settlementChunk.equals(playerCache.getCachedSettlementChunk())) {
                 return hasLocationPermissions(settlementChunk, playerCache.getChunkMembership(), type);
             } else {
@@ -123,8 +121,7 @@ public class PermissionManager {
             var regionCoords = CoordinateUtils.locationToRegionCoordinates(eventLocation);
             var region = GlobalDataManager.instance().getRegion(regionCoords);
             if (region != null) {
-                var playerCache = UnitedLands.getInstance().getPlayerCache().computeIfAbsent(player.getUniqueId(),
-                        k -> new PlayerCache(player, UnitedLands.getInstance()));
+                var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
                 if (region.equals(playerCache.getCachedRegion())) {
                     return hasLocationPermissions(region, playerCache.getRegionMembership(), type);
                 } else {

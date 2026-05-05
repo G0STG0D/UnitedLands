@@ -14,15 +14,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
-import org.unitedlands.unitedlands.classes.PlayerCache;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
 public class PlayerBukkitListener implements Listener {
 
+    @SuppressWarnings("unused")
     private final UnitedLands plugin;
 
     public PlayerBukkitListener(UnitedLands plugin) {
@@ -83,8 +84,7 @@ public class PlayerBukkitListener implements Listener {
 
             Set<String> notificationStrings = new HashSet<>();
 
-            var playerCache = plugin.getPlayerCache().computeIfAbsent(player.getUniqueId(),
-                    k -> new PlayerCache(player, plugin));
+            var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
 
             var fromRegionCoords = CoordinateUtils.locationToRegionCoordinates(from);
             var toRegionCoords = CoordinateUtils.locationToRegionCoordinates(to);

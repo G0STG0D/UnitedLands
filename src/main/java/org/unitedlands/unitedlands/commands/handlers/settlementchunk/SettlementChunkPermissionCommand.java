@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.settlement;
+package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
 import java.util.List;
 import java.util.Map;
@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
-import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementPermissionCommand extends SettlementCommandHandler {
+public class SettlementChunkPermissionCommand extends SettlementChunkCommandHandler {
 
 
-    public SettlementPermissionCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public SettlementChunkPermissionCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
@@ -48,11 +48,11 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
         var citizen = getCitizen(player);
         if (citizen == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
+        var settlementChunk = getSettlementChunk(player);
+        if (settlementChunk == null)
             return;
 
-        if (!hasPermission("settlement.manage.perms", citizen))
+        if (!hasChunkPermission(settlementChunk, player))
             return;
 
         int membership = 0;
@@ -80,66 +80,66 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
         int p = 0;
         switch (args[0]) {
             case "break":
-                p = settlement.getBreakPermissions();
+                p = settlementChunk.getBreakPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setBreakPermissions(p);
+                settlementChunk.setBreakPermissions(p);
                 break;
             case "place":
-                p = settlement.getPlacePermissions();
+                p = settlementChunk.getPlacePermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setPlacePermissions(p);
+                settlementChunk.setPlacePermissions(p);
                 break;
             case "containers":
-                p = settlement.getContainerPermissions();
+                p = settlementChunk.getContainerPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setContainerPermissions(p);
+                settlementChunk.setContainerPermissions(p);
                 break;
             case "switch":
-                p = settlement.getSwitchPermissions();
+                p = settlementChunk.getSwitchPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setSwitchPermissions(p);
+                settlementChunk.setSwitchPermissions(p);
                 break;
             case "block_use":
-                p = settlement.getBlockUsePermissions();
+                p = settlementChunk.getBlockUsePermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setBlockUsePermissions(p);
+                settlementChunk.setBlockUsePermissions(p);
                 break;
             case "interact":
-                p = settlement.getInteractPermissions();
+                p = settlementChunk.getInteractPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setInteractPermissions(p);
+                settlementChunk.setInteractPermissions(p);
                 break;
             default:
-                Messenger.sendMessage(player, messageProvider.get("settlement.permission.unknown-permission"),
+                Messenger.sendMessage(player, messageProvider.get("settlementchunk.permission.unknown-permission"),
                         Map.of("permission", args[0]), messageProvider.get("prefix"));
                 return;
         }
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.permission.set"), Map.of(
+        Messenger.sendMessage(player, messageProvider.get("settlementchunk.permission.set"), Map.of(
                 "permission", args[0],
                 "membership", args[0],
                 "state", add ? "<green>on</green>" : "<red>off</red>"),
                 messageProvider.get("prefix"));
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        GlobalDataManager.instance().updateSettlementChunkDbData(settlementChunk);
     }
 
 }
