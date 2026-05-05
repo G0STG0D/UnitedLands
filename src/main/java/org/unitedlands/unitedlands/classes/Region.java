@@ -36,15 +36,15 @@ public class Region extends GeopolObject implements PermissionHolder {
     private int interactPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
 
     @DatabaseField(columnName = "allow_pvp", canBeNull = false)
-    private boolean allowPvp;
+    private boolean allowPvp = true;
     @DatabaseField(columnName = "allow_monsters", canBeNull = false)
-    private boolean allowMonsters;
+    private boolean allowMonsters = true;
     @DatabaseField(columnName = "allow_animals", canBeNull = false)
-    private boolean allowAnimals;
+    private boolean allowAnimals = true;
     @DatabaseField(columnName = "allow_fire", canBeNull = false)
-    private boolean allowFire;
+    private boolean allowFire = true;
     @DatabaseField(columnName = "allow_explosions", canBeNull = false)
-    private boolean allowExplosions;
+    private boolean allowExplosions = true;
 
     private transient Coordinates homeChunkCoordinates;
     private transient Location spawn;
