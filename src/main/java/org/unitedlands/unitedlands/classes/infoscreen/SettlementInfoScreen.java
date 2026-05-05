@@ -43,6 +43,7 @@ public class SettlementInfoScreen extends InfoScreen {
                 Map.of("mayor", settlement.getMayor() != null ? settlement.getMayor().getName() : "-"));
         addComponent("mayor", mayor);
 
+        var isPublic = settlement.isPublic() ? "<green>Public</green>" : "<red>Public</red>";
         var pvp = settlement.allowPvp() ? "<green>PVP</green>" : "<red>PVP</red>";
         var mobs = settlement.allowMonsters() ? "<green>Monsters</green>" : "<red>Monsters</red>";
         var animals = settlement.allowAnimals() ? "<green>Animals</green>" : "<red>Animals</red>";
@@ -50,7 +51,7 @@ public class SettlementInfoScreen extends InfoScreen {
         var explosions = settlement.allowExplosions() ? "<green>Explosions</green>" : "<red>Explosions</red>";
 
         var toggles = Messenger.getMessage(messageProvider.get("info-screens.settlement.toggles"),
-                Map.of("pvp", pvp, "mobs", mobs, "animals", animals, "fire", fire, "explosions", explosions));
+                Map.of("public", isPublic, "pvp", pvp, "mobs", mobs, "animals", animals, "fire", fire, "explosions", explosions));
         addComponent("toggles", toggles);
 
         var perm1 = Messenger.getMessage(messageProvider.get("info-screens.settlement.perm-1"),

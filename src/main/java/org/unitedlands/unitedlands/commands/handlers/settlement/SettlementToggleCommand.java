@@ -19,7 +19,7 @@ public class SettlementToggleCommand extends SettlementCommandHandler {
         super(plugin, messageProvider);
     }
 
-    List<String> fields = List.of("pvp", "monsters", "animals", "fire", "explosions");
+    List<String> fields = List.of("pvp", "monsters", "animals", "fire", "explosions", "public");
     List<String> switches = List.of("on", "off", "unset");
 
     @Override
@@ -60,6 +60,12 @@ public class SettlementToggleCommand extends SettlementCommandHandler {
         }
 
         switch (args[0]) {
+            case "public":
+                // public can't be inherited, enforce value 
+                if (enable == null)
+                    enable = false;
+                settlement.setPublic(enable);
+                break;
             case "pvp":
                 settlement.setAllowPvp(enable);
                 break;

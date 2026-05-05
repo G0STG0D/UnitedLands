@@ -50,6 +50,13 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
                         Map.of("settlement", args[0]), messageProvider.get("prefix"));
                 return;
             }
+
+            if (!settlement.isPublic() && !PermissionManager.instance().hasGlobalOverrides(player)) {
+                Messenger.sendMessage(sender, messageProvider.get("teleport.not-public"), null,
+                        messageProvider.get("prefix"));
+                return;
+            }
+
             targetSettlement = settlement;
         }
 

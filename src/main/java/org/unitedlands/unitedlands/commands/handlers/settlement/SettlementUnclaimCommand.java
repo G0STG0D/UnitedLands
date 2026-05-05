@@ -51,6 +51,13 @@ public class SettlementUnclaimCommand extends SettlementCommandHandler {
             return;
         }
 
+        var spawnChunkCoords = CoordinateUtils.locationToChunkCoordinates(settlement.getSpawn());
+        if (spawnChunkCoords.equals(chunkCoords)) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.has-spawn"),
+                    null, messageProvider.get("prefix"));
+            return;
+        }
+
         if (settlement.getHomeChunkCoordinates().equals(chunkCoords)) {
             Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.is-home-chunk"),
                     null, messageProvider.get("prefix"));

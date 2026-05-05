@@ -25,6 +25,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementPermis
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRankSubcommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRenameCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetBoardCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetSpawnCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSpawnCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementToggleCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUnclaimCommand;
@@ -56,6 +57,7 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("setboard", new SettlementSetBoardCommand(plugin, messageProvider));
         handlers.put("rank", new SettlementRankSubcommand(plugin, messageProvider));
         handlers.put("kick", new SettlementKickCommand(plugin, messageProvider));
+        handlers.put("setspawn", new SettlementSetSpawnCommand(plugin, messageProvider));
     }
 
     @Override

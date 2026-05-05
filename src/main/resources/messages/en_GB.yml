@@ -3,7 +3,8 @@ reload: "<dark_green>Plugin reloaded.</dark_green>"
 teleport:
   start: "Teleporting in 3 seconds. Move to cancel."
   cancel: "Teleport cancelled."
-  no-spawn: "<red>The target has no spawn point set."
+  no-spawn: "<red>The target has no spawn point set.</red>"
+  not-public: "<yellow>The target spawn is not public.</yellow>"
 
 errors:
   player-not-found: "<red>Could not find player {name}.</red>"
@@ -25,6 +26,9 @@ settlement:
   setboard:
     cleared: "<aqua>Your settlement's board has been cleared."
     set: "<aqua>Your settlement's board has been updated. Use \"/settlement setboard EMPTY\" to clear it.</aqua>"
+  setspawn:
+    not-in-claims: "<red>The spawn location must be inside of your settlement claims</red>"
+    set: "<aqua>Your settlement's spawn has been updated.</aqua>"
   permission:
     unknown-membership: "<red>Unknown group: {membership}"
     unknown-permission: "<red>Unknown permission: {permission}"
@@ -38,6 +42,7 @@ settlement:
     has-country: "<red>This chunk belongs to a region owned by {country}, and they do not allow foreign towns to claim.</red>"
     outside-of-region: "<red>Claiming outside of a settlement's home region is not allowed.</red>"
   unclaim:
+    has-spawn: "<red>You cannot unclaim this chunk, it contains your town spawn. Move the spawn first.</red>"
     is-home-chunk: "<yellow>You cannot unclaim your settlement's home chunk</yellow>"
     not-in-settlement: "<yellow>This chunk does not belong to your settlement</yellow>"
     not-claimed: "<yellow>This chunk is not claimed</yellow>"
@@ -102,7 +107,7 @@ info-screens:
     region: "<dark_gray><gray><bold>Region:</bold> {region}</gray> | <gray><bold>Country:</bold> -</gray></dark_gray>"
     founded: "<dark_gray><gray><bold>Founded:</bold> {founded}</gray> | <gray><bold>By:</bold> {founder} </gray></dark_gray>"
     mayor: "<gray><bold>Mayor:</bold> {mayor}"
-    toggles: "<gray><bold>Toggles:</bold> <dark_gray>{pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>"
+    toggles: "<gray><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>"
     perm-1: "<dark_gray><gray><bold>Perms:</bold></gray>  <gray>Break</gray> {break} | <gray>Place</gray> {place} | <gray>Open</gray> {open}<dark_gray>"
     perm-2: "<dark_gray><gray><bold>         </bold></gray><gray>Switch</gray> {switch} | <gray>Use</gray> {use}   | <gray>Interact</gray> {interact}<dark_gray>"
     citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"

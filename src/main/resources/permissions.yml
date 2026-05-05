@@ -13,6 +13,7 @@ settlement:
     - settlement.rename
     - settlement.delete
     - settlement.setboard
+    - settlement.setspawn
     - settlement.invite
     - settlement.kick
 
@@ -22,6 +23,7 @@ settlement:
     - settlement.manage.toggle
     - settlement.manage.ranks.other
     - settlement.setboard
+    - settlement.setspawn
     - settlement.invite
 
 country:
