@@ -191,13 +191,11 @@ public class PermissionManager {
             }
         }
 
-        // TODO: Country Resident
-        // if (settlement.hasRegion() && settlement.getRegion().hasCountry() &&
-        // citizen.hasSettlement() && citizen.getSettlement().hasC()) {
-        // if (settlement.getRegion().equals(citizen.getSettlement().getRegion())) {
-        // return LocationMembership.REGION_RESIDENT;
-        // }
-        // }
+        if (settlement.hasCountry() && citizen.hasSettlement() && citizen.getSettlement().hasCountry()) {
+            if (settlement.getCountry().equals(citizen.getSettlement().getCountry())) {
+                return LocationMembership.COUNTRY_RESIDENT;
+            }
+        }
 
         // TODO: Outlaw
 
@@ -206,15 +204,26 @@ public class PermissionManager {
 
     public int calculateRegionMembership(Region region, Player player) {
 
-        if (region.hasFounder() && region.getFounderUuid().equals(player.getUniqueId())) {
-            return LocationMembership.OWNER;
+        var citizen = GlobalDataManager.instance().getCitizen(player);
+        if (citizen == null) {
+            Logger.logError("CRITICAL: Could not retrieve citizen data of player " + player.getName());
+            return 0;
         }
 
+        // TODO: Owner?
         // TODO: Trusted
 
-        // TODO: Region resident
+        if (citizen.hasSettlement() && citizen.getSettlement().hasRegion()) {
+            if (region.equals(citizen.getSettlement().getRegion())) {
+                return LocationMembership.REGION_RESIDENT;
+            }
+        }
 
-        // TODO: Country resident
+        if (region.hasCountry() && citizen.hasSettlement() && citizen.getSettlement().hasCountry()) {
+            if (region.getCountry().equals(citizen.getSettlement().getCountry())) {
+                return LocationMembership.COUNTRY_RESIDENT;
+            }
+        }
 
         // TODO: Outlaw
 

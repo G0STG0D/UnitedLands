@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.classes.events.base.PlayerChangeChunkEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
@@ -33,7 +34,6 @@ public class PlayerBukkitListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
         updateCitizenRecord(player);
         updatePlayerLocation(player, new Location(player.getLocation().getWorld(), 0, 0, 0), player.getLocation());
     }
@@ -136,6 +136,11 @@ public class PlayerBukkitListener implements Listener {
                 if (exitEvent.isCancelled())
                     return false;
             }
+
+            var chunkChangeEvent = new PlayerChangeChunkEvent(player, from, to);
+            chunkChangeEvent.callEvent();
+            if (chunkChangeEvent.isCancelled())
+                return false;
 
             playerCache.calculateMemberships();
             return true;

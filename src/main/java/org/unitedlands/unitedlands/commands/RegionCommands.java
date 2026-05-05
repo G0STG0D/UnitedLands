@@ -3,7 +3,7 @@ package org.unitedlands.unitedlands.commands;
 import org.unitedlands.classes.BaseCommandExecutor;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.unitedlands.commands.handlers.regions.RegionSetNameCommand;
+import org.unitedlands.unitedlands.commands.handlers.region.RegionSetNameCommand;
 
 public class RegionCommands extends BaseCommandExecutor<UnitedLands> {
 

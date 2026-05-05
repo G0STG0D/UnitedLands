@@ -4,11 +4,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.events.base.PlayerChangeChunkEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
+import org.unitedlands.unitedlands.managers.DisplayManager;
 
 public class PlayerListener implements Listener {
 
+    @SuppressWarnings("unused")
     private final UnitedLands plugin;
 
     public PlayerListener(UnitedLands plugin) {
@@ -17,11 +20,17 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEnterSettlement(PlayerEnterSettlementEvent event) {
-        plugin.getDisplayManager().showSettlementDisplay(event.getSettlement(), event.getPlayer());
+        DisplayManager.instance().showSettlementNameDisplay(event.getSettlement(), event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onExitSettlement(PlayerExitSettlementEvent event) {
-        plugin.getDisplayManager().hideSettlementDisplay(event.getSettlement(), event.getPlayer());
+        DisplayManager.instance().hideSettlementNameDisplay(event.getSettlement(), event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onChangeChunk(PlayerChangeChunkEvent event) {
+        if (DisplayManager.instance().isPlayerViewingMap(event.getPlayer()))
+            DisplayManager.instance().showMap(event.getPlayer(), event.getToLocation());
     }
 }

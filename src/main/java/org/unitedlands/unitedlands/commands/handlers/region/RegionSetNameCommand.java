@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.regions;
+package org.unitedlands.unitedlands.commands.handlers.region;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
 public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
@@ -25,10 +26,14 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
 
         Player player = (Player) sender;
 
+        if (!PermissionManager.instance().hasGlobalOverrides(player))
+            return;
+
         Region region;
 
         if (args.length == 0) {
-            region = GlobalDataManager.instance().getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+            region = GlobalDataManager.instance()
+                    .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
         } else {
             region = GlobalDataManager.instance().getRegion(args[0]);
         }
@@ -41,7 +46,7 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
             }
 
             GlobalDataManager.instance().updateRegionDbData(region);
-            
+
             plugin.getMapRenderer().removeRegion(region);
             plugin.getMapRenderer().renderRegion(region);
         }
@@ -49,8 +54,7 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
 
     @Override
     public List<String> handleTab(CommandSender arg0, String[] args) {
-        if (args.length == 1)
-        {
+        if (args.length == 1) {
             return GlobalDataManager.instance().getRegionNames();
         }
         return null;

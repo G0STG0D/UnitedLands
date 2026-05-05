@@ -67,11 +67,11 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     @DatabaseField(canBeNull = false, columnName = "container_permissions")
     private int containerPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
     @DatabaseField(canBeNull = false, columnName = "switch_permissions")
-    private int switchPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    private int switchPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "block_use_permissions")
-    private int blockUsePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    private int blockUsePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "interact_permissions")
-    private int interactPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    private int interactPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED | LocationMembership.SETTLEMENT_RESIDENT;
 
     @DatabaseField(columnName = "allow_pvp", canBeNull = true)
     private @Nullable Boolean allowPvp;

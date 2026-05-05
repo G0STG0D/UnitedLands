@@ -32,3 +32,7 @@ settlement:
 country:
   country-leader:
     - country.delete
+    - region.claim
+    - region.unclaim
+    - region.manage.toggle
+    - region.manage.perms

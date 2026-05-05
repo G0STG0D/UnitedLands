@@ -9,7 +9,7 @@ public class LocationMembership {
     public static final int OWNER = 1 << 1;
     public static final int SETTLEMENT_RESIDENT = 1 << 2;
     public static final int REGION_RESIDENT = 1 << 3;
-    public static final int NATION_RESIDENT = 1 << 4;
+    public static final int COUNTRY_RESIDENT = 1 << 4;
     public static final int TRUSTED = 1 << 5;
     public static final int ALLY = 1 << 6;
     public static final int ENEMY = 1 << 7;
@@ -28,7 +28,7 @@ public class LocationMembership {
             flags.add("TOWN_RESIDENT");
         if ((membership & REGION_RESIDENT) != 0)
             flags.add("REGION_RESIDENT");
-        if ((membership & NATION_RESIDENT) != 0)
+        if ((membership & COUNTRY_RESIDENT) != 0)
             flags.add("NATION_RESIDENT");
         if ((membership & TRUSTED) != 0)
             flags.add("TRUSTED");
@@ -56,7 +56,7 @@ public class LocationMembership {
             flags.add("<red>R</red>");
         else
             flags.add("-");
-        if ((membership & NATION_RESIDENT) != 0)
+        if ((membership & COUNTRY_RESIDENT) != 0)
             flags.add("<green>N</green>");
         else
             flags.add("-");

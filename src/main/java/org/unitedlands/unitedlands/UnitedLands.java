@@ -150,10 +150,6 @@ public class UnitedLands extends JavaPlugin {
         return permissionConfig;
     }
 
-    public DisplayManager getDisplayManager() {
-        return displayManager;
-    }
-
     public PermissionManager getPermissionManager() {
         return permissionManager;
     }

@@ -64,7 +64,7 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
                 membership = LocationMembership.REGION_RESIDENT;
                 break;
             case "country_residents":
-                membership = LocationMembership.NATION_RESIDENT;
+                membership = LocationMembership.COUNTRY_RESIDENT;
                 break;
             case "foreigners":
                 membership = LocationMembership.FOREIGNER;

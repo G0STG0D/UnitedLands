@@ -57,6 +57,10 @@ public class Coordinates {
         return x + ", " + z + " (" + worldName + ")";
     }
 
+    public String toCleanShortString() {
+        return x + ", " + z;
+    }
+
     public Location toLocation() {
         var world = Bukkit.getWorld(this.worldName);
         var y = world.getHighestBlockYAt(x, z);
