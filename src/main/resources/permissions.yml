@@ -14,10 +14,12 @@ settlement:
     - settlement.delete
     - settlement.setboard
     - settlement.setspawn
+    - settlement.setcolor
     - settlement.invite
     - settlement.kick
     - settlement.plot.sell
     - settlement.plot.evict
+    - settlement.withdraw
 
   co-mayor:
     - settlement.claim
@@ -28,6 +30,7 @@ settlement:
     - settlement.invite
     - settlement.plot.sell
     - settlement.plot.evict
+    - settlement.withdraw
 
 country:
   country-leader:

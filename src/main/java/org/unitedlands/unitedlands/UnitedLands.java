@@ -21,6 +21,7 @@ import org.unitedlands.unitedlands.listeners.ServerEventListener;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DatabaseManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
@@ -41,6 +42,7 @@ public class UnitedLands extends JavaPlugin {
 
     DatabaseManager databaseManager;
     GlobalDataManager globalDataManager;
+    EconomyManager economyManager;
     DisplayManager displayManager;
     ConfirmationManager confirmationManager;
     PermissionManager permissionManager;
@@ -53,11 +55,6 @@ public class UnitedLands extends JavaPlugin {
 
         LoggerFactory.setLogBackendFactory(new NullLogBackend.NullLogBackendFactory());
 
-        // LoggerFactory.setLogBackendFactory(
-        //         LoggerFactory.getLogBackendFactory() // keep existing backend
-        // );
-        // com.j256.ormlite.logger.Logger.setGlobalLogLevel(Level.WARNING);
-        
         instance = this;
 
         saveDefaultConfig();
@@ -88,6 +85,7 @@ public class UnitedLands extends JavaPlugin {
         displayManager = new DisplayManager(this);
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
+        economyManager = new EconomyManager(this);
     }
 
     private void registerCommands() {
@@ -152,10 +150,6 @@ public class UnitedLands extends JavaPlugin {
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
-    }
-
-    public Pl3xMapRenderer getMapRenderer() {
-        return mapRenderer;
     }
 
 }

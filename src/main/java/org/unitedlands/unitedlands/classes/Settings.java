@@ -12,40 +12,46 @@ import org.unitedlands.utils.Logger;
 
 public class Settings {
 
-    private static int regionChunkSize = 8;
+    public static int regionChunkSize = 8;
 
-    private static int defaultCountryFillColour;
-    private static int defaultCountryStrokeColour;
-    private static int defaultCountryStrokeWidth;
+    public static int defaultCountryFillColour;
+    public static int defaultCountryStrokeColour;
+    public static int defaultCountryStrokeWidth;
 
-    private static int defaultRegionFillColour;
-    private static int defaultRegionStrokeColour;
-    private static int defaultRegionStrokeWidth;
-    private static String defaultRegionDash;
+    public static int defaultRegionFillColour;
+    public static int defaultRegionStrokeColour;
+    public static int defaultRegionStrokeWidth;
+    public static String defaultRegionDash;
 
-    private static int countryRegionStrokeWidth;
-    private static String countryRegionDash;
+    public static int countryRegionStrokeWidth;
+    public static String countryRegionDash;
 
-    private static int defaultSettlementFillColour;
-    private static int defaultSettlementStrokeColour;
-    private static int defaultSettlementStrokeWidth;
-    private static String defaultSettlementDash;
+    public static int defaultSettlementFillColour;
+    public static int defaultSettlementStrokeColour;
+    public static int defaultSettlementStrokeWidth;
+    public static String defaultSettlementDash;
 
-    private static int countrySettlementFillColour;
-    private static int countrySettlementStrokeColour;
-    private static int countrySettlementStrokeWidth;
-    private static String countrySettlementDash;
+    public static int countrySettlementFillColour;
+    public static int countrySettlementStrokeColour;
+    public static int countrySettlementStrokeWidth;
+    public static String countrySettlementDash;
 
-    private static boolean protectUnclaimedLand;
-    private static boolean allowTownClaimsOutsideHomeRegion;
+    public static boolean protectUnclaimedLand;
+    public static boolean allowTownClaimsOutsideHomeRegion;
 
-    private static List<String> protectedContainers = new ArrayList<>();
-    private static List<String> protectedUseBlocks = new ArrayList<>();
-    private static List<String> protectedSwitchBlocks = new ArrayList<>();
-    private static List<Tag<Material>> protectedSwitchTags = new ArrayList<>();
-    private static List<String> protectedInteractEntities = new ArrayList<>();
-    private static List<String> blacklistedMonsters = new ArrayList<>();
-    private static List<String> blacklistedAnimals = new ArrayList<>();
+    public static int settlementCreateCosts;
+    public static int settlementClaimBaseCosts;
+    public static String settlementClaimCostProgression;
+
+    public static int countryCreateCosts;
+
+    public static List<String> protectedContainers = new ArrayList<>();
+    public static List<String> protectedUseBlocks = new ArrayList<>();
+    public static List<String> protectedSwitchBlocks = new ArrayList<>();
+    public static List<Tag<Material>> protectedSwitchTags = new ArrayList<>();
+    public static List<String> protectedInteractEntities = new ArrayList<>();
+    public static List<String> blacklistedMonsters = new ArrayList<>();
+    public static List<String> blacklistedAnimals = new ArrayList<>();
 
     public static void loadSettings(FileConfiguration config) {
 
@@ -76,6 +82,12 @@ public class Settings {
         allowTownClaimsOutsideHomeRegion = config.getBoolean("general.allow-town-claims-outside-home-region", true);
         protectUnclaimedLand = config.getBoolean("general.protect-unclaimed-land", true);
 
+        settlementCreateCosts = config.getInt("economy.new-settlement-cost", 100);
+        settlementClaimBaseCosts = config.getInt("economy.settlement-claim-base-cost", 48);
+        settlementClaimCostProgression = config.getString("economy.settlement-claim-cost-progression", "base + ((claims - 1)^2 * 0.005)");
+
+        countryCreateCosts = config.getInt("economy.new-country-cost", 1000);
+
         protectedContainers = config.getStringList("protection.containers");
         protectedUseBlocks = config.getStringList("protection.use-blocks");
         protectedSwitchBlocks = config.getStringList("protection.switch-blocks");
@@ -92,114 +104,6 @@ public class Settings {
         blacklistedMonsters = config.getStringList("protection.monsters");
         blacklistedAnimals = config.getStringList("protection.animals");
 
-    }
-
-    public static int getRegionChunkSize() {
-        return regionChunkSize;
-    }
-
-    public static int getDefaultCountryFillColour() {
-        return defaultCountryFillColour;
-    }
-
-    public static int getDefaultCountryStrokeColour() {
-        return defaultCountryStrokeColour;
-    }
-
-    public static int getDefaultCountryStrokeWidth() {
-        return defaultCountryStrokeWidth;
-    }
-
-    public static int getDefaultRegionFillColour() {
-        return defaultRegionFillColour;
-    }
-
-    public static int getDefaultRegionStrokeColour() {
-        return defaultRegionStrokeColour;
-    }
-
-    public static int getDefaultRegionStrokeWidth() {
-        return defaultRegionStrokeWidth;
-    }
-
-    public static int getCountryRegionStrokeWidth() {
-        return countryRegionStrokeWidth;
-    }
-
-    public static String getDefaultRegionDash() {
-        return defaultRegionDash;
-    }
-
-    public static String getCountryRegionDash() {
-        return countryRegionDash;
-    }
-
-    public static int getDefaultSettlementFillColour() {
-        return defaultSettlementFillColour;
-    }
-
-    public static int getDefaultSettlementStrokeColour() {
-        return defaultSettlementStrokeColour;
-    }
-
-    public static int getDefaultSettlementStrokeWidth() {
-        return defaultSettlementStrokeWidth;
-    }
-
-    public static String getDefaultSettlementDash() {
-        return defaultSettlementDash;
-    }
-
-    public static int getCountrySettlementFillColour() {
-        return countrySettlementFillColour;
-    }
-
-    public static int getCountrySettlementStrokeColour() {
-        return countrySettlementStrokeColour;
-    }
-
-    public static int getCountrySettlementStrokeWidth() {
-        return countrySettlementStrokeWidth;
-    }
-
-    public static String getCountrySettlementDash() {
-        return countrySettlementDash;
-    }
-
-    public static boolean protectUnclaimedLand() {
-        return protectUnclaimedLand;
-    }
-
-    public static boolean allowTownClaimsOutsideHomeRegion() {
-        return allowTownClaimsOutsideHomeRegion;
-    }
-
-    public static List<String> getProtectedContainers() {
-        return protectedContainers;
-    }
-
-    public static List<String> getProtectedUseBlocks() {
-        return protectedUseBlocks;
-    }
-
-    public static List<String> getProtectedSwitchBlocks() {
-        return protectedSwitchBlocks;
-    }
-
-    public static List<Tag<Material>> getProtectedSwitchTags() {
-        return protectedSwitchTags;
-    }
-
-    public static List<String> getProtectedInteractEntities() {
-        return protectedInteractEntities;
-    }
-
-    public static List<String> getBlacklistedMonsters() {
-        return blacklistedMonsters;
-    }
-
-    public static List<String> getBlacklistedAnimals() {
-        return blacklistedAnimals;
     }
 
 }

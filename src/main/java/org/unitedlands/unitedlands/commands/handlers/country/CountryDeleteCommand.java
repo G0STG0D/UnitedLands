@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -55,13 +56,17 @@ public class CountryDeleteCommand extends CountryCommandHandler {
 
                 region.removeCountry();
                 GlobalDataManager.instance().updateRegionDbData(region);
-
-                plugin.getMapRenderer().renderRegion(region);
             }
 
             GlobalDataManager.instance().removeCountryDbData(country);
 
-            plugin.getMapRenderer().removeCountry(country);
+            for (var region : country.getRegions()) {
+                Pl3xMapRenderer.instance().renderRegion(region);
+                for (var settlement : region.getSettlements()) {
+                    Pl3xMapRenderer.instance().renderSettlement(settlement);
+                }
+            }
+            Pl3xMapRenderer.instance().removeCountry(country);
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.delete.deleted-broadcast"),
                     Map.of("country", country.getCleanName()),

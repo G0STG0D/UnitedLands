@@ -8,7 +8,7 @@
   <artifactId>UnitedLands</artifactId>
   <version>0.0.1</version>
 
-  <name>UnitedRegions</name>
+  <name>UnitedLands</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -34,6 +34,10 @@
     <repository>
       <id>Modrinth</id>
       <url>https://api.modrinth.com/maven</url>
+    </repository>
+    <repository>
+      <id>codemc-creatorfromhell</id>
+      <url>https://repo.codemc.io/repository/creatorfromhell/</url>
     </repository>
   </repositories>
 
@@ -79,40 +83,61 @@
       <version>6.3.2</version>
     </dependency>
 
+    <!-- Vault Economy -->
+
+    <dependency>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>VaultUnlockedAPI</artifactId>
+      <version>2.19</version><!-- Validate this is the most recent version from the CI -->
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Helpers -->
+
+    <dependency>
+      <groupId>net.objecthunter</groupId>
+      <artifactId>exp4j</artifactId>
+      <version>0.4.8</version>
+    </dependency>
+
   </dependencies>
 
   <build>
- 
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>3.5.0</version>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>shade</goal>
-              </goals>
-              <configuration>
-                <relocations>
-                  <relocation>
-                    <pattern>com.j256.ormlite</pattern>
-                    <shadedPattern>org.unitedlands.regions.libs.ormlite</shadedPattern>
-                  </relocation>
-                  <relocation>
-                    <pattern>com.mysql</pattern>
-                    <shadedPattern>org.unitedlands.regions.libs.mysql</shadedPattern>
-                  </relocation>
-                </relocations>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>com.j256.ormlite</pattern>
+                  <shadedPattern>org.unitedlands.unitedlands.libs.ormlite</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.mysql</pattern>
+                  <shadedPattern>org.unitedlands.unitedlands.libs.mysql</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>net.objecthunter.exp4j</pattern>
+                  <shadedPattern>org.unitedlands.unitedlands.libs.exp4j</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

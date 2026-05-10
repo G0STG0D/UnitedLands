@@ -37,6 +37,15 @@ import net.pl3x.map.core.markers.option.Popup;
 
 public class Pl3xMapRenderer {
 
+    private static Pl3xMapRenderer instance;
+    public static Pl3xMapRenderer instance() {
+        return instance;
+    }
+
+    public Pl3xMapRenderer() {
+        instance = this;
+    }
+
     private enum DIRECTION {
         RIGHT, DOWN, UP, LEFT
     };
@@ -57,10 +66,10 @@ public class Pl3xMapRenderer {
 
     public void renderCountries(Collection<Country> countries) {
 
-        Logger.log("Starting country map rendering...", "UnitedRegions");
+        Logger.log("Starting country map rendering...", "UnitedLands");
 
         if (countries == null || countries.isEmpty()) {
-            Logger.log("No countries to render.", "UnitedRegions");
+            Logger.log("No countries to render.", "UnitedLands");
             return;
         }
 
@@ -97,7 +106,7 @@ public class Pl3xMapRenderer {
         var popup = new Popup(
                 "<div><p><strong>" + country.getCleanName() + "</strong></p><p><strong>Owner: </strong>");
 
-        int strokeWidth = Settings.getDefaultCountryStrokeWidth();
+        int strokeWidth = Settings.defaultCountryStrokeWidth;
 
         var markerOptions = Options.builder()
                 .fill(false)
@@ -150,7 +159,7 @@ public class Pl3xMapRenderer {
                     .filter(m -> m.getKey().equals("settlement-" + country.getUuid().toString())).findFirst()
                     .orElse(null);
             if (poly != null) {
-                Logger.log("Removing country...", "UnitedRegions");
+                Logger.log("Removing country...", "UnitedLands");
                 settlemenMarkers.remove(poly);
                 return;
             }
@@ -171,10 +180,10 @@ public class Pl3xMapRenderer {
 
     public void renderRegions(Collection<Region> regions) {
 
-        Logger.log("Starting region map rendering...", "UnitedRegions");
+        Logger.log("Starting region map rendering...", "UnitedLands");
 
         if (regions == null || regions.isEmpty()) {
-            Logger.log("No regions to render.", "UnitedRegions");
+            Logger.log("No regions to render.", "UnitedLands");
             return;
         }
 
@@ -219,12 +228,12 @@ public class Pl3xMapRenderer {
                 "<div><p><strong>" + region.getCleanName() + "</strong></p><p><strong>Owner: </strong>"
                         + (region.hasFounder() ? region.getFounderName() : "-") + "</p></div>");
 
-        String dash = Settings.getDefaultRegionDash();
-        int strokeWidth = Settings.getDefaultRegionStrokeWidth();
+        String dash = Settings.defaultRegionDash;
+        int strokeWidth = Settings.defaultRegionStrokeWidth;
 
         if (region.hasCountry()) {
-            dash = Settings.getCountryRegionDash();
-            strokeWidth = Settings.getCountryRegionStrokeWidth();
+            dash = Settings.countryRegionDash;
+            strokeWidth = Settings.countryRegionStrokeWidth;
         }
 
         var tooltip = region.getCleanName() + (region.hasCountry() ? " (" + region.getCountry().getCleanName() + ")" : "");
@@ -301,10 +310,10 @@ public class Pl3xMapRenderer {
 
     public void renderSettlements(Collection<Settlement> settlements) {
 
-        Logger.log("Starting settlement map rendering...", "UnitedRegions");
+        Logger.log("Starting settlement map rendering...", "UnitedLands");
 
         if (settlements == null || settlements.isEmpty()) {
-            Logger.log("No settlements to render.", "UnitedRegions");
+            Logger.log("No settlements to render.", "UnitedLands");
             return;
         }
 
@@ -342,24 +351,20 @@ public class Pl3xMapRenderer {
                 "<div><p><strong>" + settlement.getCleanName() + "</strong></p><p><strong>Owner: </strong>"
                         + (settlement.hasFounder() ? settlement.getFounderName() : "-") + "</p></div>");
 
-        int fillColor = Settings.getDefaultSettlementFillColour();
-        int strokeColor = Settings.getDefaultSettlementStrokeColour();
-        int strokeWidth = Settings.getDefaultSettlementStrokeWidth();
-        String dash = Settings.getDefaultSettlementDash();
+        int strokeWidth = Settings.defaultSettlementStrokeWidth;
+        String dash = Settings.defaultSettlementDash;
 
         if (settlement.hasCountry()) {
-            fillColor = Settings.getCountrySettlementFillColour();
-            strokeColor = Settings.getCountrySettlementStrokeColour();
-            strokeWidth = Settings.getCountrySettlementStrokeWidth();
-            dash = Settings.getCountrySettlementDash();
+            strokeWidth = Settings.countrySettlementStrokeWidth;
+            dash = Settings.countrySettlementDash;
         }
 
         var markerOptions = Options.builder()
                 .fill(true)
                 .fillType(Fill.Type.EVENODD)
-                .fillColor(fillColor)
+                .fillColor(settlement.getFillColor())
                 .stroke(true)
-                .strokeColor(strokeColor)
+                .strokeColor(settlement.getStrokeColor())
                 .strokeWeight(strokeWidth)
                 .strokeDashPattern(dash)
                 .tooltipContent(settlement.getCleanName()).build()
@@ -405,7 +410,7 @@ public class Pl3xMapRenderer {
                     .filter(m -> m.getKey().equals("settlement-" + settlement.getUuid().toString())).findFirst()
                     .orElse(null);
             if (poly != null) {
-                Logger.log("Removing settlement...", "UnitedRegions");
+                Logger.log("Removing settlement...", "UnitedLands");
                 settlemenMarkers.remove(poly);
                 return;
             }

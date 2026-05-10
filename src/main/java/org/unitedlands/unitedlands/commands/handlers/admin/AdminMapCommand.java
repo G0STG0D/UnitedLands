@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 
 public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
@@ -32,7 +33,7 @@ public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var renderer = plugin.getMapRenderer();
+        var renderer = Pl3xMapRenderer.instance();
 
         switch (args[1]) {
             case "settlements":

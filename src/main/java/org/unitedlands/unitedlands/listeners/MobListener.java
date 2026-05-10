@@ -27,8 +27,8 @@ public class MobListener implements Listener {
 
         var creatureType = event.getEntityType().toString();
 
-        var isMonster = Settings.getBlacklistedMonsters().contains(creatureType);
-        var isAnimal = Settings.getBlacklistedAnimals().contains(creatureType);
+        var isMonster = Settings.blacklistedMonsters.contains(creatureType);
+        var isAnimal = Settings.blacklistedAnimals.contains(creatureType);
 
         if (!isMonster && !isAnimal)
             return;

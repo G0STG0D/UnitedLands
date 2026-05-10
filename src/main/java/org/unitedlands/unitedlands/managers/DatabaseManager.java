@@ -90,12 +90,12 @@ public class DatabaseManager {
             hikariDataSource = new HikariDataSource(config);
             connectionSource = new DataSourceConnectionSource(hikariDataSource, jdbcUrl);
 
-            Logger.log("Connected to MySQL database with HikariCP.", "UnitedRegions");
+            Logger.log("Connected to MySQL database with HikariCP.", "UnitedLands");
 
             verifySchemaVersion();
             registerServices();
 
-            Logger.log("DatabaseManager initialized successfully.", "UnitedRegions");
+            Logger.log("DatabaseManager initialized successfully.", "UnitedLands");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -151,11 +151,11 @@ public class DatabaseManager {
         try {
             if (connectionSource != null) {
                 connectionSource.close();
-                Logger.log("Disconnected from MySQL database.", "UnitedRegions");
+                Logger.log("Disconnected from MySQL database.", "UnitedLands");
             }
             if (hikariDataSource != null) {
                 hikariDataSource.close();
-                Logger.log("HikariCP connection closed.", "UnitedRegions");
+                Logger.log("HikariCP connection closed.", "UnitedLands");
             }
         } catch (Exception e) {
             e.printStackTrace();

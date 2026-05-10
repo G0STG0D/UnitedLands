@@ -6,6 +6,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementChunkInfoScreen extends InfoScreen {
@@ -28,7 +29,7 @@ public class SettlementChunkInfoScreen extends InfoScreen {
         addComponent("owner", owner);
 
         var forsale = chunk.isForSale() ? "<green>yes</green>" : "<red>no</red>";
-        var price = chunk.isForSale() ? "<white>" + chunk.getSalePrice() + "</white>" : "-";
+        var price = chunk.isForSale() ? "<white>" + EconomyManager.instance().format(chunk.getSalePrice()) + "</white>" : "-";
         var sale = Messenger.getMessage(messageProvider.get("info-screens.settlementchunk.sale"),
                 Map.of("forsale", forsale, "price", price));
         addComponent("sale", sale);

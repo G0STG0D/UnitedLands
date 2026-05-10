@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -69,8 +70,8 @@ public class SettlementUnclaimCommand extends SettlementCommandHandler {
         GlobalDataManager.instance().removeSettlementChunkDbData(existingChunk);
         GlobalDataManager.instance().updateSettlementDbData(settlement);
 
-        plugin.getMapRenderer().removeSettlement(settlement);
-        plugin.getMapRenderer().renderSettlement(settlement);
+        Pl3xMapRenderer.instance().removeSettlement(settlement);
+        Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.success"),
                 Map.of("settlement", settlement.getCleanName(),

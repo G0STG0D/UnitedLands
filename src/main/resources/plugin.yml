@@ -4,7 +4,8 @@ main: org.unitedlands.unitedlands.UnitedLands
 api-version: 1.18
 description: UnitedLands Core claiming and geopol plugin
 author: Theriel_
-depend: [UnitedLib]
+depend: [ UnitedLib ]
+softdepend: [ Vault ]
 commands:
    uladmin:
       description: UnitedLands admin commands.

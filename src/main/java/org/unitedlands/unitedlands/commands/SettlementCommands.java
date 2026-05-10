@@ -17,6 +17,7 @@ import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHand
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementClaimCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementCreateCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementDeleteCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementDepositCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementInfoCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementInviteCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementKickCommand;
@@ -26,10 +27,12 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementPermis
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRankSubcommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRenameCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetBoardCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetColorCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetSpawnCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSpawnCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementToggleCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUnclaimCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementWithdrawCommand;
 import org.unitedlands.utils.Formatter;
 
 public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
@@ -59,7 +62,10 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("rank", new SettlementRankSubcommand(plugin, messageProvider));
         handlers.put("kick", new SettlementKickCommand(plugin, messageProvider));
         handlers.put("setspawn", new SettlementSetSpawnCommand(plugin, messageProvider));
+        handlers.put("setcolor", new SettlementSetColorCommand(plugin, messageProvider));
         handlers.put("map", new SettlementMapCommand(plugin, messageProvider));
+        handlers.put("deposit", new SettlementDepositCommand(plugin, messageProvider));
+        handlers.put("withdraw", new SettlementWithdrawCommand(plugin, messageProvider));
     }
 
     @Override

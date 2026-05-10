@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -48,8 +49,8 @@ public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
         country.addRegion(region);
         GlobalDataManager.instance().updateRegionDbData(region);
 
-        plugin.getMapRenderer().renderRegion(region);
-        plugin.getMapRenderer().renderCountry(country);
+        Pl3xMapRenderer.instance().renderRegion(region);
+        Pl3xMapRenderer.instance().renderCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("country.claim.success"),
                 Map.of("country", country.getCleanName(),

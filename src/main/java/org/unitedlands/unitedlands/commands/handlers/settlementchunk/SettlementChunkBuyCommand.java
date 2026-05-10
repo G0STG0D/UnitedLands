@@ -1,11 +1,15 @@
 package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -38,15 +42,25 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
         }
 
         // TODO: Check for foreigners
-        // TODO: Check and deduct money
+
+        if (!EconomyManager.instance().has(citizen.getUuid(), new BigDecimal(settlementChunk.getSalePrice()))) {
+            Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
+                    Map.of("amount", EconomyManager.instance().format(settlementChunk.getSalePrice())),
+                    messageProvider.get("prefix"));
+            return;
+        }
+        
+        EconomyManager.instance().withdraw(citizen.getUuid(), settlementChunk.getSalePrice());
+        EconomyManager.instance().deposit(settlementChunk.getSettlement().getUuid(), settlementChunk.getSalePrice());
+
+        Messenger.sendMessage(player, messageProvider.get("settlementchunk.buy.success"),
+                Map.of("price", EconomyManager.instance().format(settlementChunk.getSalePrice())),
+                messageProvider.get("prefix"));
 
         settlementChunk.setSalePrice(null);
         settlementChunk.setOwner(citizen);
 
         GlobalDataManager.instance().updateSettlementChunkDbData(settlementChunk);
-
-        Messenger.sendMessage(player, messageProvider.get("settlementchunk.buy.success"),
-                null, messageProvider.get("prefix"));
     }
 
 }

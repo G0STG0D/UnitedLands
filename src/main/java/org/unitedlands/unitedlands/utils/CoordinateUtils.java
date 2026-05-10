@@ -7,13 +7,13 @@ import org.unitedlands.unitedlands.classes.Settings;
 public class CoordinateUtils {
 
     public static Coordinates chunkToRegionCoordinates(Coordinates chunkCoordinates) {
-        int regionChunkSize = Settings.getRegionChunkSize();
+        int regionChunkSize = Settings.regionChunkSize;
         return new Coordinates(Math.floorDiv((int) chunkCoordinates.getX(), regionChunkSize),
                 Math.floorDiv((int) chunkCoordinates.getZ(), regionChunkSize), chunkCoordinates.getWorldName());
     }
 
     public static Coordinates locationToRegionCoordinates(Location location) {
-        int regionBlockSize = Settings.getRegionChunkSize() * 16;
+        int regionBlockSize = Settings.regionChunkSize * 16;
         return new Coordinates(Math.floorDiv((int) location.getX(), regionBlockSize),
                 Math.floorDiv((int) location.getZ(), regionBlockSize), location.getWorld().getName());
     }
@@ -23,13 +23,13 @@ public class CoordinateUtils {
     }
 
     public static Coordinates worldToRegionCoordinates(Coordinates worldCoords) {
-        int regionBlockSize = Settings.getRegionChunkSize() * 16;
+        int regionBlockSize = Settings.regionChunkSize * 16;
         return new Coordinates(Math.floorDiv(worldCoords.getX(), regionBlockSize),
                 Math.floorDiv(worldCoords.getZ(), regionBlockSize), worldCoords.getWorldName());
     }
 
     public static Coordinates regionToWorldCoordinates(Coordinates regionCoords) {
-        int regionBlockSize = Settings.getRegionChunkSize() * 16;
+        int regionBlockSize = Settings.regionChunkSize * 16;
         return new Coordinates(regionCoords.getX() * regionBlockSize, regionCoords.getZ() * regionBlockSize,
                 regionCoords.getWorldName());
     }

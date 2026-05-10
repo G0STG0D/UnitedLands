@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.Messenger;
@@ -44,13 +45,17 @@ public class CountrySetColorCommand extends BaseCommandHandler<UnitedLands> {
         GlobalDataManager.instance().updateCountryDbData(country);
 
         for (var region : country.getRegions()) {
-            plugin.getMapRenderer().renderRegion(region);
+            Pl3xMapRenderer.instance().renderRegion(region);
         }
-        plugin.getMapRenderer().renderCountry(country);
+        Pl3xMapRenderer.instance().renderCountry(country);
+        for (var region : country.getRegions()) {
+            for (var settlement : region.getSettlements()) {
+                Pl3xMapRenderer.instance().renderSettlement(settlement);
+            }
+        }
 
-        Messenger.sendMessage(player, messageProvider.get("country.setcolor.success"),
+        Messenger.sendMessage(player, messageProvider.get("country.setcolor.set"),
                 null, messageProvider.get("prefix"));
-        return;
     }
 
     @Override

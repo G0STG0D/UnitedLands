@@ -5,8 +5,6 @@ teleport:
   cancel: "Teleport cancelled."
   no-spawn: "<red>The target has no spawn point set.</red>"
   not-public: "<yellow>The target spawn is not public.</yellow>"
-  wrong-number-format: "<red>{input} is not a number.</red>"
-  no-funds: "<yellow>You don't have enough money to do this.</yellow>"
 
 errors:
   player-not-found: "<red>Could not find player {name}.</red>"
@@ -18,6 +16,8 @@ errors:
   settlement-not-found: "<red>Couldn't find settlement {settlement}</red>"
   no-claim-permission: "<red>You don't have any permissions in this chunk."
   no-settlement-permission: "<red>You don't have the necessary settlement rank do this ({perm})"
+  wrong-number-format: "<red>{input} is not a number.</red>"
+  no-funds: "<yellow>You don't have enough money to do this, you need at least {amount}.</yellow>"
 
 settlement:
   create:
@@ -33,6 +33,9 @@ settlement:
   setspawn:
     not-in-claims: "<red>The spawn location must be inside of your settlement claims</red>"
     set: "<aqua>Your settlement's spawn has been updated.</aqua>"
+  setcolor:
+    wrong-format: "<red>You must supply a hexadecimal color (e.g. #FF0000)</red>"
+    set: "<aqua>Successfully changed your settltment color.</aqua>"
   permission:
     unknown-membership: "<red>Unknown group: {membership}"
     unknown-permission: "<red>Unknown permission: {permission}"
@@ -42,7 +45,7 @@ settlement:
     set: "<aqua>Toggled settlement {field} to {state}</aqua>"
   claim: 
     already-claimed: "<red>This chunk is already claimed</red>"
-    success: "<aqua>Claimed chunk at {chunk} for {settlement}</aqua>"
+    success: "<aqua>Claimed chunk at {chunk} for {settlement} for {costs}</aqua>"
     has-country: "<red>This chunk belongs to a region owned by {country}, and they do not allow foreign towns to claim.</red>"
     outside-of-region: "<red>Claiming outside of a settlement's home region is not allowed.</red>"
   unclaim:
@@ -72,6 +75,9 @@ settlement:
     not-in-settlement: "<yellow>The player is not a citizen of this settlement.</yellow>"
     success: "<aqua>Player {name} has been kicked from the settlement.</aqua>"
     kicked: "<yellow>You have been kicked from {settlement}.</yellow>"
+  no-funds: "<yellow>The settlement doesn't have {amount} in its bank.</yellow>"
+  deposit: "<aqua>You deposited {amount} into the settlement bank.</aqua>"
+  withdraw: "<aqua>You took {amount} from the settlement bank.</aqua>"
 
 settlementchunk:
   toggle:
@@ -87,7 +93,7 @@ settlementchunk:
     cleared: "<aqua>This plot is no longer for sale.</aqua>"
   buy:
     not-for-sale: "<yellow>This plot is not for sale.</yellow>"
-    success: "<green>You successfully bought the plot.</green>"
+    success: "<green>You successfully bought the plot for {price}.</green>"
   evict:
     no-owner: "<yellow>This plot is not owned by anyone.</yellow>"
     success: "<aqua>You evicted the current owner of this plot.</aqua>"
@@ -110,7 +116,7 @@ country:
     already-claimed: "<red>This region is already claimed</red>"
   setcolor:
     wrong-format: "<red>You must supply a hexadecimal color (e.g. #FF0000)</red>"
-    success: "<aqua>Successfully changed your nation color.</aqua>"
+    set: "<aqua>Successfully changed your nation color.</aqua>"
 
 approval:
   no-approval-pending: "<yellow>You don't have any pending requests to approve.</yellow>"

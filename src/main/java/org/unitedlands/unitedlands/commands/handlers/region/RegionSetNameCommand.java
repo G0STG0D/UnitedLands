@@ -8,6 +8,7 @@ import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Region;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -47,8 +48,8 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
 
             GlobalDataManager.instance().updateRegionDbData(region);
 
-            plugin.getMapRenderer().removeRegion(region);
-            plugin.getMapRenderer().renderRegion(region);
+            Pl3xMapRenderer.instance().removeRegion(region);
+            Pl3xMapRenderer.instance().renderRegion(region);
         }
     }
 

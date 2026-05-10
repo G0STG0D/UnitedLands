@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
@@ -45,7 +46,7 @@ public class RegionChunkTransferCommand extends BaseCommandHandler<UnitedLands> 
         GlobalDataManager.instance().updateRegionDbData(sourceRegion);
         GlobalDataManager.instance().updateRegionDbData(targetRegion);
 
-        var mapRenderer = plugin.getMapRenderer();
+        var mapRenderer = Pl3xMapRenderer.instance();
 
         mapRenderer.removeRegion(sourceRegion);
         mapRenderer.removeRegion(targetRegion);

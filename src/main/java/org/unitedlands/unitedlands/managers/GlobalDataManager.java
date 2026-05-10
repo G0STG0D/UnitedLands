@@ -81,7 +81,7 @@ public class GlobalDataManager {
 
                     }).get();
         } catch (Exception ex) {
-            Logger.logError("Initialization failed: " + ex.getMessage(), "UnitedRegions");
+            Logger.logError("Initialization failed: " + ex.getMessage(), "UnitedLands");
             throw new RuntimeException("App init failed", ex);
         }
 
@@ -91,7 +91,7 @@ public class GlobalDataManager {
         for (Citizen citizen : loadedCitizens) {
             citizens.put(citizen.getUuid(), citizen);
         }
-        Logger.log("Loaded " + loadedCitizens.size() + " citizens to memory.", "UnitedRegions");
+        Logger.log("Loaded " + loadedCitizens.size() + " citizens to memory.", "UnitedLands");
     }
 
     private void buildSettlements(List<Settlement> loadedSettlements, List<SettlementChunk> loadedSettlementChunks) {
@@ -102,13 +102,13 @@ public class GlobalDataManager {
                 settlement.getRegion().addSettlement(settlement);
             }
         }
-        Logger.log("Loaded " + loadedSettlements.size() + " settlements to memory.", "UnitedRegions");
+        Logger.log("Loaded " + loadedSettlements.size() + " settlements to memory.", "UnitedLands");
 
         for (var settlementChunk : loadedSettlementChunks) {
             settlementChunks.put(settlementChunk.getCoordinates(), settlementChunk);
             settlements.get(settlementChunk.getSettlementUuid()).addChunk(settlementChunk);
         }
-        Logger.log("Loaded " + loadedSettlementChunks.size() + " settlement chunks chunks to memory.", "UnitedRegions");
+        Logger.log("Loaded " + loadedSettlementChunks.size() + " settlement chunks to memory.", "UnitedLands");
     }
 
     public void buildRegions(List<Region> loadedRegions, List<RegionChunk> loadedRegionChunks) {
@@ -119,20 +119,20 @@ public class GlobalDataManager {
                 region.getCountry().addRegion(region);
             }
         }
-        Logger.log("Loaded " + regions.size() + " regions to memory.", "UnitedRegions");
+        Logger.log("Loaded " + regions.size() + " regions to memory.", "UnitedLands");
 
         for (var regionChunk : loadedRegionChunks) {
             regionChunks.put(regionChunk.getCoordinates(), regionChunk);
             regions.get(regionChunk.getRegionUuid()).addChunk(regionChunk);
         }
-        Logger.log("Loaded " + loadedRegionChunks.size() + " regions chunks to memory.", "UnitedRegions");
+        Logger.log("Loaded " + loadedRegionChunks.size() + " regions chunks to memory.", "UnitedLands");
     }
 
     public void buildCountries(List<Country> loadedCountries) {
         for (var country : loadedCountries) {
             countries.put(country.getUuid(), country);
         }
-        Logger.log("Loaded " + countries.size() + " countries to memory.", "UnitedRegions");
+        Logger.log("Loaded " + countries.size() + " countries to memory.", "UnitedLands");
     }
 
     public void clearData() {

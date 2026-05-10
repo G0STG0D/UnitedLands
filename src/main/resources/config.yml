@@ -26,7 +26,7 @@ general:
   allow-town-claims-outside-home-region: false
 
 
-  # Default map colors
+  # Default map colors & styles
 
   country-default-stroke-colour: -13399809
   country-default-fill-colour: 540248319
@@ -49,6 +49,18 @@ general:
   settlement-country-fill-colour: 540248319
   settlement-country-stroke-width: 2
   settlement-country-dash: "4,4"
+
+economy:
+  new-settlement-cost: 8000
+  new-country-cost: 80000
+  settlement-claim-base-cost: 48
+  # Available vars: base (base costs), claims (total settlement claim count).
+  settlement-claim-cost-progression: "base + ((claims - 1)^2 * 0.005)"
+  region-claim-base-cost: 10000
+  # Available vars: base (base costs), regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).
+  region-claim-distance-modifier: "base + ((regions / 2) * (distance / 1000))" 
+
+
 
 
 protection:

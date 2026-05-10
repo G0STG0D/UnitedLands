@@ -35,7 +35,7 @@ public class RegionChunk implements Identifiable, CoordinateHolder {
     private final int size;
 
     public RegionChunk() {
-        size = Settings.getRegionChunkSize() * 16;
+        size = Settings.regionChunkSize * 16;
     }
 
     public UUID getUuid() {

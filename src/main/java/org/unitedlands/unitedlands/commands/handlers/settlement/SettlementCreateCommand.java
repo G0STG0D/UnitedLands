@@ -1,5 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -10,9 +11,12 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
+import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -48,6 +52,20 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             return;
         }
 
+        var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
+        var existingChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoords);
+        if (existingChunk != null) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.create.claimed"),
+                    null, messageProvider.get("prefix"));
+            return;
+        }
+
+        if (!EconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.settlementCreateCosts))) {
+            Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
+                    Map.of("amount", EconomyManager.instance().format(Settings.settlementCreateCosts)), messageProvider.get("prefix"));
+            return;
+        }
+
         var confirmation = new Confirmation("settlement");
         confirmation.setRunnable(() -> {
 
@@ -59,7 +77,7 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             settlement.setFounder(player);
             settlement.setFoundingTimestamp(System.currentTimeMillis());
             settlement.setWorld(world);
-            settlement.setHomeChunkCoordinates(CoordinateUtils.locationToChunkCoordinates(player.getLocation()));
+            settlement.setHomeChunkCoordinates(chunkCoords);
             settlement.setSpawn(player.getLocation());
 
             var region = GlobalDataManager.instance()
@@ -84,10 +102,13 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             GlobalDataManager.instance().registerSettlementChunk(chunk);
 
             settlement.addCitizen(citizen);
+            GlobalDataManager.instance().createSettlementDbData(settlement);
+
+            EconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
+            EconomyManager.instance().withdraw(citizen.getUuid(), Settings.settlementCreateCosts);
+
             citizen.setSettlement(settlement);
             citizen.addSettlementRank("mayor");
-
-            GlobalDataManager.instance().createSettlementDbData(settlement);
             GlobalDataManager.instance().updateCitizenDbData(citizen);
 
             Messenger.sendMessage(player, messageProvider.get("settlement.create.player"),
@@ -99,7 +120,7 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
                             "country", countryInfo),
                     messageProvider.get("prefix"));
 
-            plugin.getMapRenderer().renderSettlement(settlement);
+            Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         })
                 .setAcceptCommand("/approve settlement")

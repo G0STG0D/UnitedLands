@@ -228,13 +228,13 @@ public class Region extends GeopolObject implements PermissionHolder {
     public Integer getFillColor() {
         if (hasCountry())
             return country.getFillColor();
-        return Settings.getDefaultRegionFillColour();
+        return Settings.defaultRegionFillColour;
     }
 
     public Integer getStrokeColor() {
         if (hasCountry())
             return country.getStrokeColor();
-        return Settings.getDefaultRegionStrokeColour();
+        return Settings.defaultRegionStrokeColour;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.utils.Messenger;
 
 import net.kyori.adventure.text.Component;
@@ -66,6 +67,11 @@ public class SettlementInfoScreen extends InfoScreen {
                         "interact", LocationMembership.toInfoScreenString(settlement.getInteractPermissions())));
         addComponent("perm1", perm1);
         addComponent("perm2", perm2);
+
+        var balance = Messenger.getMessage(messageProvider.get("info-screens.settlement.balance"),
+                Map.of("balance", EconomyManager.instance().format(EconomyManager.instance().getBalance(settlement.getUuid()))));
+        addComponent("balance", balance);
+
 
         var citizens = Messenger.getMessage(messageProvider.get("info-screens.settlement.citizens"),
                 Map.of("citizens-count", settlement.getCitizens().size() + ""))

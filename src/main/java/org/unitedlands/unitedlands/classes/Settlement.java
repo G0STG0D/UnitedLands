@@ -67,11 +67,14 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     @DatabaseField(canBeNull = false, columnName = "container_permissions")
     private int containerPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
     @DatabaseField(canBeNull = false, columnName = "switch_permissions")
-    private int switchPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED | LocationMembership.SETTLEMENT_RESIDENT;
+    private int switchPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
+            | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "block_use_permissions")
-    private int blockUsePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED | LocationMembership.SETTLEMENT_RESIDENT;
+    private int blockUsePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
+            | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "interact_permissions")
-    private int interactPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED | LocationMembership.SETTLEMENT_RESIDENT;
+    private int interactPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
+            | LocationMembership.SETTLEMENT_RESIDENT;
 
     @DatabaseField(columnName = "allow_pvp", canBeNull = true)
     private @Nullable Boolean allowPvp;
@@ -95,7 +98,9 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     }
 
     public @Nullable Integer getStrokeColor() {
-        return strokeColor;
+        if (hasCountry())
+            return getCountry().getStrokeColor();
+        return strokeColor != null ? strokeColor : Settings.defaultSettlementStrokeColour;
     }
 
     public void setStrokeColor(String hexColor) {
@@ -111,7 +116,9 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     }
 
     public @Nullable Integer getFillColor() {
-        return fillColor;
+        if (hasCountry())
+            return getCountry().getFillColor();
+        return fillColor != null ? fillColor : Settings.defaultSettlementFillColour;
     }
 
     public void setFillColor(String hexColor) {

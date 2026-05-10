@@ -69,7 +69,7 @@ public class BlockListener implements Listener {
             return;
 
         var blockType = block.getType().toString();
-        if (Settings.getProtectedContainers().contains(blockType)) {
+        if (Settings.protectedContainers.contains(blockType)) {
             if (!PermissionManager.instance().checkLocationPermissions(player, block.getLocation(),
                     PermissionType.CONTAINER)) {
                 event.setCancelled(true);
@@ -78,7 +78,7 @@ public class BlockListener implements Listener {
             }
         }
 
-        if (Settings.getProtectedUseBlocks().contains(blockType)) {
+        if (Settings.protectedUseBlocks.contains(blockType)) {
             if (!PermissionManager.instance().checkLocationPermissions(player, block.getLocation(),
                     PermissionType.BLOCK_USE)) {
                 event.setCancelled(true);
@@ -87,7 +87,7 @@ public class BlockListener implements Listener {
             }
         }
 
-        if (Settings.getProtectedSwitchBlocks().contains(blockType) || isSwitchMaterialTagProtected(block.getType())) {
+        if (Settings.protectedSwitchBlocks.contains(blockType) || isSwitchMaterialTagProtected(block.getType())) {
             if (!PermissionManager.instance().checkLocationPermissions(player, block.getLocation(),
                     PermissionType.SWITCH)) {
                 event.setCancelled(true);
@@ -108,7 +108,7 @@ public class BlockListener implements Listener {
             return;
 
         var entityType = entity.getType().toString();
-        if (Settings.getProtectedInteractEntities().contains(entityType)) {
+        if (Settings.protectedInteractEntities.contains(entityType)) {
             if (!PermissionManager.instance().checkLocationPermissions(player, entity.getLocation(),
                     PermissionType.INTERACT)) {
                 event.setCancelled(true);
@@ -120,7 +120,7 @@ public class BlockListener implements Listener {
     }
 
     private boolean isSwitchMaterialTagProtected(Material type) {
-        for (var tag : Settings.getProtectedSwitchTags()) {
+        for (var tag : Settings.protectedSwitchTags) {
             if (tag.isTagged(type))
                 return true;
         }

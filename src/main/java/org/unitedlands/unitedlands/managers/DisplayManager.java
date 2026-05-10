@@ -130,8 +130,8 @@ public class DisplayManager {
     private String getChunkSymbol(Coordinates coords) {
         var chunk = GlobalDataManager.instance().getSettlementChunk(coords);
         if (chunk != null) {
-            if (chunk.getSettlement().getHomeChunkCoordinates().equals(coords))
-                return "H";
+            if (chunk.isForSale())
+                return "$";
             return "+";
         }
         return "-";

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.RegionGenerator;
 import org.unitedlands.utils.Logger;
@@ -98,7 +99,7 @@ public class TestOutputCommand extends BaseCommandHandler<UnitedLands> {
                 Logger.log("Registered region " + region.getName());
             }
 
-            plugin.getMapRenderer().renderRegions(GlobalDataManager.instance().getRegions());
+            Pl3xMapRenderer.instance().renderRegions(GlobalDataManager.instance().getRegions());
 
         });
 

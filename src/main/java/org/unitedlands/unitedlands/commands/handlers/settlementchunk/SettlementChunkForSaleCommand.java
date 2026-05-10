@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -66,7 +67,7 @@ public class SettlementChunkForSaleCommand extends SettlementChunkCommandHandler
             GlobalDataManager.instance().updateSettlementChunkDbData(settlementChunk);
 
             Messenger.sendMessage(player, messageProvider.get("settlementchunk.sell.success"),
-                    Map.of("price", price.toString()), messageProvider.get("prefix"));
+                    Map.of("price", EconomyManager.instance().format(price)), messageProvider.get("prefix"));
         }
     }
 

@@ -1,5 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.country;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,6 +12,8 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -49,6 +52,13 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             return;
         }
 
+        if (!EconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.countryCreateCosts))) {
+            Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
+                    Map.of("amount", EconomyManager.instance().format(Settings.countryCreateCosts)),
+                    messageProvider.get("prefix"));
+            return;
+        }
+
         Country country = new Country();
         country.setUuid(UUID.randomUUID());
         country.setName(args[0]);
@@ -56,8 +66,8 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
         country.setCapital(settlement);
         country.addRegion(region);
         country.setSpawn(settlement.getSpawn());
-        country.setStrokeColor(Settings.getDefaultCountryStrokeColour());
-        country.setFillColor(Settings.getDefaultCountryFillColour());
+        country.setStrokeColor(Settings.defaultCountryStrokeColour);
+        country.setFillColor(Settings.defaultCountryFillColour);
         country.addRegion(region);
 
         region.setCountry(country);
@@ -69,9 +79,12 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
         GlobalDataManager.instance().updateSettlementDbData(settlement);
         GlobalDataManager.instance().updateCitizenDbData(citizen);
 
-        plugin.getMapRenderer().renderRegion(region);
-        plugin.getMapRenderer().renderSettlement(settlement);
-        plugin.getMapRenderer().renderCountry(country);
+        EconomyManager.instance().createAccount(country.getUuid(), country.getName());
+        EconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
+
+        Pl3xMapRenderer.instance().renderRegion(region);
+        Pl3xMapRenderer.instance().renderSettlement(settlement);
+        Pl3xMapRenderer.instance().renderCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("country.create.player"),
                 Map.of("country", country.getCleanName()), messageProvider.get("prefix"));

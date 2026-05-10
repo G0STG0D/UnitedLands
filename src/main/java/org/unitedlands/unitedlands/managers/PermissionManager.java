@@ -130,7 +130,7 @@ public class PermissionManager {
                 }
             }
         }
-        return Settings.protectUnclaimedLand();
+        return Settings.protectUnclaimedLand;
     }
 
     public boolean hasLocationPermissions(PermissionHolder holder, int membership, PermissionType type) {

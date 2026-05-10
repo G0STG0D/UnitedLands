@@ -53,7 +53,7 @@ public class RegionGenerator {
             configImport.reload();
 
             if (!imageFile.exists()) {
-                Logger.logError("Image not found: " + file, "UnitedRegions");
+                Logger.logError("Image not found: " + file, "UnitedLands");
                 return null;
             }
 
@@ -61,7 +61,7 @@ public class RegionGenerator {
             try {
                 img = ImageIO.read(imageFile);
             } catch (Exception ex) {
-                Logger.logError("Failed to read image: unsupported format", "UnitedRegions");
+                Logger.logError("Failed to read image: unsupported format", "UnitedLands");
                 return null;
             }
 

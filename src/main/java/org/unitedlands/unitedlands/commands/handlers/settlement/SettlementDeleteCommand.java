@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -65,7 +66,7 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
 
             GlobalDataManager.instance().removeSettlementDbData(settlement);
 
-            plugin.getMapRenderer().removeSettlement(settlement);
+            Pl3xMapRenderer.instance().removeSettlement(settlement);
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("settlement.delete.deleted-broadcast"),
                     Map.of("settlement", settlement.getCleanName()),

@@ -11,9 +11,14 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
+
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class SettlementClaimCommand extends SettlementCommandHandler {
 
@@ -52,7 +57,7 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
         var regionCoords = CoordinateUtils.locationToRegionCoordinates(player.getLocation());
         var region = GlobalDataManager.instance().getRegion(regionCoords);
         if (region != null) {
-            if (!region.equals(settlement.getRegion()) && !Settings.allowTownClaimsOutsideHomeRegion()) {
+            if (!region.equals(settlement.getRegion()) && !Settings.allowTownClaimsOutsideHomeRegion) {
                 Messenger.sendMessage(player, messageProvider.get("settlement.claim.outside-of-region"),
                         null, messageProvider.get("prefix"));
                 return;
@@ -61,6 +66,22 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
             if (region.hasCountry()) {
                 // TODO Country checks
             }
+        }
+
+        var baseCosts = Settings.settlementClaimBaseCosts;
+        var progression = Settings.settlementClaimCostProgression;
+
+        Expression expression = new ExpressionBuilder(progression)
+                .variables("base", "claims")
+                .build()
+                .setVariable("base", baseCosts)
+                .setVariable("claims", settlement.getChunks().size());
+
+        double claimCosts = expression.evaluate();
+        if (!EconomyManager.instance().has(settlement.getUuid(), claimCosts)) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.no-funds"),
+                    Map.of("amount", EconomyManager.instance().format(claimCosts)), messageProvider.get("prefix"));
+            return;
         }
 
         var chunk = new SettlementChunk();
@@ -75,12 +96,15 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
 
         GlobalDataManager.instance().createSettlementChunkDbData(chunk);
 
-        plugin.getMapRenderer().removeSettlement(settlement);
-        plugin.getMapRenderer().renderSettlement(settlement);
+        EconomyManager.instance().withdraw(settlement.getUuid(), claimCosts);
+
+        Pl3xMapRenderer.instance().removeSettlement(settlement);
+        Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         Messenger.sendMessage(player, messageProvider.get("settlement.claim.success"),
                 Map.of("settlement", settlement.getCleanName(),
-                        "chunk", chunkCoords.toString()),
+                        "chunk", chunkCoords.toString(),
+                        "costs", EconomyManager.instance().format(claimCosts)),
                 messageProvider.get("prefix"));
     }
 
