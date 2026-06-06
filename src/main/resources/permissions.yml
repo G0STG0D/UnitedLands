@@ -35,6 +35,7 @@ settlement:
 country:
   country-leader:
     - country.delete
+    - country.withdraw
     - region.claim
     - region.unclaim
     - region.manage.toggle

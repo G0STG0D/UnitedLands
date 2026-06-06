@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
 public class GeopolObject implements Identifiable {
@@ -24,6 +25,9 @@ public class GeopolObject implements Identifiable {
     protected String founderName;
     @DatabaseField(columnName = "founding_timestamp")
     protected long foundingTimestamp;
+
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized")
+    private String metadataSerialized;
 
     protected transient World world;
 

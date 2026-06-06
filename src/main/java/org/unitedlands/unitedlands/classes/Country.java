@@ -21,6 +21,9 @@ public class Country extends GeopolObject {
     @DatabaseField(canBeNull = true, columnName = "fill_color")
     private @Nullable Integer fillColor;
 
+    @DatabaseField(canBeNull = true, columnName = "bonus_regions")
+    private int bonusRegions = 0;
+
     @DatabaseField(canBeNull = true, columnName = "spawn_serialized")
     private String spawnSerialized;
 
@@ -61,6 +64,14 @@ public class Country extends GeopolObject {
 
     public void setFillColor(Color fillColor) {
         this.fillColor = fillColor.getRGB();
+    }
+
+    public int getBonusRegions() {
+        return bonusRegions;
+    }
+
+    public void setBonusRegions(int bonusRegions) {
+        this.bonusRegions = bonusRegions;
     }
 
     public String getSpawnSerialized() {

@@ -4,6 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Logger;
@@ -20,6 +21,7 @@ public class ServerEventListener implements Listener {
     @EventHandler
     public void onServerLoad(ServerLoadEvent event) {
 
+        Pl3xMapRenderer.instance().initialize();
         GlobalDataManager.instance().loadDataFromDatabase();
 
         EconomyManager.instance().loadEconomy();

@@ -19,12 +19,11 @@ general:
   # The width / height of a region chunk in 16x16 minecraft chunks,
   # e.g. a region chunk size of 8 equals a width / Height of 8 * 16 = 128 blocks
   region-chunk-size: 8
-  # Colours as int values (e.g. https://argb-int-calculator.netlify.app/) 
-  
+  # Colours as int values (e.g. https://argb-int-calculator.netlify.app/)
+
   protect-unclaimed-land: true
 
   allow-town-claims-outside-home-region: false
-
 
   # Default map colors & styles
 
@@ -52,70 +51,69 @@ general:
 
 economy:
   new-settlement-cost: 8000
-  new-country-cost: 80000
   settlement-claim-base-cost: 48
   # Available vars: base (base costs), claims (total settlement claim count).
   settlement-claim-cost-progression: "base + ((claims - 1)^2 * 0.005)"
-  region-claim-base-cost: 10000
+  # Available vars: base (base costs), claims (total settlement claim count), residents (total resident count). This value will be multiplied by the number of settlement chunks.
+  settlement-base-upkeep-per-plot: 6
+  settlement-upkeep-per-plot-formula: "base * (0.1 * (claims / 25) + 1.0) / (0.4 * (residents / 2.0) + 1.0)"
+
+  new-country-cost: 80000
+  region-claim-base-cost: 80000
   # Available vars: base (base costs), regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).
-  region-claim-distance-modifier: "base + ((regions / 2) * (distance / 1000))" 
-
-
-
+  region-claim-cost-modifier: "base + (base * ((regions + 1) * 0.5) * (distance / 1000) * 0.25)"
 
 protection:
   containers:
-  - CHEST
-  - TRAPPED_CHEST
-  - ENDER_CHEST
-  - BARREL
-  - COPPER_CHEST
-  - EXPOSED_COPPER_CHEST
-  - WEATHERED_COPPER_CHEST
-  - OXIDIZED_COPPER_CHEST
-  - WAXED_COPPER_CHEST
-  - WAXED_EXPOSED_COPPER_CHEST
-  - WAXED_WEATHERED_COPPER_CHEST
-  - WAXED_OXIDIZED_COPPER_CHEST
+    - CHEST
+    - TRAPPED_CHEST
+    - ENDER_CHEST
+    - BARREL
+    - COPPER_CHEST
+    - EXPOSED_COPPER_CHEST
+    - WEATHERED_COPPER_CHEST
+    - OXIDIZED_COPPER_CHEST
+    - WAXED_COPPER_CHEST
+    - WAXED_EXPOSED_COPPER_CHEST
+    - WAXED_WEATHERED_COPPER_CHEST
+    - WAXED_OXIDIZED_COPPER_CHEST
   use-blocks:
-  - CRAFTING_TABLE
-  - SMITHING_TABLE
-  - ENCHANTING_TABLE
-  - FLETCHING_TABLE
-  - FURNACE
-  - BLAST_FURNACE
-  - CARTOGRAPHY_TABLE
-  - BREWING_STAND
+    - CRAFTING_TABLE
+    - SMITHING_TABLE
+    - ENCHANTING_TABLE
+    - FLETCHING_TABLE
+    - FURNACE
+    - BLAST_FURNACE
+    - CARTOGRAPHY_TABLE
+    - BREWING_STAND
   switch-tags: # Minecraft material tags
-  - doors
-  - trapdoors
-  - buttons
-  switch-blocks: 
-  - LEVER
+    - doors
+    - trapdoors
+    - buttons
+  switch-blocks:
+    - LEVER
   interact:
-  - VILLAGER
-  - COW
-  - SHEEP
+    - VILLAGER
+    - COW
+    - SHEEP
   monsters:
-  - ZOMBIE
-  - ZOMBIE_VILLAGER
-  - HUSK
-  - SKELETON
-  - CREEPER
-  - SPIDER
-  - CAVE_SPIDER
-  - SLIME
-  - PARCHED
-  - DROWNED
-  - PHANTOM
-  - PILLAGER
-  - RAVAGER
-  - VINDICATOR
-  - ENDERMAN
+    - ZOMBIE
+    - ZOMBIE_VILLAGER
+    - HUSK
+    - SKELETON
+    - CREEPER
+    - SPIDER
+    - CAVE_SPIDER
+    - SLIME
+    - PARCHED
+    - DROWNED
+    - PHANTOM
+    - PILLAGER
+    - RAVAGER
+    - VINDICATOR
+    - ENDERMAN
   animals:
-  - CHICKEN
-  - COW
-  - SHEEP
-  - PIG
-
-
+    - CHICKEN
+    - COW
+    - SHEEP
+    - PIG

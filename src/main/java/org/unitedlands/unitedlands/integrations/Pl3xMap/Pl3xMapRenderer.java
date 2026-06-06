@@ -1,5 +1,7 @@
 package org.unitedlands.unitedlands.integrations.Pl3xMap;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +17,9 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
+import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Region;
@@ -23,11 +28,14 @@ import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.interfaces.CoordinateHolder;
 import org.unitedlands.unitedlands.classes.map.LayerOptions;
+import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Logger;
 
 import net.pl3x.map.core.Pl3xMap;
+import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
+import net.pl3x.map.core.markers.marker.Marker;
 import net.pl3x.map.core.markers.marker.MultiPolygon;
 import net.pl3x.map.core.markers.marker.Polygon;
 import net.pl3x.map.core.markers.marker.Polyline;
@@ -38,6 +46,7 @@ import net.pl3x.map.core.markers.option.Popup;
 public class Pl3xMapRenderer {
 
     private static Pl3xMapRenderer instance;
+
     public static Pl3xMapRenderer instance() {
         return instance;
     }
@@ -52,6 +61,27 @@ public class Pl3xMapRenderer {
 
     class ChunkCluster {
         private Set<CoordinateHolder> chunks = new HashSet<>();
+    }
+
+    public void initialize() {
+        registerIcon("region-center", "region-center.png");        
+    }
+
+    public void registerIcon(String key, String filename)
+    {
+            File importFolder = new File(UnitedLands.getInstance().getDataFolder(), "icons");
+            File imageFile = new File(importFolder, filename);
+
+            BufferedImage img;
+            try {
+                img = ImageIO.read(imageFile);
+            } catch (Exception ex) {
+                Logger.logError("Failed to read image " + filename, "UnitedLands");
+                return;
+            }
+
+            IconImage iconImage = new IconImage(key, img, "png");
+            Pl3xMap.api().getIconRegistry().register(key, iconImage);
     }
 
     // #region Country rendering
@@ -205,24 +235,34 @@ public class Pl3xMapRenderer {
     }
 
     private void renderRegionAsync(Region region) {
-        SimpleLayer layer;
+        SimpleLayer regionLayer;
         if (!region.hasCountry()) {
-            layer = getOrCreateSimpleLayer(region.getWorldName(),
+            regionLayer = getOrCreateSimpleLayer(region.getWorldName(),
                     "unclaimedregions",
                     "Unclaimed Regions",
                     8,
                     0);
         } else {
-            layer = getOrCreateSimpleLayer(region.getWorldName(),
+            regionLayer = getOrCreateSimpleLayer(region.getWorldName(),
                     "claimedregions",
                     "Claimed Regions",
                     6,
                     0);
         }
 
+        SimpleLayer regionCenterMarkerLayer = getOrCreateSimpleLayer(region.getWorldName(), "regioncenters",
+                "Region Centers", 10, 100);
+
         var key = "region-" + region.getUuid().toString();
-        if (layer.hasMarker(key))
-            layer.removeMarker(key);
+        var centerMarkerKey = "center-" + region.getUuid();
+        if (regionLayer.hasMarker(key))
+            regionLayer.removeMarker(key);
+        if (regionLayer.hasMarker(centerMarkerKey))
+            regionLayer.removeMarker(centerMarkerKey);
+
+        var centerWordLocation = CoordinateUtils.chunkToWorldCoordinates(region.getHomeChunkCoordinates());
+        var centerMarker = Marker.icon(centerMarkerKey, new Point(centerWordLocation.getX() + 8, centerWordLocation.getZ() + 8), "region-center");
+        regionCenterMarkerLayer.addMarker(centerMarker);
 
         var popup = new Popup(
                 "<div><p><strong>" + region.getCleanName() + "</strong></p><p><strong>Owner: </strong>"
@@ -236,7 +276,8 @@ public class Pl3xMapRenderer {
             strokeWidth = Settings.countryRegionStrokeWidth;
         }
 
-        var tooltip = region.getCleanName() + (region.hasCountry() ? " (" + region.getCountry().getCleanName() + ")" : "");
+        var tooltip = region.getCleanName()
+                + (region.hasCountry() ? " (" + region.getCountry().getCleanName() + ")" : "");
         var markerOptions = Options.builder()
                 .fill(true)
                 .fillType(Fill.Type.NONZERO)
@@ -274,7 +315,7 @@ public class Pl3xMapRenderer {
 
         mapPolygon.setOptions(markerOptions);
 
-        layer.addMarker(mapPolygon);
+        regionLayer.addMarker(mapPolygon);
     }
 
     public void removeRegion(Region region) {

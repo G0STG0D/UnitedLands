@@ -173,6 +173,13 @@ public class GlobalDataManager {
         return citizens.get(uuid);
     }
 
+    public Citizen getCitizen(String name) {
+        CompletableFuture<Citizen> future = CompletableFuture.supplyAsync(() -> {
+            return citizens.values().stream().filter(c -> name.equalsIgnoreCase(c.getName())).findFirst().orElse(null);
+        });
+        return future.join();
+    }
+
     public void registerCitizen(Citizen citizen) {
         citizens.put(citizen.getUuid(), citizen);
     }

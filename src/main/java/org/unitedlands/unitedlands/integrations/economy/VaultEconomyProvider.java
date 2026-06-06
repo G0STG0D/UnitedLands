@@ -41,6 +41,11 @@ public class VaultEconomyProvider implements IEconomyProvider {
     }
 
     @Override
+    public void deleteEconomyAccount(UUID uuid) {
+        economy.deleteAccount("UnitedLands", uuid);
+    }
+
+    @Override
     public BigDecimal getBalance(UUID uuid) {
         return economy.balance("UnitedLands", uuid);
     }

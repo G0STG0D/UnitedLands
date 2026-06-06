@@ -20,7 +20,7 @@ public class SettlementInfoCommand extends SettlementCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
-        if (args.length == 1)
+        if (args.length == 2)
             return GlobalDataManager.instance().getSettlementNames();
         return null;
     }

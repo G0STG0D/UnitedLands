@@ -8,9 +8,12 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
+import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.utils.Messenger;
 
 public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
@@ -32,7 +35,8 @@ public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
 
         var country = citizen.getCountry();
 
-        var region = GlobalDataManager.instance().getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+        var region = GlobalDataManager.instance()
+                .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
         if (region == null) {
             Messenger.sendMessage(player, messageProvider.get("country.claim.no-region"),
                     null, messageProvider.get("prefix"));
@@ -45,22 +49,37 @@ public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
             }
         }
 
-        region.setCountry(country);
-        country.addRegion(region);
-        GlobalDataManager.instance().updateRegionDbData(region);
+        var claimCost = CostUtils.getRegionClaimCosts(country, region);
 
-        Pl3xMapRenderer.instance().renderRegion(region);
-        Pl3xMapRenderer.instance().renderCountry(country);
+        Confirmation confirmation = new Confirmation("region-claim");
+        confirmation.setRunnable(() -> {
 
-        Messenger.sendMessage(player, messageProvider.get("country.claim.success"),
-                Map.of("country", country.getCleanName(),
-                        "region", region.getCleanName()),
-                messageProvider.get("prefix"));
-        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.claim.broadcast"),
-                Map.of("player", player.getName(),
-                        "country", country.getCleanName(),
-                        "region", region.getCleanName()),
-                messageProvider.get("prefix"));
+            region.setCountry(country);
+            country.addRegion(region);
+            GlobalDataManager.instance().updateRegionDbData(region);
+
+            Pl3xMapRenderer.instance().renderRegion(region);
+            Pl3xMapRenderer.instance().renderCountry(country);
+
+            Messenger.sendMessage(player, messageProvider.get("country.claim.success"),
+                    Map.of("country", country.getCleanName(),
+                            "region", region.getCleanName()),
+                    messageProvider.get("prefix"));
+            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.claim.broadcast"),
+                    Map.of("player", player.getName(),
+                            "country", country.getCleanName(),
+                            "region", region.getCleanName()),
+                    messageProvider.get("prefix"));
+
+        })
+                .setTitle(
+                        "Claiming this region will cost " + EconomyManager.instance().format(claimCost) + ". Continue?")
+                .setSender(player)
+                .setReceiver(player)
+                .setAcceptCommand("/approve region-claim")
+                .setDiscriminator(region.getName())
+                .setTimeoutSeconds(30)
+                .send();
 
     }
 

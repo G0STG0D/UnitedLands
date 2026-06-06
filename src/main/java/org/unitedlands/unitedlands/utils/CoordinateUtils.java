@@ -12,6 +12,10 @@ public class CoordinateUtils {
                 Math.floorDiv((int) chunkCoordinates.getZ(), regionChunkSize), chunkCoordinates.getWorldName());
     }
 
+    public static Coordinates chunkToWorldCoordinates(Coordinates chunkCoordinates) {
+        return new Coordinates(chunkCoordinates.getX() * 16, chunkCoordinates.getZ() * 16, chunkCoordinates.getWorldName());
+    }
+
     public static Coordinates locationToRegionCoordinates(Location location) {
         int regionBlockSize = Settings.regionChunkSize * 16;
         return new Coordinates(Math.floorDiv((int) location.getX(), regionBlockSize),

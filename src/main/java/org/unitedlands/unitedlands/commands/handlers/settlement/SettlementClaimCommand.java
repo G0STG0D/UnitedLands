@@ -15,10 +15,8 @@ import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
+import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.utils.Messenger;
-
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class SettlementClaimCommand extends SettlementCommandHandler {
 
@@ -68,16 +66,7 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
             }
         }
 
-        var baseCosts = Settings.settlementClaimBaseCosts;
-        var progression = Settings.settlementClaimCostProgression;
-
-        Expression expression = new ExpressionBuilder(progression)
-                .variables("base", "claims")
-                .build()
-                .setVariable("base", baseCosts)
-                .setVariable("claims", settlement.getChunks().size());
-
-        double claimCosts = expression.evaluate();
+        var claimCosts = CostUtils.getSettlementClaimCosts(settlement);
         if (!EconomyManager.instance().has(settlement.getUuid(), claimCosts)) {
             Messenger.sendMessage(player, messageProvider.get("settlement.no-funds"),
                     Map.of("amount", EconomyManager.instance().format(claimCosts)), messageProvider.get("prefix"));

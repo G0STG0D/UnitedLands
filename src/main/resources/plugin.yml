@@ -5,7 +5,7 @@ api-version: 1.18
 description: UnitedLands Core claiming and geopol plugin
 author: Theriel_
 depend: [ UnitedLib ]
-softdepend: [ Vault ]
+softdepend: [ Vault, Pl3xmap ]
 commands:
    uladmin:
       description: UnitedLands admin commands.

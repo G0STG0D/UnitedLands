@@ -22,6 +22,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.RegionChunk;
+import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.utils.Logger;
 
 public class RegionGenerator {
@@ -115,6 +116,20 @@ public class RegionGenerator {
 
                     region.addChunk(rc);
                 }
+            }
+
+            // Set a random chunk as the home chunk on import (temporary dev solution)
+            for (var region : colorMap.values()) {
+                var chunks = region.getChunks();
+                var randomRegionChunk = chunks.stream()
+                        .skip(rnd.nextInt(chunks.size()))
+                        .findFirst()
+                        .orElseThrow();
+                var randomHomeChunkCoords = new Coordinates(
+                        randomRegionChunk.getCoordinates().getX() * Settings.regionChunkSize,
+                        randomRegionChunk.getCoordinates().getZ() * Settings.regionChunkSize, worldName);
+
+                region.setHomeChunkCoordinates(randomHomeChunkCoords);
             }
 
             Logger.log("Generated " + colorMap.values().size() + " regions in "

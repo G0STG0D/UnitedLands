@@ -9,6 +9,8 @@ public interface IEconomyProvider {
 
     void createEconomyAccount(UUID uuid, String name);
 
+    void deleteEconomyAccount(UUID uuid);
+
     BigDecimal getBalance(UUID uuid);
 
     boolean has(UUID uuid, BigDecimal amount);

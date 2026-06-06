@@ -66,7 +66,6 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
             return;
         }
 
-        Messenger.sendMessage(sender, messageProvider.get("teleport.start"), null, messageProvider.get("prefix"));
 
         final Settlement finalSettlement = targetSettlement;
 
@@ -74,6 +73,9 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
             player.teleport(finalSettlement.getSpawn());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         } else {
+            
+            Messenger.sendMessage(sender, messageProvider.get("teleport.start"), null, messageProvider.get("prefix"));
+
             new BukkitRunnable() {
                 int counter = 0;
                 int maxExecutions = 3;

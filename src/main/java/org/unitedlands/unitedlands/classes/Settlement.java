@@ -41,6 +41,9 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     @DatabaseField(canBeNull = true, columnName = "town_board")
     private String townBoard;
 
+    @DatabaseField(canBeNull = false, columnName = "bonus_claims")
+    private int bonusClaims = 0;
+
     @DatabaseField(canBeNull = false, columnName = "tax")
     private float tax = 0.0f;
     @DatabaseField(canBeNull = false, columnName = "use_tax_percent")
@@ -48,9 +51,6 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     @DatabaseField(canBeNull = false, columnName = "public")
     private boolean isPublic = true;
-
-    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized")
-    private String metaData_serialized;
 
     @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "citizens_serialized")
     private String citizensSerialized;
@@ -77,15 +77,15 @@ public class Settlement extends GeopolObject implements PermissionHolder {
             | LocationMembership.SETTLEMENT_RESIDENT;
 
     @DatabaseField(columnName = "allow_pvp", canBeNull = true)
-    private @Nullable Boolean allowPvp;
+    private @Nullable Boolean allowPvp = false;
     @DatabaseField(columnName = "allow_monsters", canBeNull = true)
-    private @Nullable Boolean allowMonsters;
+    private @Nullable Boolean allowMonsters = false;
     @DatabaseField(columnName = "allow_animals", canBeNull = true)
-    private @Nullable Boolean allowAnimals;
+    private @Nullable Boolean allowAnimals = false;
     @DatabaseField(columnName = "allow_fire", canBeNull = true)
-    private @Nullable Boolean allowFire;
+    private @Nullable Boolean allowFire = false;
     @DatabaseField(columnName = "allow_explosions", canBeNull = true)
-    private @Nullable Boolean allowExplosions;
+    private @Nullable Boolean allowExplosions = false;
 
     private transient Coordinates homeChunkCoordinates;
     private transient Location spawn;
@@ -254,6 +254,14 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     public void setTownBoard(String townBoard) {
         this.townBoard = townBoard;
+    }
+
+    public int getBonusClaims() {
+        return bonusClaims;
+    }
+
+    public void setBonusClaims(int bonusClaims) {
+        this.bonusClaims = bonusClaims;
     }
 
     public float getTax() {

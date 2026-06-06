@@ -99,6 +99,11 @@
       <artifactId>exp4j</artifactId>
       <version>0.4.8</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
 
   </dependencies>
 
@@ -132,6 +137,10 @@
                 <relocation>
                   <pattern>net.objecthunter.exp4j</pattern>
                   <shadedPattern>org.unitedlands.unitedlands.libs.exp4j</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.code.gson</pattern>
+                  <shadedPattern>org.unitedlands.unitedlands.libs.gson</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

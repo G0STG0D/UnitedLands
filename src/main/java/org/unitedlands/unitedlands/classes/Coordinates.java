@@ -45,6 +45,12 @@ public class Coordinates {
         return this;
     }
 
+    public double distance(Coordinates other) {
+        double xDiff = getX() - other.getX();
+        double zDiff = getZ() - other.getZ();
+        return Math.sqrt((xDiff * xDiff) + (zDiff * zDiff));
+    }
+
     public Coordinates clone() {
         return new Coordinates(this.x, this.z, this.worldName);
     }

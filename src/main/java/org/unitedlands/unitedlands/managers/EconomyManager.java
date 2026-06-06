@@ -65,6 +65,12 @@ public class EconomyManager {
         economyProvider.createEconomyAccount(uuid, name);
     }
 
+    public void deleteAccount(UUID uuid) {
+        if (economyProvider == null)
+            return;
+        economyProvider.deleteEconomyAccount(uuid);
+    }
+
     public BigDecimal getBalance(UUID uuid) {
         if (economyProvider == null)
             return new BigDecimal(Double.MAX_VALUE);

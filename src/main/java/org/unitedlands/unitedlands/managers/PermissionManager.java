@@ -17,6 +17,7 @@ import org.unitedlands.unitedlands.classes.PermissionType;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.classes.events.base.SettlementPlayerActionEvent;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Logger;
 
@@ -107,16 +108,24 @@ public class PermissionManager {
     // *************************************************************
 
     public boolean checkLocationPermissions(Player player, Location eventLocation, PermissionType type) {
+
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(eventLocation);
         var settlementChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementChunk != null) {
             var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
+            boolean hasSettlementChunkPermission = false;
             if (settlementChunk.equals(playerCache.getCachedSettlementChunk())) {
-                return hasLocationPermissions(settlementChunk, playerCache.getChunkMembership(), type);
+                hasSettlementChunkPermission = hasLocationPermissions(settlementChunk, playerCache.getChunkMembership(), type);
             } else {
                 var eventLocationMembership = calculateChunkMembership(settlementChunk, player);
-                return hasLocationPermissions(settlementChunk, eventLocationMembership, type);
+                hasSettlementChunkPermission = hasLocationPermissions(settlementChunk, eventLocationMembership, type);
             }
+
+            SettlementPlayerActionEvent event = new SettlementPlayerActionEvent(settlementChunk.getSettlement(), player, eventLocation, type);
+            event.setCancelled(!hasSettlementChunkPermission);
+            event.callEvent();
+
+            return event.isCancelled();
         } else {
             var regionCoords = CoordinateUtils.locationToRegionCoordinates(eventLocation);
             var region = GlobalDataManager.instance().getRegion(regionCoords);

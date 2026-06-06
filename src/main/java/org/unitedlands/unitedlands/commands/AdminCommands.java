@@ -6,7 +6,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.commands.handlers.admin.AdminMapCommand;
 import org.unitedlands.unitedlands.commands.handlers.admin.ReloadCommand;
 import org.unitedlands.unitedlands.commands.handlers.admin.TestImportCommand;
-import org.unitedlands.unitedlands.commands.handlers.admin.TestOutputCommand;
+import org.unitedlands.unitedlands.commands.handlers.admin.settlement.AdminSettlementSubcommands;
 
 public class AdminCommands extends BaseCommandExecutor<UnitedLands> {
 
@@ -16,8 +16,13 @@ public class AdminCommands extends BaseCommandExecutor<UnitedLands> {
 
     @Override
     protected void registerHandlers() {
-        handlers.put("testoutput", new TestOutputCommand(plugin, messageProvider));
+
         handlers.put("testimport", new TestImportCommand(plugin, messageProvider));
+
+        var settlementSubCommands = new AdminSettlementSubcommands(plugin, messageProvider);
+        handlers.put("s", settlementSubCommands);
+        handlers.put("settlement", settlementSubCommands);
+
         handlers.put("reload", new ReloadCommand(plugin, messageProvider));
         handlers.put("map", new AdminMapCommand(plugin, messageProvider));
     }

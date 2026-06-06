@@ -42,8 +42,12 @@ public class Settings {
     public static int settlementCreateCosts;
     public static int settlementClaimBaseCosts;
     public static String settlementClaimCostProgression;
+    public static int settlementBaseUpkeepPerPlot;
+    public static String settlementUpkeepPerPlotFormula;
 
     public static int countryCreateCosts;
+    public static int regionClaimBaseCosts;
+    public static String regionClaimCostModifier;
 
     public static List<String> protectedContainers = new ArrayList<>();
     public static List<String> protectedUseBlocks = new ArrayList<>();
@@ -85,8 +89,12 @@ public class Settings {
         settlementCreateCosts = config.getInt("economy.new-settlement-cost", 100);
         settlementClaimBaseCosts = config.getInt("economy.settlement-claim-base-cost", 48);
         settlementClaimCostProgression = config.getString("economy.settlement-claim-cost-progression", "base + ((claims - 1)^2 * 0.005)");
+        settlementBaseUpkeepPerPlot = config.getInt("economy.settlement-base-upkeep-per-plot", 6);
+        settlementUpkeepPerPlotFormula = config.getString("economy.settlement-upkeep-per-plot-formula", "base * (0.1 * (claims / 25) + 1.0) / (0.4 * (residents / 2.0) + 1.0)");
 
-        countryCreateCosts = config.getInt("economy.new-country-cost", 1000);
+        countryCreateCosts = config.getInt("economy.new-country-cost", 80000);
+        regionClaimBaseCosts = config.getInt("economy.region-claim-base-cost", 80000);
+        regionClaimCostModifier = config.getString("economy.region-claim-cost-modifier", "base + (((regions + 1) / 2) * (distance / 1000))");
 
         protectedContainers = config.getStringList("protection.containers");
         protectedUseBlocks = config.getStringList("protection.use-blocks");

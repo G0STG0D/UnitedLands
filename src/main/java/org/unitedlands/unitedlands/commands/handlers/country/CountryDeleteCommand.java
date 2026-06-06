@@ -11,6 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -57,6 +58,8 @@ public class CountryDeleteCommand extends CountryCommandHandler {
                 region.removeCountry();
                 GlobalDataManager.instance().updateRegionDbData(region);
             }
+
+            EconomyManager.instance().deleteAccount(country.getUuid());
 
             GlobalDataManager.instance().removeCountryDbData(country);
 
