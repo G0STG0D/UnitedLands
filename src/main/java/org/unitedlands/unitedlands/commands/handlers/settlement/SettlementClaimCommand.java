@@ -87,7 +87,6 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
 
         EconomyManager.instance().withdraw(settlement.getUuid(), claimCosts);
 
-        Pl3xMapRenderer.instance().removeSettlement(settlement);
         Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         Messenger.sendMessage(player, messageProvider.get("settlement.claim.success"),

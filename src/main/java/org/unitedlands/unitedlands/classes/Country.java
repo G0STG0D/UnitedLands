@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +35,7 @@ public class Country extends GeopolObject {
     private transient Location spawn;
     private transient Settlement capital;
     private transient Set<Region> regions = new HashSet<>();
+    private transient Set<Settlement> settlements = new HashSet<>();
 
     public @Nullable Integer getStrokeColor() {
         return strokeColor;
@@ -122,6 +125,33 @@ public class Country extends GeopolObject {
 
     public void removeRegion(Region region) {
         regions.remove(region);
+    }
+
+    public Set<Settlement> getSettlements() {
+        return this.settlements;
+    }
+
+    public void addSettlement(Settlement settlement) {
+        settlements.add(settlement);
+    }
+
+    public void removeSettlement(Settlement settlement) {
+        settlements.remove(settlement);
+    }
+
+    public Set<Citizen> getCitizens() {
+        CompletableFuture<Set<Citizen>> future = CompletableFuture.supplyAsync(() -> {
+            return settlements.stream().map(Settlement::getCitizens).flatMap(Set::stream).collect(Collectors.toSet());
+        });
+        return future.join();
+    }
+
+    public Citizen getLeader() {
+        CompletableFuture<Citizen> future = CompletableFuture.supplyAsync(() -> {
+            var citizens = settlements.stream().map(Settlement::getCitizens).flatMap(Set::stream).collect(Collectors.toSet());
+            return citizens.stream().filter(c -> c.hasCountryRank("country-leader")).findFirst().orElse(null);
+        });
+        return future.join();
     }
 
 }

@@ -29,7 +29,6 @@ public class GlobalDataManager {
     }
 
     private final DatabaseManager databaseManager;
-    private final Pl3xMapRenderer mapRenderer;
 
     private Map<UUID, Citizen> citizens = new HashMap<>();
     private Map<UUID, Settlement> settlements = new HashMap<>();
@@ -41,7 +40,6 @@ public class GlobalDataManager {
     public GlobalDataManager(DatabaseManager databaseManager, Pl3xMapRenderer mapRenderer) {
         instance = this;
         this.databaseManager = databaseManager;
-        this.mapRenderer = mapRenderer;
     }
 
     public void loadDataFromDatabase() {
@@ -70,16 +68,19 @@ public class GlobalDataManager {
                     .allOf(countryFuture, settlementFuture, settlementChunkFuture, regionFuture, regionChunkFuture,
                             citizenFuture)
                     .thenRun(() -> {
+                        
                         buildCountries(countryFuture.join());
                         buildRegions(regionFuture.join(), regionChunkFuture.join());
                         buildSettlements(settlementFuture.join(), settlementChunkFuture.join());
                         buildCitizens(citizenFuture.join());
 
-                        mapRenderer.renderSettlements(getSettlements());
-                        mapRenderer.renderRegions(getRegions());
-                        mapRenderer.renderCountries(getCountries());
+                        Pl3xMapRenderer.instance().renderRegions(getRegions());
+                        Pl3xMapRenderer.instance().renderCountries(getCountries());
+                        Pl3xMapRenderer.instance().renderSettlements(getSettlements());
 
                     }).get();
+
+
         } catch (Exception ex) {
             Logger.logError("Initialization failed: " + ex.getMessage(), "UnitedLands");
             throw new RuntimeException("App init failed", ex);
@@ -100,6 +101,9 @@ public class GlobalDataManager {
 
             if (settlement.hasRegion()) {
                 settlement.getRegion().addSettlement(settlement);
+            }
+            if (settlement.hasCountry()) {
+                settlement.getCountry().addSettlement(settlement);
             }
         }
         Logger.log("Loaded " + loadedSettlements.size() + " settlements to memory.", "UnitedLands");

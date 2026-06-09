@@ -72,6 +72,12 @@ public class SettlementKickCommand extends SettlementCommandHandler {
             return;
         }
 
+        if (targetCitizen.hasCountryRank("country-leader")) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.kick.is-leader"),
+                    null, messageProvider.get("prefix"));
+            return;
+        }
+
         settlement.removeCitizen(targetCitizen);
         targetCitizen.removeSettlementRanks();
         targetCitizen.removeSettlement();

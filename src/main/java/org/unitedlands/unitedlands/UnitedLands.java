@@ -12,6 +12,7 @@ import org.unitedlands.unitedlands.commands.RegionCommands;
 import org.unitedlands.unitedlands.commands.SettlementChunkCommands;
 import org.unitedlands.unitedlands.commands.SettlementCommands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
 import org.unitedlands.unitedlands.listeners.BlockListener;
 import org.unitedlands.unitedlands.listeners.ExplosionListener;
 import org.unitedlands.unitedlands.listeners.MobListener;
@@ -26,6 +27,7 @@ import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
+import org.unitedlands.utils.Logger;
 
 import com.j256.ormlite.logger.LoggerFactory;
 import com.j256.ormlite.logger.NullLogBackend;
@@ -49,6 +51,7 @@ public class UnitedLands extends JavaPlugin {
     PlayerCacheManager playerCacheManager;
 
     private Pl3xMapRenderer mapRenderer;
+    private TownyProvider townyProvider;
 
     @Override
     public void onEnable() {
@@ -67,7 +70,7 @@ public class UnitedLands extends JavaPlugin {
         Settings.loadSettings(getConfig());
 
         loadManagers();
-
+        loadIntegrations();
         registerCommands();
         registerListeners();
 
@@ -75,6 +78,7 @@ public class UnitedLands extends JavaPlugin {
 
         getLogger().info("UnitedRegions initialized.");
     }
+
 
     private void loadManagers() {
 
@@ -86,6 +90,15 @@ public class UnitedLands extends JavaPlugin {
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
         economyManager = new EconomyManager(this);
+    }
+
+    private void loadIntegrations() {
+        var towny = getServer().getPluginManager().getPlugin("Towny");
+        if (towny != null && towny.isEnabled())
+        {
+            townyProvider = new TownyProvider(this);
+            Logger.log("Found Towny, enabling integration...", "UnitedLands");
+        }
     }
 
     private void registerCommands() {
@@ -150,6 +163,10 @@ public class UnitedLands extends JavaPlugin {
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
+    }
+
+    public TownyProvider getTownyProvider() {
+        return townyProvider;
     }
 
 }

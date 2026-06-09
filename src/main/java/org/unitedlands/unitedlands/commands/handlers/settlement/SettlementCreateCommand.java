@@ -86,7 +86,14 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             var countryInfo = "no country";
             if (region != null) {
                 settlement.setRegion(region);
+                region.addSettlement(settlement);
                 regionInfo = region.getCleanName();
+            }
+            if (region.hasCountry()) {
+                var country = region.getCountry();
+                settlement.setCountry(country);
+                country.addSettlement(settlement);
+                countryInfo = country.getCleanName();
             }
 
             var chunk = new SettlementChunk();
@@ -99,7 +106,6 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             settlement.addChunk(chunk);
 
             GlobalDataManager.instance().registerSettlement(settlement);
-            GlobalDataManager.instance().registerSettlementChunk(chunk);
 
             settlement.addCitizen(citizen);
             GlobalDataManager.instance().createSettlementDbData(settlement);

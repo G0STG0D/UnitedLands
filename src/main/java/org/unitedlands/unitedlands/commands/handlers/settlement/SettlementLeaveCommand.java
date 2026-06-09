@@ -39,6 +39,12 @@ public class SettlementLeaveCommand extends SettlementCommandHandler {
             return;
         }
 
+        if (citizen.hasCountryRank("country-leader")) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.leave.is-leader"),
+                    null, messageProvider.get("prefix"));
+            return;
+        }
+
         Confirmation leave = new Confirmation("settlement-leave");
         leave.setRunnable(() -> {
 

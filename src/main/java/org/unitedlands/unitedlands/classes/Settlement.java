@@ -388,7 +388,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     public Citizen getMayor() {
         if (getCitizens() == null)
             return null;
-        return getCitizens().stream().filter(c -> c.getSettlementRanks().contains("mayor")).findFirst().orElse(null);
+        return getCitizens().stream().filter(c -> c.hasSettlementRank("mayor")).findFirst().orElse(null);
     }
 
     public int getBreakPermissions() {

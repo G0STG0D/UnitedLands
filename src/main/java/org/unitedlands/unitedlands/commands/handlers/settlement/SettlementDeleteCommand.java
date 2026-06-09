@@ -40,13 +40,10 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
         if (!hasPermission("settlement.delete", citizen))
             return;
 
-        // TODO: Free settlement will interfere with this!
-        if (settlement.hasRegion() && settlement.getRegion().hasCountry()) {
-            if (settlement.getRegion().getCountry().getCapital().equals(settlement)) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.delete.is-capital"), null,
-                        messageProvider.get("prefix"));
-                return;
-            }
+        if (settlement.hasCountry() && settlement.getCountry().getCapital().equals(settlement)) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.delete.is-capital"), null,
+                    messageProvider.get("prefix"));
+            return;
         }
 
         Confirmation leave = new Confirmation("settlement-delete");
@@ -55,7 +52,11 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
             if (settlement.hasRegion()) {
                 var region = settlement.getRegion();
                 region.removeSettlement(settlement);
-                GlobalDataManager.instance().updateRegionDbData(region);
+            }
+
+            if (settlement.hasCountry()) {
+                var country = settlement.getCountry();
+                country.removeSettlement(settlement);
             }
 
             for (var settlementCitizen : settlement.getCitizens()) {

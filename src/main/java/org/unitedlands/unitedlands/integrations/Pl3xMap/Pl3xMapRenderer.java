@@ -181,16 +181,16 @@ public class Pl3xMapRenderer {
     public void removeCountry(Country country) {
 
         net.pl3x.map.core.world.World mapworld = Pl3xMap.api().getWorldRegistry().get(country.getWorldName());
-        var settlementsLayer = mapworld.getLayerRegistry().get("countries");
+        var countryLayer = mapworld.getLayerRegistry().get("countries");
 
-        if (settlementsLayer != null) {
-            var settlemenMarkers = settlementsLayer.getMarkers();
-            var poly = settlemenMarkers.stream()
-                    .filter(m -> m.getKey().equals("settlement-" + country.getUuid().toString())).findFirst()
+        if (countryLayer != null) {
+            var countryMarkers = countryLayer.getMarkers();
+            var poly = countryMarkers.stream()
+                    .filter(m -> m.getKey().equals("country-" + country.getUuid().toString())).findFirst()
                     .orElse(null);
             if (poly != null) {
                 Logger.log("Removing country...", "UnitedLands");
-                settlemenMarkers.remove(poly);
+                countryMarkers.remove(poly);
                 return;
             }
         }
@@ -384,9 +384,10 @@ public class Pl3xMapRenderer {
                 1000);
 
         String uuid = settlement.getUuid().toString();
+        Logger.log("Rendering settlement " + uuid + "...");
         String key = "settlement-" + uuid;
-        if (layer.hasMarker(key))
-            layer.removeMarker(key);
+        // if (layer.hasMarker(key))
+        //     layer.removeMarker(key);
 
         var popup = new Popup(
                 "<div><p><strong>" + settlement.getCleanName() + "</strong></p><p><strong>Owner: </strong>"

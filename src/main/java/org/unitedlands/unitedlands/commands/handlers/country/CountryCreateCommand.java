@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
@@ -59,41 +60,56 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             return;
         }
 
-        Country country = new Country();
-        country.setUuid(UUID.randomUUID());
-        country.setName(args[0]);
-        country.setWorld(region.getWorld());
-        country.setCapital(settlement);
-        country.addRegion(region);
-        country.setSpawn(settlement.getSpawn());
-        country.setStrokeColor(Settings.defaultCountryStrokeColour);
-        country.setFillColor(Settings.defaultCountryFillColour);
-        country.addRegion(region);
+        var confirmation = new Confirmation("country");
+        confirmation.setRunnable(() -> {
 
-        region.setCountry(country);
-        settlement.setCountry(country);
-        citizen.addCountryRank("country-leader");
+            Country country = new Country();
+            country.setUuid(UUID.randomUUID());
+            country.setName(args[0]);
+            country.setWorld(region.getWorld());
+            country.setCapital(settlement);
+            country.setFoundingTimestamp(System.currentTimeMillis());
+            country.setFounder(player);
+            country.setSpawn(settlement.getSpawn());
+            country.setStrokeColor(Settings.defaultCountryStrokeColour);
+            country.setFillColor(Settings.defaultCountryFillColour);
 
-        GlobalDataManager.instance().createCountryDbData(country);
-        GlobalDataManager.instance().updateRegionDbData(region);
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
-        GlobalDataManager.instance().updateCitizenDbData(citizen);
+            country.addSettlement(settlement);
+            country.addRegion(region);
 
-        EconomyManager.instance().createAccount(country.getUuid(), country.getName());
-        EconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
+            region.setCountry(country);
+            settlement.setCountry(country);
 
-        Pl3xMapRenderer.instance().renderRegion(region);
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
-        Pl3xMapRenderer.instance().renderCountry(country);
+            citizen.addCountryRank("country-leader");
 
-        Messenger.sendMessage(player, messageProvider.get("country.create.player"),
-                Map.of("country", country.getCleanName()), messageProvider.get("prefix"));
-        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.create.broadcast"),
-                Map.of("player", player.getName(),
-                        "country", country.getCleanName(),
-                        "region", region.getCleanName()),
-                messageProvider.get("prefix"));
+            GlobalDataManager.instance().createCountryDbData(country);
+            GlobalDataManager.instance().updateRegionDbData(region);
+            GlobalDataManager.instance().updateSettlementDbData(settlement);
+            GlobalDataManager.instance().updateCitizenDbData(citizen);
 
+            EconomyManager.instance().createAccount(country.getUuid(), country.getName());
+            EconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
+
+            Pl3xMapRenderer.instance().renderRegion(region);
+            Pl3xMapRenderer.instance().renderSettlement(settlement);
+            Pl3xMapRenderer.instance().renderCountry(country);
+
+            Messenger.sendMessage(player, messageProvider.get("country.create.player"),
+                    Map.of("country", country.getCleanName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.create.broadcast"),
+                    Map.of("player", player.getName(),
+                            "country", country.getCleanName(),
+                            "region", region.getCleanName()),
+                    messageProvider.get("prefix"));
+        })
+                .setAcceptCommand("/approve country")
+                .setCancelCommand("/cancel country")
+                .setSender(player)
+                .setReceiver(player)
+                .setDiscriminator(args[0])
+                .setTimeoutSeconds(30)
+                .setTitle("Create country with name " + args[0] + "?")
+                .send();
     }
 
     @Override

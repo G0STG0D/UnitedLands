@@ -68,7 +68,6 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
         GlobalDataManager.instance().removeSettlementChunkDbData(existingChunk);
         GlobalDataManager.instance().updateSettlementDbData(settlement);
 
-        Pl3xMapRenderer.instance().removeSettlement(settlement);
         Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         Messenger.sendMessage(player, messageProvider.get("admin.settlement.unclaim"),

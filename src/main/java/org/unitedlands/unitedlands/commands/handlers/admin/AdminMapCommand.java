@@ -41,12 +41,14 @@ public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
                 break;
             case "regions":
                 renderer.renderRegions(GlobalDataManager.instance().getRegions());
-                renderer.renderRegions(GlobalDataManager.instance().getRegions());
+                break;
+            case "countries":
+                renderer.renderCountries(GlobalDataManager.instance().getCountries());
                 break;
             case "all":
                 renderer.renderSettlements(GlobalDataManager.instance().getSettlements());
                 renderer.renderRegions(GlobalDataManager.instance().getRegions());
-                renderer.renderRegions(GlobalDataManager.instance().getRegions());
+                renderer.renderCountries(GlobalDataManager.instance().getCountries());
                 break;            
         }
 
