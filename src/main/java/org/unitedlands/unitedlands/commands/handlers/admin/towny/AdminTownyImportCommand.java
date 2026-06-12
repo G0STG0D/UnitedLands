@@ -25,7 +25,6 @@ import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.utils.Logger;
 import org.unitedlands.utils.Messenger;
 
 import com.palmergames.bukkit.towny.object.Town;

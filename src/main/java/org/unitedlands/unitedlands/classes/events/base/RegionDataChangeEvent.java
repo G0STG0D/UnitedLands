@@ -1,6 +1,6 @@
 package org.unitedlands.unitedlands.classes.events.base;
 
-import javax.swing.plaf.synth.Region;
+import org.unitedlands.unitedlands.classes.Region;
 
 public class RegionDataChangeEvent extends RegionEvent {
 

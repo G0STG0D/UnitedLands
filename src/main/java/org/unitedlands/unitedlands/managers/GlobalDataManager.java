@@ -70,7 +70,7 @@ public class GlobalDataManager {
                     .allOf(countryFuture, settlementFuture, settlementChunkFuture, regionFuture, regionChunkFuture,
                             citizenFuture)
                     .thenRun(() -> {
-                        
+
                         buildCountries(countryFuture.join());
                         buildRegions(regionFuture.join(), regionChunkFuture.join());
                         buildSettlements(settlementFuture.join(), settlementChunkFuture.join());
@@ -81,7 +81,6 @@ public class GlobalDataManager {
                         Pl3xMapRenderer.instance().renderSettlements(getSettlements());
 
                     }).get();
-
 
         } catch (Exception ex) {
             Logger.logError("Initialization failed: " + ex.getMessage(), "UnitedLands");
@@ -182,6 +181,13 @@ public class GlobalDataManager {
     public Citizen getCitizen(String name) {
         CompletableFuture<Citizen> future = CompletableFuture.supplyAsync(() -> {
             return citizens.values().stream().filter(c -> name.equalsIgnoreCase(c.getName())).findFirst().orElse(null);
+        });
+        return future.join();
+    }
+
+    public List<String> getCitizenNames() {
+        CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
+            return citizens.values().stream().map(Citizen::getName).collect(Collectors.toList());
         });
         return future.join();
     }

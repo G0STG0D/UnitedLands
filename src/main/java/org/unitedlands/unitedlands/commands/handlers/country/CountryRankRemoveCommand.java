@@ -88,8 +88,8 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
             return;
         }
 
-        if (targetCitizen.getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.rank-already-owned"),
+        if (!targetCitizen.getCountryRanks().contains(args[1])) {
+            Messenger.sendMessage(player, messageProvider.get("country.ranks.rank-not-owned"),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
                     messageProvider.get("prefix"));
             return;

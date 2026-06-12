@@ -17,9 +17,9 @@ public class CoordinateUtils {
     }
 
     public static Coordinates locationToRegionCoordinates(Location location) {
-        int regionBlockSize = Settings.regionChunkSize * 16;
-        return new Coordinates(Math.floorDiv((int) location.getX(), regionBlockSize),
-                Math.floorDiv((int) location.getZ(), regionBlockSize), location.getWorld().getName());
+        // int regionBlockSize = Settings.regionChunkSize * 16;
+        return new Coordinates(Math.floorDiv((int) location.getChunk().getX(), Settings.regionChunkSize),
+                 Math.floorDiv((int) location.getChunk().getZ(), Settings.regionChunkSize), location.getWorld().getName());
     }
 
     public static Coordinates locationToChunkCoordinates(Location location) {

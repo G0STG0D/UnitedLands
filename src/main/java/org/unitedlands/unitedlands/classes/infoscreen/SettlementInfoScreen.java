@@ -19,14 +19,12 @@ import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.utils.CostUtils;
-import org.unitedlands.utils.Logger;
 import org.unitedlands.utils.Messenger;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 
 public class SettlementInfoScreen extends InfoScreen {
-
         public SettlementInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, Settlement settlement) {
                 super(plugin, messageProvider);
 
@@ -137,7 +135,7 @@ public class SettlementInfoScreen extends InfoScreen {
                                         field += typedData.getValue();
                                 } else if (m instanceof LongMetaDataField typedData) {
                                         field += typedData.getValue();
-                                }else if (m instanceof FloatMetaDataField typedData) {
+                                } else if (m instanceof FloatMetaDataField typedData) {
                                         field += String.format("%.2f", typedData.getValue());
                                 } else if (m instanceof DoubleMetaDataField typedData) {
                                         field += String.format("%.2f", typedData.getValue());
@@ -147,11 +145,13 @@ public class SettlementInfoScreen extends InfoScreen {
                                 fields.add(field);
                         }
 
-                        var finalMetaDataString = metaDataWrapper.replace("{metadata}", String.join("<dark_gray> | </dark_gray>", fields));
-                        var metadataComponent = Messenger.getMessage(finalMetaDataString);
-                        addComponent("metadata", metadataComponent);
+                        if (!fields.isEmpty()) {
+                                var finalMetaDataString = metaDataWrapper.replace("{metadata}",
+                                                String.join("<dark_gray> | </dark_gray>", fields));
+                                var metadataComponent = Messenger.getMessage(finalMetaDataString);
+                                addComponent("metadata", metadataComponent);
+                        }
                 }
 
         }
-
 }

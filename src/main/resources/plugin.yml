@@ -13,25 +13,22 @@ commands:
       aliases: [ula]
    country:
       description: UnitedLands country commands.
-      permission: united.lands.admin
       aliases: [c]
+   citizen:
+      description: UnitedLands citizen commands.
+      aliases: [cit]
    region:
       description: UnitedLands region commands.
-      permission: united.lands.admin
       aliases: [r]
    regionchunk:
       description: UnitedLands region chunk commands.
-      permission: united.lands.admin
       aliases: [rc]
    settlement:
       description: UnitedLands settlement commands.
-      permission: united.lands.admin
       aliases: [s]
    approve:
       description: General confirmation command.
-      permission: united.lands.admin
       aliases: [confirm]   
    settlementchunk:
       description: UnitedLands region chunk commands.
-      permission: united.lands.admin
       aliases: [plot]

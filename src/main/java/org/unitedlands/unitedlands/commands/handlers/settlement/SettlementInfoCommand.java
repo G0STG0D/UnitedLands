@@ -43,8 +43,8 @@ public class SettlementInfoCommand extends SettlementCommandHandler {
             if (settlement == null) {
                 return;
             }
-        } 
-        
+        }
+
         var screen = new SettlementInfoScreen(plugin, messageProvider, settlement);
         if (screen.getComponents().size() > 0) {
             for (var component : screen.getComponents()) {

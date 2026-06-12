@@ -6,6 +6,7 @@ import org.unitedlands.classes.ConfigFile;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.commands.AdminCommands;
 import org.unitedlands.unitedlands.commands.ApprovalCommand;
+import org.unitedlands.unitedlands.commands.CitizenCommands;
 import org.unitedlands.unitedlands.commands.CountryCommands;
 import org.unitedlands.unitedlands.commands.RegionChunkCommands;
 import org.unitedlands.unitedlands.commands.RegionCommands;
@@ -79,7 +80,6 @@ public class UnitedLands extends JavaPlugin {
         getLogger().info("UnitedRegions initialized.");
     }
 
-
     private void loadManagers() {
 
         mapRenderer = new Pl3xMapRenderer();
@@ -94,8 +94,7 @@ public class UnitedLands extends JavaPlugin {
 
     private void loadIntegrations() {
         var towny = getServer().getPluginManager().getPlugin("Towny");
-        if (towny != null && towny.isEnabled())
-        {
+        if (towny != null && towny.isEnabled()) {
             townyProvider = new TownyProvider(this);
             Logger.log("Found Towny, enabling integration...", "UnitedLands");
         }
@@ -130,6 +129,10 @@ public class UnitedLands extends JavaPlugin {
         var approvalCommand = new ApprovalCommand(this, messageProvider);
         Objects.requireNonNull(getCommand("approve")).setExecutor(approvalCommand);
         Objects.requireNonNull(getCommand("approve")).setTabCompleter(approvalCommand);
+
+        var citizenCommand = new CitizenCommands(this, messageProvider);
+        Objects.requireNonNull(getCommand("citizen")).setExecutor(citizenCommand);
+        Objects.requireNonNull(getCommand("citizen")).setTabCompleter(citizenCommand);
     }
 
     private void registerListeners() {

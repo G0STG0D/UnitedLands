@@ -19,6 +19,7 @@ errors:
   country-not-found: "<red>Couldn't find country {country}</red>"
   no-claim-permission: "<red>You don't have any permissions in this chunk."
   no-settlement-permission: "<red>You don't have the necessary settlement rank do this ({perm})"
+  no-country-permission: "<red>You don't have the necessary country rank do this ({perm})"
   wrong-number-format: "<red>{input} is not a number.</red>"
   no-funds: "<yellow>You don't have enough money to do this, you need at least {amount}.</yellow>"
 
@@ -190,7 +191,7 @@ country:
   ranks:
     not-in-country: "<yellow>{name}  is not part of the country.</yellow>"
     unknown-rank: "<yellow>Unknown rank: {rank}</yellow>"
-    cannot-remove-leader: "<yellow>You cannot remove the mayor rank. You can only pass it to another citizen.</yellow>"
+    cannot-remove-leader: "<yellow>You cannot remove the leader rank. You can only pass it to another citizen.</yellow>"
     rank-already-owned: "<yellow>Player {name} already has the rank {rank}</yellow>"
     rank-not-owned: "<yellow>Player {name} doesn't have the rank {rank}</yellow>"
     added: "<aqua>Added country rank <bold>{rank}</bold> to player {name}.</aqua>"
@@ -235,9 +236,16 @@ info-screens:
   country:
     board: "<gray><bold>Board:</bold> {board}"
     founded: "<dark_gray><gray><bold>Founded:</bold> {founded}</gray> | <gray><bold>By:</bold> {founder} </gray></dark_gray>"
-    leader: "<gray><bold>Leader:</bold> {mayor}"
+    leader: "<gray><bold>Leader:</bold> {leader}"
     capital: "<gray><bold>Capital:</bold> {capital}"
     citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"
     sizeupkeep: "<dark_gray><gray><bold>Size:</bold> [<aqua>{size}</aqua>]</gray> | <gray><bold>Upkeep:</bold> [<aqua>{upkeep}</aqua>]</gray></dark_gray>"
+    balance: "<gray><bold>Balance:</bold> {balance}</gray>"
+    metadata: "<gray>{metadata}</gray>"
+  citizen:
+    registered: "<dark_gray><gray><bold>Registered:</bold> {registered}</gray> | <gray><bold>Last log-on:</bold> {lastlogon} </gray></dark_gray>"
+    settlement-country: "<dark_gray><gray><bold>Settlement:</bold> {settlement}</gray> | <gray><bold>Country:</bold> {country} </gray></dark_gray>"
+    settlement-ranks: "<gray><bold>Settlement ranks:</bold> {settlementranks}</gray>"
+    country-ranks: "<gray><bold>Country ranks:</bold> {countryranks}</gray>"
     balance: "<gray><bold>Balance:</bold> {balance}</gray>"
     metadata: "<gray>{metadata}</gray>"

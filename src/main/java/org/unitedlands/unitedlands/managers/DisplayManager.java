@@ -15,6 +15,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Coordinates;
+import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import io.papermc.paper.scoreboard.numbers.NumberFormat;
@@ -22,6 +23,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBar.Color;
 import net.kyori.adventure.bossbar.BossBar.Overlay;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class DisplayManager {
 
@@ -42,6 +44,10 @@ public class DisplayManager {
     public DisplayManager(UnitedLands plugin) {
         this.plugin = plugin;
         instance = this;
+    }
+
+    public void showRegionName(Region region, Player player) {
+        player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>" + region.getCleanName() + "</red>"));
     }
 
     public void showSettlementNameDisplay(Settlement settlement, Player player) {

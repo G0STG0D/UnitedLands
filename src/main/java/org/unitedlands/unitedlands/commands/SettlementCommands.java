@@ -34,6 +34,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSpawnC
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementToggleCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUnclaimCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementWithdrawCommand;
+import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Formatter;
 
 public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
@@ -42,12 +43,11 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
 
     public SettlementCommands(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
-
-        infoCommand = new SettlementInfoCommand(plugin, messageProvider);
     }
 
     @Override
     protected void registerHandlers() {
+        infoCommand = new SettlementInfoCommand(plugin, messageProvider);
         handlers.put("create", new SettlementCreateCommand(plugin, messageProvider));
         handlers.put("permission", new SettlementPermissionCommand(plugin, messageProvider));
         handlers.put("toggle", new SettlementToggleCommand(plugin, messageProvider));
@@ -73,31 +73,28 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, String alias,
             String[] args) {
-        if (args.length == 0) {
-            return infoCommand.handleTab(sender, args);
+        List<String> options = null;
+        String input = args[args.length - 1];
+        if (args.length == 1) {
+            options = new ArrayList<String>(this.handlers.keySet());
+            if (args[0].length() >= 3)
+                options.addAll(GlobalDataManager.instance().getSettlementNames());
         } else {
-            List<String> options = null;
-            String input = args[args.length - 1];
-            if (args.length == 1) {
-                options = new ArrayList<String>(this.handlers.keySet());
+            String subcommand = args[0].toLowerCase();
+            ICommandHandler handler = (ICommandHandler) this.handlers.get(subcommand);
+            if (handler != null) {
+                options = handler.handleTab(sender, (String[]) Arrays.copyOfRange(args, 1, args.length));
             } else {
-                String subcommand = args[0].toLowerCase();
-                ICommandHandler handler = (ICommandHandler) this.handlers.get(subcommand);
-                if (handler != null) {
-                    options = handler.handleTab(sender, (String[]) Arrays.copyOfRange(args, 1, args.length));
-                } else {
-                    options = infoCommand.handleTab(sender, args);
-                }
+                options = infoCommand.handleTab(sender, args);
             }
-
-            return Formatter.getSortedCompletions(input, options);
         }
+        return Formatter.getSortedCompletions(input, options);
     }
 
     public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label,
             String @NotNull [] args) {
         if (args.length == 0) {
-            infoCommand.handleCommand(sender, args);;
+            infoCommand.handleCommand(sender, args);
             return true;
         } else {
             String subcommand = args[0].toLowerCase();

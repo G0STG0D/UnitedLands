@@ -80,7 +80,7 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             region.setCountry(country);
             settlement.setCountry(country);
 
-            citizen.addCountryRank("country-leader");
+            citizen.addCountryRank("leader");
 
             GlobalDataManager.instance().createCountryDbData(country);
             GlobalDataManager.instance().updateRegionDbData(region);

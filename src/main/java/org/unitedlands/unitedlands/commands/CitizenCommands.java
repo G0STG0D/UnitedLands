@@ -13,36 +13,22 @@ import org.unitedlands.classes.BaseCommandExecutor;
 import org.unitedlands.interfaces.ICommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryClaimCommand;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryCreateCommand;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryDeleteCommand;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryDepositCommand;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryInfoCommand;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryRankSubcommands;
-import org.unitedlands.unitedlands.commands.handlers.country.CountrySetColorCommand;
-import org.unitedlands.unitedlands.commands.handlers.country.CountryWithdrawCommand;
+import org.unitedlands.unitedlands.commands.handlers.citizen.CitizenInfoCommand;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Formatter;
 
-public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
+public class CitizenCommands extends BaseCommandExecutor<UnitedLands> {
 
-    private CountryInfoCommand infoCommand;
+    private CitizenInfoCommand infoCommand;
 
-    public CountryCommands(UnitedLands plugin, IMessageProvider messageProvider) {
+    public CitizenCommands(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
     @Override
     protected void registerHandlers() {
-        infoCommand = new CountryInfoCommand(plugin, messageProvider);
-        handlers.put("deposit", new CountryDepositCommand(plugin, messageProvider));
-        handlers.put("withdraw", new CountryWithdrawCommand(plugin, messageProvider));
-        handlers.put("create", new CountryCreateCommand(plugin, messageProvider));
-        handlers.put("claim", new CountryClaimCommand(plugin, messageProvider));
-        handlers.put("setcolor", new CountrySetColorCommand(plugin, messageProvider));
-        handlers.put("delete", new CountryDeleteCommand(plugin, messageProvider));
+        infoCommand = new CitizenInfoCommand(plugin, messageProvider);
         handlers.put("info", infoCommand);
-        handlers.put("rank", new CountryRankSubcommands(plugin, messageProvider));
     }
 
     @Override
@@ -53,7 +39,7 @@ public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
         if (args.length == 1) {
             options = new ArrayList<String>(this.handlers.keySet());
             if (args[0].length() >= 3)
-                options.addAll(GlobalDataManager.instance().getCountryNames());
+                options.addAll(GlobalDataManager.instance().getCitizenNames());
         } else {
             String subcommand = args[0].toLowerCase();
             ICommandHandler handler = (ICommandHandler) this.handlers.get(subcommand);
