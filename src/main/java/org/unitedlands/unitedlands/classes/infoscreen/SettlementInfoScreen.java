@@ -55,7 +55,7 @@ public class SettlementInfoScreen extends InfoScreen {
                                 Map.of("mayor", settlement.getMayor() != null ? settlement.getMayor().getName() : "-"));
                 addComponent("mayor", mayor);
 
-                var isPublic = settlement.isPublic() ? "<green>Public</green>" : "<red>Public</red>";
+                var isPublic = settlement.isPublic() ? "<green>Public</green>" : "<red>Private</red>";
                 var pvp = settlement.allowPvp() ? "<green>PVP</green>" : "<red>PVP</red>";
                 var mobs = settlement.allowMonsters() ? "<green>Monsters</green>" : "<red>Monsters</red>";
                 var animals = settlement.allowAnimals() ? "<green>Animals</green>" : "<red>Animals</red>";

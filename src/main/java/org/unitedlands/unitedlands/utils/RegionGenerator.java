@@ -5,10 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -74,7 +72,7 @@ public class RegionGenerator {
             String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
             Map<Integer, Region> colorMap = new HashMap<>();
-            Integer ignore = Color.BLACK.getRGB();
+            int ignore = Color.BLACK.getRGB();
 
             for (int x = 0; x < img.getWidth(); x++) {
                 for (int y = 0; y < img.getHeight(); y++) {
@@ -162,7 +160,6 @@ public class RegionGenerator {
             boolean avoidOceanRegions = false;
 
             Map<Coordinates, Region> regionCenters = new HashMap<>();
-            Set<RegionChunk> generatedChunks = new HashSet<>();
 
             Random rnd = new Random();
             String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -233,7 +230,6 @@ public class RegionGenerator {
                     rc.setRegion(region);
 
                     region.addChunk(rc);
-                    generatedChunks.add(rc);
                 }
             }
 

@@ -59,29 +59,28 @@ public class Pl3xMapRenderer {
         RIGHT, DOWN, UP, LEFT
     };
 
-    class ChunkCluster {
+    private static class ChunkCluster {
         private Set<CoordinateHolder> chunks = new HashSet<>();
     }
 
     public void initialize() {
-        registerIcon("region-center", "region-center.png");        
+        registerIcon("region-center", "region-center.png");
     }
 
-    public void registerIcon(String key, String filename)
-    {
-            File importFolder = new File(UnitedLands.getInstance().getDataFolder(), "icons");
-            File imageFile = new File(importFolder, filename);
+    public void registerIcon(String key, String filename) {
+        File importFolder = new File(UnitedLands.getInstance().getDataFolder(), "icons");
+        File imageFile = new File(importFolder, filename);
 
-            BufferedImage img;
-            try {
-                img = ImageIO.read(imageFile);
-            } catch (Exception ex) {
-                Logger.logError("Failed to read image " + filename, "UnitedLands");
-                return;
-            }
+        BufferedImage img;
+        try {
+            img = ImageIO.read(imageFile);
+        } catch (Exception ex) {
+            Logger.logError("Failed to read image " + filename, "UnitedLands");
+            return;
+        }
 
-            IconImage iconImage = new IconImage(key, img, "png");
-            Pl3xMap.api().getIconRegistry().register(key, iconImage);
+        IconImage iconImage = new IconImage(key, img, "png");
+        Pl3xMap.api().getIconRegistry().register(key, iconImage);
     }
 
     // #region Country rendering
@@ -261,7 +260,8 @@ public class Pl3xMapRenderer {
             regionLayer.removeMarker(centerMarkerKey);
 
         var centerWordLocation = CoordinateUtils.chunkToWorldCoordinates(region.getHomeChunkCoordinates());
-        var centerMarker = Marker.icon(centerMarkerKey, new Point(centerWordLocation.getX() + 8, centerWordLocation.getZ() + 8), "region-center");
+        var centerMarker = Marker.icon(centerMarkerKey,
+                new Point(centerWordLocation.getX() + 8, centerWordLocation.getZ() + 8), "region-center");
         regionCenterMarkerLayer.addMarker(centerMarker);
 
         var popup = new Popup(
@@ -387,7 +387,7 @@ public class Pl3xMapRenderer {
         Logger.log("Rendering settlement " + uuid + "...");
         String key = "settlement-" + uuid;
         // if (layer.hasMarker(key))
-        //     layer.removeMarker(key);
+        // layer.removeMarker(key);
 
         var popup = new Popup(
                 "<div><p><strong>" + settlement.getCleanName() + "</strong></p><p><strong>Owner: </strong>"
@@ -564,22 +564,26 @@ public class Pl3xMapRenderer {
             String key = stack.pop();
             // Decode the key back to coordinates for neighbour calculation
             String[] parts = key.split(",");
-            int x = Integer.parseInt(parts[0]);
-            int z = Integer.parseInt(parts[1]);
+            try {
+                int x = Integer.parseInt(parts[0]);
+                int z = Integer.parseInt(parts[1]);
 
-            for (int i = 0; i < 2; i++) {
-                for (int dir : offsets) {
-                    int nx = x + (i == 0 ? dir : 0);
-                    int nz = z + (i == 1 ? dir : 0);
+                for (int i = 0; i < 2; i++) {
+                    for (int dir : offsets) {
+                        int nx = x + (i == 0 ? dir : 0);
+                        int nz = z + (i == 1 ? dir : 0);
 
-                    // Stay within the expanded bounding box
-                    if (nx < minX || nx > maxX || nz < minZ || nz > maxZ)
-                        continue;
+                        // Stay within the expanded bounding box
+                        if (nx < minX || nx > maxX || nz < minZ || nz > maxZ)
+                            continue;
 
-                    String neighbourKey = toKey(nx, nz, worldName);
-                    if (!occupied.contains(neighbourKey) && reachable.add(neighbourKey))
-                        stack.push(neighbourKey);
+                        String neighbourKey = toKey(nx, nz, worldName);
+                        if (!occupied.contains(neighbourKey) && reachable.add(neighbourKey))
+                            stack.push(neighbourKey);
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.logError("Could not parse x, y for key " + key + ": " + ex.getMessage(), "UnitedLands");
             }
         }
 

@@ -65,6 +65,7 @@ public class Coordinates {
         return new Coordinates(this.x, this.z, this.worldName);
     }
 
+    @Override
     public String toString() {
         return "{ x: " + x + ", z: " + z + ", world: " + worldName + " }";
     }

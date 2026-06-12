@@ -161,26 +161,32 @@ public class Region extends GeopolObject implements PermissionHolder {
         return chunks.stream().filter(c -> c.getCoordinates().equals(coords)).findFirst().orElse(null);
     }
 
+    @Override
     public int getBreakPermissions() {
         return breakPermissions;
     }
 
+    @Override
     public int getPlacePermissions() {
         return placePermissions;
     }
 
+    @Override
     public int getContainerPermissions() {
         return containerPermissions;
     }
 
+    @Override
     public int getSwitchPermissions() {
         return switchPermissions;
     }
 
+    @Override
     public int getBlockUsePermissions() {
         return blockUsePermissions;
     }
 
+    @Override
     public int getInteractPermissions() {
         return interactPermissions;
     }

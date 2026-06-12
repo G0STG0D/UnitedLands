@@ -130,7 +130,7 @@ public class GlobalDataManager {
             regionChunks.put(regionChunk.getCoordinates(), regionChunk);
             regions.get(regionChunk.getRegionUuid()).addChunk(regionChunk);
         }
-        Logger.log("Loaded " + loadedRegionChunks.size() + " regions chunks to memory.", "UnitedLands");
+        Logger.log("Loaded " + loadedRegionChunks.size() + " region chunks to memory.", "UnitedLands");
     }
 
     public void buildCountries(List<Country> loadedCountries) {

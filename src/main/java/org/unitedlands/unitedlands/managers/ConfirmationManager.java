@@ -42,7 +42,7 @@ public class ConfirmationManager {
             if (confirmation.getSender() != null)
                 Messenger.sendMessage(confirmation.getSender(), "<yellow>Your request has expired.</yellow>");
             removeConfirmation(confirmation);
-        }, confirmation.getTimeoutSeconds() * 20));
+        }, confirmation.getTimeoutSeconds() * (long)20));
 
     }
 

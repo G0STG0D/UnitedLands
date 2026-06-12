@@ -85,14 +85,17 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         setCoordinates(coords);
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
 
+    @Override
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
+    @Override
     public Coordinates getCoordinates() {
         if (coordinates == null)
             coordinates = new Coordinates(x, z, worldName);
@@ -243,30 +246,36 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         return size;
     }
 
+    @Override
     public Coordinates getWorldCoords() {
         return new Coordinates(this.coordinates.getX() * size, this.coordinates.getZ() * size, this.worldName);
     }
 
+    @Override
     public Coordinates getCenter() {
         var worldCoords = getWorldCoords();
         return new Coordinates(worldCoords.getX() + (size / 2), worldCoords.getZ() - (size / 2), this.worldName);
     }
 
+    @Override
     public Coordinates getLowerLeft() {
         var worldCoords = getWorldCoords();
         return new Coordinates(worldCoords.getX(), worldCoords.getZ() + size, this.worldName);
     }
 
+    @Override
     public Coordinates getLowerRight() {
         var worldCoords = getWorldCoords();
         return new Coordinates(worldCoords.getX() + size, worldCoords.getZ() + size, this.worldName);
     }
 
+    @Override
     public Coordinates getUpperLeft() {
         var worldCoords = getWorldCoords();
         return new Coordinates(worldCoords.getX(), worldCoords.getZ(), this.worldName);
     }
 
+    @Override
     public Coordinates getUpperRight() {
         var worldCoords = getWorldCoords();
         return new Coordinates(worldCoords.getX() + size, worldCoords.getZ(), this.worldName);

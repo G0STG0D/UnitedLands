@@ -30,10 +30,12 @@ public abstract class RegionEvent extends Event implements Cancellable {
         return handlers;
     }
 
+    @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
+    @Override
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }

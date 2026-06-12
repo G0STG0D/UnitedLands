@@ -38,44 +38,12 @@ public class GeopolObject implements Identifiable, MetadataHolder {
     protected transient World world;
     protected transient Map<String, MetaDataField<?>> metadata;
 
-    public Map<String, MetaDataField<?>> getMetadata() {
-        if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
-            var t = new TypeToken<Collection<MetaDataField<?>>>() {
-            };
-            Collection<MetaDataField<?>> parsedData = JsonUtils.deserialize(metadataSerialized, t);
-            metadata = new HashMap<>();
-            for (var m : parsedData)
-                metadata.put(m.getKey(), m);
-        }
-        return metadata;
-    }
-
-    public MetaDataField<?> getMetadata(String key) {
-        if (getMetadata() == null)
-            return null;
-        return getMetadata().get(key);
-    }
-
-    public void addMetadata(MetaDataField<?> data) {
-        if (getMetadata() == null)
-            metadata = new HashMap<>();
-        metadata.put(data.getKey(), data);
-        metadataSerialized = JsonUtils.serialize(metadata.values());
-    }
-
-    public void removeMetadata(String key) {
-        if (getMetadata() == null)
-            return;
-        metadata.remove(key);
-        metadataSerialized = JsonUtils.serialize(metadata.values());
-    }
-
-    public void saveMetadata() {}
-
+    @Override
     public UUID getUuid() {
         return uuid;
     }
 
+    @Override
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -134,6 +102,45 @@ public class GeopolObject implements Identifiable, MetadataHolder {
 
     public void setFoundingTimestamp(long foundingTimestamp) {
         this.foundingTimestamp = foundingTimestamp;
+    }
+
+    @Override
+    public Map<String, MetaDataField<?>> getMetadata() {
+        if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
+            var t = new TypeToken<Collection<MetaDataField<?>>>() {
+            };
+            Collection<MetaDataField<?>> parsedData = JsonUtils.deserialize(metadataSerialized, t);
+            metadata = new HashMap<>();
+            for (var m : parsedData)
+                metadata.put(m.getKey(), m);
+        }
+        return metadata;
+    }
+
+    @Override
+    public MetaDataField<?> getMetadata(String key) {
+        if (getMetadata() == null)
+            return null;
+        return getMetadata().get(key);
+    }
+
+    @Override
+    public void addMetadata(MetaDataField<?> data) {
+        if (getMetadata() == null)
+            metadata = new HashMap<>();
+        metadata.put(data.getKey(), data);
+        metadataSerialized = JsonUtils.serialize(metadata.values());
+    }
+
+    @Override
+    public void removeMetadata(String key) {
+        if (getMetadata() == null)
+            return;
+        metadata.remove(key);
+        metadataSerialized = JsonUtils.serialize(metadata.values());
+    }
+
+    public void saveMetadata() {
     }
 
     @Override

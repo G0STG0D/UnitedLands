@@ -7,10 +7,8 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.events.base.PlayerChangeChunkEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterRegionEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEvent;
-import org.unitedlands.unitedlands.classes.events.player.PlayerExitRegionEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
 import org.unitedlands.unitedlands.managers.DisplayManager;
-import org.unitedlands.utils.Logger;
 
 public class PlayerListener implements Listener {
 
@@ -33,13 +31,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEnterRegion(PlayerEnterRegionEvent event) {
-        Logger.log("New region");
         DisplayManager.instance().showRegionName(event.getRegion(), event.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onExitRegion(PlayerExitRegionEvent event) {
-        
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

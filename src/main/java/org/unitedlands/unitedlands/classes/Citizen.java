@@ -61,10 +61,12 @@ public class Citizen implements Identifiable, MetadataHolder {
         this.uuid = player.getUniqueId();
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
-
+    
+    @Override
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -226,6 +228,7 @@ public class Citizen implements Identifiable, MetadataHolder {
         }
     }
 
+    @Override
     public Map<String, MetaDataField<?>> getMetadata() {
         if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
             var t = new TypeToken<Collection<MetaDataField<?>>>() {
@@ -238,12 +241,14 @@ public class Citizen implements Identifiable, MetadataHolder {
         return metadata;
     }
 
+    @Override
     public MetaDataField<?> getMetadata(String key) {
         if (getMetadata() == null)
             return null;
         return getMetadata().get(key);
     }
 
+    @Override
     public void addMetadata(MetaDataField<?> data) {
         if (getMetadata() == null)
             metadata = new HashMap<>();
@@ -251,6 +256,7 @@ public class Citizen implements Identifiable, MetadataHolder {
         metadataSerialized = JsonUtils.serialize(metadata.values());
     }
 
+    @Override
     public void removeMetadata(String key) {
         if (getMetadata() == null)
             return;

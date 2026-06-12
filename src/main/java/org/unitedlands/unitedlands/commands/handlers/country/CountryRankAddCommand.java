@@ -93,7 +93,7 @@ public class CountryRankAddCommand extends CountryCommandHandler {
             return;
         }
 
-        if (args[1].equals("mayor")) {
+        if (args[1].equals("leader")) {
 
             if (!hasPermission("country.manage.ranks.leader", citizen))
                 return;

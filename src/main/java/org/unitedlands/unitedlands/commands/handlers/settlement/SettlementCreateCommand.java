@@ -95,12 +95,13 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
                 settlement.setRegion(region);
                 region.addSettlement(settlement);
                 regionInfo = region.getCleanName();
-            }
-            if (region.hasCountry()) {
-                var country = region.getCountry();
-                settlement.setCountry(country);
-                country.addSettlement(settlement);
-                countryInfo = country.getCleanName();
+
+                if (region.hasCountry()) {
+                    var country = region.getCountry();
+                    settlement.setCountry(country);
+                    country.addSettlement(settlement);
+                    countryInfo = country.getCleanName();
+                }
             }
 
             var chunk = new SettlementChunk();
