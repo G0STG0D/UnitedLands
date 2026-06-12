@@ -1,6 +1,8 @@
 package org.unitedlands.unitedlands.classes.infoscreen;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -9,8 +11,15 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.FloatMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.utils.CostUtils;
+import org.unitedlands.utils.Logger;
 import org.unitedlands.utils.Messenger;
 
 import net.kyori.adventure.text.Component;
@@ -108,6 +117,41 @@ public class SettlementInfoScreen extends InfoScreen {
                                                 "upkeep", EconomyManager.instance()
                                                                 .format(CostUtils.getSettlementUpkeep(settlement))));
                 addComponent("sizeupkeep", sizeupkeep);
+
+                var metadata = settlement.getMetadata();
+
+                if (metadata != null && !metadata.isEmpty()) {
+
+                        var metaDataWrapper = messageProvider.get("info-screens.settlement.metadata");
+
+                        List<String> fields = new ArrayList<>();
+                        for (var m : metadata.values()) {
+                                if (!m.showInScreens())
+                                        continue;
+                                if (m.getValue() == null)
+                                        continue;
+                                var field = "<bold>" + m.getLabel() + "</bold>: ";
+                                if (m instanceof StringMetaDataField typedData) {
+                                        field += typedData.getValue();
+                                } else if (m instanceof IntegerMetaDataField typedData) {
+                                        field += typedData.getValue();
+                                } else if (m instanceof LongMetaDataField typedData) {
+                                        field += typedData.getValue();
+                                }else if (m instanceof FloatMetaDataField typedData) {
+                                        field += String.format("%.2f", typedData.getValue());
+                                } else if (m instanceof DoubleMetaDataField typedData) {
+                                        field += String.format("%.2f", typedData.getValue());
+                                } else if (m instanceof BooleanMetaDataField typedData) {
+                                        field += typedData.getValue() ? "Yes" : "No";
+                                }
+                                fields.add(field);
+                        }
+
+                        var finalMetaDataString = metaDataWrapper.replace("{metadata}", String.join("<dark_gray> | </dark_gray>", fields));
+                        var metadataComponent = Messenger.getMessage(finalMetaDataString);
+                        addComponent("metadata", metadataComponent);
+                }
+
         }
 
 }

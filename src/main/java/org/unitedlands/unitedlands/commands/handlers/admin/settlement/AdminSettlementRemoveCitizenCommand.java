@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -54,6 +55,8 @@ public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandH
         citizen.removeCountryRanks();
         citizen.removeSettlementRanks();
         citizen.removeSettlement();
+
+        (new SettlementPlayerLeaveEvent(settlement, citizen.getPlayer().getPlayer())).callEvent();
 
         GlobalDataManager.instance().updateSettlementDbData(settlement);
         GlobalDataManager.instance().updateCitizenDbData(citizen);

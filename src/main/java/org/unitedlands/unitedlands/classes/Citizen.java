@@ -1,7 +1,10 @@
 package org.unitedlands.unitedlands.classes;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -9,12 +12,16 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
+import org.unitedlands.unitedlands.classes.interfaces.MetadataHolder;
+import org.unitedlands.unitedlands.classes.metadata.MetaDataField;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.utils.JsonUtils;
 
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
-public class Citizen implements Identifiable {
+public class Citizen implements Identifiable, MetadataHolder {
 
     @DatabaseField(id = true, width = 36, canBeNull = false)
     private UUID uuid;
@@ -36,10 +43,15 @@ public class Citizen implements Identifiable {
     @DatabaseField(dataType = DataType.LONG_STRING, columnName = "country_ranks_serialized")
     private String countryRanksSerialized;
 
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized", columnDefinition = "MEDIUMTEXT")
+    private String metadataSerialized;
+
     private OfflinePlayer player;
     private Settlement settlement;
     private transient Set<String> settlementRanks;
     private transient Set<String> countryRanks;
+
+    protected transient Map<String, MetaDataField<?>> metadata;
 
     public Citizen() {
 
@@ -100,6 +112,10 @@ public class Citizen implements Identifiable {
 
     public Boolean hasSettlement() {
         return getSettlement() != null;
+    }
+
+    public boolean isMayor() {
+        return hasSettlementRank("mayor");
     }
 
     public void setSettlement(Settlement settlement) {
@@ -208,6 +224,43 @@ public class Citizen implements Identifiable {
         } else {
             this.countryRanksSerialized = null;
         }
+    }
+
+    public Map<String, MetaDataField<?>> getMetadata() {
+        if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
+            var t = new TypeToken<Collection<MetaDataField<?>>>() {
+            };
+            Collection<MetaDataField<?>> parsedData = JsonUtils.deserialize(metadataSerialized, t);
+            metadata = new HashMap<>();
+            for (var m : parsedData)
+                metadata.put(m.getKey(), m);
+        }
+        return metadata;
+    }
+
+    public MetaDataField<?> getMetadata(String key) {
+        if (getMetadata() == null)
+            return null;
+        return getMetadata().get(key);
+    }
+
+    public void addMetadata(MetaDataField<?> data) {
+        if (getMetadata() == null)
+            metadata = new HashMap<>();
+        metadata.put(data.getKey(), data);
+        metadataSerialized = JsonUtils.serialize(metadata.values());
+    }
+
+    public void removeMetadata(String key) {
+        if (getMetadata() == null)
+            return;
+        metadata.remove(key);
+        metadataSerialized = JsonUtils.serialize(metadata.values());
+    }
+
+    @Override
+    public void saveMetadata() {
+        GlobalDataManager.instance().updateCitizenDbData(this);
     }
 
     @Override

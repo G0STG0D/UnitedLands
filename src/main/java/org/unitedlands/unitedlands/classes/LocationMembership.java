@@ -25,11 +25,11 @@ public class LocationMembership {
         if ((membership & OWNER) != 0)
             flags.add("OWNER");
         if ((membership & SETTLEMENT_RESIDENT) != 0)
-            flags.add("TOWN_RESIDENT");
+            flags.add("SETTLEMENT_RESIDENT");
         if ((membership & REGION_RESIDENT) != 0)
             flags.add("REGION_RESIDENT");
         if ((membership & COUNTRY_RESIDENT) != 0)
-            flags.add("NATION_RESIDENT");
+            flags.add("COUNTRY_RESIDENT");
         if ((membership & TRUSTED) != 0)
             flags.add("TRUSTED");
         if ((membership & ALLY) != 0)
@@ -49,7 +49,7 @@ public class LocationMembership {
         List<String> flags = new ArrayList<>();
 
         if ((membership & SETTLEMENT_RESIDENT) != 0)
-            flags.add("<blue>T</blue>");
+            flags.add("<blue>S</blue>");
         else
             flags.add("-");
         if ((membership & REGION_RESIDENT) != 0)
@@ -57,7 +57,7 @@ public class LocationMembership {
         else
             flags.add("-");
         if ((membership & COUNTRY_RESIDENT) != 0)
-            flags.add("<green>N</green>");
+            flags.add("<green>C</green>");
         else
             flags.add("-");
         if ((membership & FOREIGNER) != 0)

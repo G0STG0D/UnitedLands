@@ -1,5 +1,7 @@
 package org.unitedlands.unitedlands.classes;
 
+import java.util.Map;
+
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
@@ -9,6 +11,7 @@ public class Confirmation {
 
     private Runnable runnable;
     private String title;
+    private Map<String, String> replacements;
     private String key;
     private String acceptCommand;
     private String cancelCommand;
@@ -38,6 +41,15 @@ public class Confirmation {
 
     public Confirmation setTitle(String title) {
         this.title = title;
+        return this;
+    }
+
+    public Map<String, String> getReplacements() {
+        return replacements;
+    }
+
+    public Confirmation setReplacements(Map<String, String> replacements) {
+        this.replacements = replacements;
         return this;
     }
 
@@ -116,7 +128,7 @@ public class Confirmation {
             Messenger.sendMessage(sender, "Your request has been sent.");
 
         Messenger.sendMessage(receiver,
-                "<aqua>" + getTitle() + " [<yellow>" + getAcceptCommand() + "</yellow>]</aqua>");
+                "<aqua>" + getTitle() + " [<yellow>" + getAcceptCommand() + "</yellow>]</aqua>", replacements);
 
         ConfirmationManager.instance().queueConfirmation(this);
     }

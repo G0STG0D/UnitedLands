@@ -2,11 +2,15 @@ package org.unitedlands.unitedlands.classes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.util.BoundingBox;
 
 public class Coordinates {
     private int x;
     private int z;
     private final String worldName;
+
+    private transient World world;
 
     public Coordinates(String worldName) {
         this.worldName = worldName;
@@ -36,6 +40,12 @@ public class Coordinates {
 
     public String getWorldName() {
         return worldName;
+    }
+
+    public World getWorld() {
+        if (world == null && worldName != null && !worldName.isEmpty())
+            world = Bukkit.getWorld(worldName);
+        return world;
     }
 
     public Coordinates add(int x, int z) {
@@ -71,6 +81,18 @@ public class Coordinates {
         var world = Bukkit.getWorld(this.worldName);
         var y = world.getHighestBlockYAt(x, z);
         return new Location(world, x, y, z);
+    }
+
+    public Location getLowerCorner() {
+        return new Location(getWorld(), getX() * 16, getWorld().getMinHeight(), getZ() * 16);
+    }
+
+    public Location getUpperCorner() {
+        return new Location(getWorld(), (getX() * 16) + 16, getWorld().getMaxHeight(), (getZ() * 16) + 16);
+    }
+
+    public BoundingBox getBoundingBox() {
+        return BoundingBox.of(getLowerCorner().getBlock(), getUpperCorner().getBlock());
     }
 
     @Override

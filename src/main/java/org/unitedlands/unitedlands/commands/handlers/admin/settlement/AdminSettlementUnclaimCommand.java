@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlement.SettlementUnclaimEvent;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -64,6 +65,8 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
         }
 
         settlement.removeChunk(existingChunk);
+
+        (new SettlementUnclaimEvent(settlement, chunkCoords)).callEvent();
 
         GlobalDataManager.instance().removeSettlementChunkDbData(existingChunk);
         GlobalDataManager.instance().updateSettlementDbData(settlement);

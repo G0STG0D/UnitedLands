@@ -148,10 +148,16 @@ public class Country extends GeopolObject {
 
     public Citizen getLeader() {
         CompletableFuture<Citizen> future = CompletableFuture.supplyAsync(() -> {
-            var citizens = settlements.stream().map(Settlement::getCitizens).flatMap(Set::stream).collect(Collectors.toSet());
-            return citizens.stream().filter(c -> c.hasCountryRank("country-leader")).findFirst().orElse(null);
+            var citizens = settlements.stream().map(Settlement::getCitizens).flatMap(Set::stream)
+                    .collect(Collectors.toSet());
+            return citizens.stream().filter(c -> c.hasCountryRank("leader")).findFirst().orElse(null);
         });
         return future.join();
+    }
+
+    @Override
+    public void saveMetadata() {
+        GlobalDataManager.instance().updateCountryDbData(this);
     }
 
 }

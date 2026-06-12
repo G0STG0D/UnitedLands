@@ -77,6 +77,7 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         GlobalDataManager.instance().updateRegionDbData(region);
         GlobalDataManager.instance().updateSettlementDbData(settlement);
 
+        Pl3xMapRenderer.instance().removeRegion(region);
         Pl3xMapRenderer.instance().renderRegion(region);
         Pl3xMapRenderer.instance().renderSettlement(settlement);
         Pl3xMapRenderer.instance().renderCountry(country);

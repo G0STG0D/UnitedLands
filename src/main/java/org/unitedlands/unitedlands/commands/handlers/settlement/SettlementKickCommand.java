@@ -11,6 +11,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -72,7 +73,7 @@ public class SettlementKickCommand extends SettlementCommandHandler {
             return;
         }
 
-        if (targetCitizen.hasCountryRank("country-leader")) {
+        if (targetCitizen.hasCountryRank("leader")) {
             Messenger.sendMessage(player, messageProvider.get("settlement.kick.is-leader"),
                     null, messageProvider.get("prefix"));
             return;
@@ -81,6 +82,8 @@ public class SettlementKickCommand extends SettlementCommandHandler {
         settlement.removeCitizen(targetCitizen);
         targetCitizen.removeSettlementRanks();
         targetCitizen.removeSettlement();
+
+        (new SettlementPlayerLeaveEvent(settlement, targetPlayer)).callEvent();
 
         GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
 

@@ -9,11 +9,18 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.LocationMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
+import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
@@ -25,6 +32,11 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.object.TownyPermission.ActionType;
+import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
+import com.palmergames.bukkit.towny.object.metadata.DecimalDataField;
+import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
+import com.palmergames.bukkit.towny.object.metadata.LocationDataField;
+import com.palmergames.bukkit.towny.object.metadata.LongDataField;
 
 public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
 
@@ -74,6 +86,8 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
     }
 
     private void importTown(Player player, Town town) {
+
+
         var plots = town.getTownBlocks();
 
         if (GlobalDataManager.instance().getSettlement(town.getUUID()) != null) {
@@ -120,10 +134,81 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
             settlement.setContainerPermissions(switchPerms);
             settlement.setBlockUsePermissions(blockUsePerms);
 
+            // Metadata
+
+            var townyMeta = town.getMetadata();
+            for (var tmf : townyMeta) {
+                var type = tmf.getTypeID();
+                switch (type) {
+                    case "towny_booldf":
+                        var boolMeta = new BooleanMetaDataField(tmf.getKey());
+                        boolMeta.setLabel(tmf.getLabel());
+                        boolMeta.setShowInScreens(tmf.shouldDisplayInStatus());
+                        boolMeta.setValue(((BooleanDataField) tmf).getValue());
+                        settlement.addMetadata(boolMeta);
+                        break;
+                    case "towny_decdf":
+                        var doubleMeta = new DoubleMetaDataField(tmf.getKey());
+                        doubleMeta.setLabel(tmf.getLabel());
+                        doubleMeta.setShowInScreens(tmf.shouldDisplayInStatus());
+                        doubleMeta.setValue(((DecimalDataField) tmf).getValue());
+                        settlement.addMetadata(doubleMeta);
+                        break;
+                    case "towny_intdf":
+                        var intMeta = new IntegerMetaDataField(tmf.getKey());
+                        intMeta.setLabel(tmf.getLabel());
+                        intMeta.setShowInScreens(tmf.shouldDisplayInStatus());
+                        intMeta.setValue(((IntegerDataField) tmf).getValue());
+                        settlement.addMetadata(intMeta);
+                        break;
+                    case "towny_locationdf":
+                        var locMeta = new LocationMetaDataField(tmf.getKey());
+                        locMeta.setLabel(tmf.getLabel());
+                        locMeta.setShowInScreens(tmf.shouldDisplayInStatus());
+                        locMeta.setValue(((LocationDataField) tmf).getValue());
+                        settlement.addMetadata(locMeta);
+                        break;
+                    case "towny_longdf":
+                        var longMeta = new LongMetaDataField(tmf.getKey());
+                        longMeta.setLabel(tmf.getLabel());
+                        longMeta.setShowInScreens(tmf.shouldDisplayInStatus());
+                        longMeta.setValue(((LongDataField) tmf).getValue());
+                        settlement.addMetadata(longMeta);
+                        break;
+                    default:
+                        var stringMeta = new StringMetaDataField(tmf.getKey());
+                        stringMeta.setLabel(tmf.getLabel());
+                        stringMeta.setShowInScreens(tmf.shouldDisplayInStatus());
+                        stringMeta.setValue(String.valueOf(tmf.getValue()));
+                        settlement.addMetadata(stringMeta);
+                        break;
+                }
+
+            }
+
             GlobalDataManager.instance().registerSettlement(settlement);
             GlobalDataManager.instance().createSettlementDbData(settlement);
 
             EconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
+
+            var residents = town.getResidents();
+            for (var resident : residents)
+            {
+                var citizen = GlobalDataManager.instance().getCitizen(resident.getUUID());
+                if (citizen == null)
+                {
+                    citizen = new Citizen();
+                    citizen.setUuid(resident.getUUID());
+                    citizen.setName(resident.getName());
+                    citizen.setJoined(resident.getRegistered());
+                    citizen.setLastLogon(resident.getLastOnline());
+                    citizen.setSettlement(settlement);
+                    settlement.addCitizen(citizen);
+
+                    GlobalDataManager.instance().createCitizenDbData(citizen);
+                }
+            }
+
 
             Messenger.sendMessage(player, messageProvider.get("admin.towny.import.success-settlement"),
                     Map.of("settlement", settlement.getName(), "plots", plots.size() + ""),

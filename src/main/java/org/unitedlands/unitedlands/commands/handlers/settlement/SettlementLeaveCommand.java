@@ -8,6 +8,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -39,7 +40,7 @@ public class SettlementLeaveCommand extends SettlementCommandHandler {
             return;
         }
 
-        if (citizen.hasCountryRank("country-leader")) {
+        if (citizen.hasCountryRank("leader")) {
             Messenger.sendMessage(player, messageProvider.get("settlement.leave.is-leader"),
                     null, messageProvider.get("prefix"));
             return;
@@ -52,6 +53,8 @@ public class SettlementLeaveCommand extends SettlementCommandHandler {
             citizen.removeSettlementRanks();
             citizen.removeSettlement();
 
+            (new SettlementPlayerLeaveEvent(settlement, player)).callEvent();
+
             GlobalDataManager.instance().updateSettlementDbData(settlement);
             GlobalDataManager.instance().updateCitizenDbData(citizen);
 
@@ -61,7 +64,8 @@ public class SettlementLeaveCommand extends SettlementCommandHandler {
                     Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
 
         })
-                .setTitle("<aqua>Are you sure you want to leave <blue>" + settlement.getCleanName() + "</blue>?")
+                .setTitle(messageProvider.get("settlement.leave.confirm"))
+                .setReplacements(Map.of("settlement", settlement.getCleanName()))
                 .setSender(player)
                 .setReceiver(player)
                 .setDiscriminator(settlement.getName())

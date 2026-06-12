@@ -288,6 +288,10 @@ public class Settlement extends GeopolObject implements PermissionHolder {
         this.isPublic = isPublic;
     }
 
+    public boolean hasCitizen(Citizen citizen) {
+        return getCitizens().contains(citizen);
+    }
+
     public void addCitizen(Citizen citizen) {
         var c = new HashSet<>(getCitizens());
         c.add(citizen);
@@ -515,28 +519,9 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Settlement other = (Settlement) obj;
-        if (uuid == null) {
-            if (other.uuid != null)
-                return false;
-        } else if (!uuid.equals(other.uuid))
-            return false;
-        return true;
+    public void saveMetadata() {
+        Logger.log("Saving settlement...");
+        GlobalDataManager.instance().updateSettlementDbData(this);
     }
 
 }

@@ -53,22 +53,19 @@ public class CountryDeleteCommand extends CountryCommandHandler {
                     }
                     settlement.removeCountry();
                     GlobalDataManager.instance().updateSettlementDbData(settlement);
+                    Pl3xMapRenderer.instance().renderSettlement(settlement);
                 }
 
                 region.removeCountry();
                 GlobalDataManager.instance().updateRegionDbData(region);
+                Pl3xMapRenderer.instance().removeRegion(region);
+                Pl3xMapRenderer.instance().renderRegion(region);
             }
 
             EconomyManager.instance().deleteAccount(country.getUuid());
 
             GlobalDataManager.instance().removeCountryDbData(country);
 
-            for (var region : country.getRegions()) {
-                Pl3xMapRenderer.instance().renderRegion(region);
-                for (var settlement : region.getSettlements()) {
-                    Pl3xMapRenderer.instance().renderSettlement(settlement);
-                }
-            }
             Pl3xMapRenderer.instance().removeCountry(country);
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.delete.deleted-broadcast"),

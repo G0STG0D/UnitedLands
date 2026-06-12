@@ -11,6 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlement.SettlementPreClaimEvent;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
@@ -72,6 +73,11 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
                     Map.of("amount", EconomyManager.instance().format(claimCosts)), messageProvider.get("prefix"));
             return;
         }
+
+        var preEvent = new SettlementPreClaimEvent(settlement, chunkCoords);
+        preEvent.callEvent();
+        if (preEvent.isCancelled())
+            return;
 
         var chunk = new SettlementChunk();
 

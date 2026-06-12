@@ -8,6 +8,7 @@ import org.unitedlands.unitedlands.commands.handlers.country.CountryCreateComman
 import org.unitedlands.unitedlands.commands.handlers.country.CountryDeleteCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryDepositCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryInfoCommand;
+import org.unitedlands.unitedlands.commands.handlers.country.CountryRankSubcommands;
 import org.unitedlands.unitedlands.commands.handlers.country.CountrySetColorCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryWithdrawCommand;
 
@@ -26,6 +27,7 @@ public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("setcolor", new CountrySetColorCommand(plugin, messageProvider));
         handlers.put("delete", new CountryDeleteCommand(plugin, messageProvider));
         handlers.put("info", new CountryInfoCommand(plugin, messageProvider));
+        handlers.put("rank", new CountryRankSubcommands(plugin, messageProvider));
     }
 
 

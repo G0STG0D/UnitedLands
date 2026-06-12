@@ -1,0 +1,39 @@
+package org.unitedlands.unitedlands.classes.events.base;
+
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.unitedlands.unitedlands.classes.Citizen;
+
+public abstract class CitizenEvent extends Event implements Cancellable {
+
+    private static final HandlerList handlers = new HandlerList();
+    private boolean cancelled;
+
+    private final Citizen citizen;
+
+    public CitizenEvent(Citizen citizen) {
+        this.citizen = citizen;
+    }
+
+    public Citizen getCitizen() {
+        return citizen;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+}

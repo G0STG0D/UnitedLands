@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPrePurchaseEvent;
+import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPurchaseEvent;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Messenger;
@@ -49,7 +51,12 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
                     messageProvider.get("prefix"));
             return;
         }
-        
+
+        var preEvent = new SettlementChunkPrePurchaseEvent(settlementChunk.getSettlement(), settlementChunk, citizen);
+        preEvent.callEvent();
+        if (preEvent.isCancelled())
+            return;
+
         EconomyManager.instance().withdraw(citizen.getUuid(), settlementChunk.getSalePrice());
         EconomyManager.instance().deposit(settlementChunk.getSettlement().getUuid(), settlementChunk.getSalePrice());
 
@@ -59,6 +66,8 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
 
         settlementChunk.setSalePrice(null);
         settlementChunk.setOwner(citizen);
+
+        (new SettlementChunkPurchaseEvent(settlementChunk.getSettlement(), settlementChunk, citizen)).callEvent();
 
         GlobalDataManager.instance().updateSettlementChunkDbData(settlementChunk);
     }

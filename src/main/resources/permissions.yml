@@ -20,7 +20,7 @@ settlement:
     - settlement.plot.sell
     - settlement.plot.evict
     - settlement.withdraw
-
+    - settlement.joincountry
   co-mayor:
     - settlement.claim
     - settlement.manage.perms
@@ -31,12 +31,37 @@ settlement:
     - settlement.plot.sell
     - settlement.plot.evict
     - settlement.withdraw
+  treasurer:
+    - foo.bar
+  landlord:
+    - foo.bar
+  banker:
+    - foo.bar
+  noble:
+    - foo.bar
+  militia:
+    - foo.bar
+  soldier:
+    - foo.bar
+  officer:
+    - foo.bar
 
 country:
-  country-leader:
+  leader:
     - country.delete
     - country.withdraw
+    - country.releasesettlement
+    - country.manage.ranks.leader
+    - country.manage.ranks.other
     - region.claim
     - region.unclaim
     - region.manage.toggle
     - region.manage.perms
+  assistant:
+    - foo.bar
+  general:
+    - foo.bar
+  diplomat:
+    - foo.bar
+  treasurer:
+    - foo.bar

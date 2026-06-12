@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
@@ -18,6 +19,7 @@ import org.unitedlands.unitedlands.classes.RegionChunk;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
+import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Logger;
 
 public class GlobalDataManager {
@@ -232,6 +234,14 @@ public class GlobalDataManager {
         return settlements.values();
     }
 
+    public Settlement getSettlement(Location location) {
+        var settlementChunk = settlementChunks.get(CoordinateUtils.locationToChunkCoordinates(location));
+        if (settlementChunk != null)
+            return settlementChunk.getSettlement();
+
+        return null;
+    }
+
     public Settlement getSettlement(Coordinates settlementCoordinates) {
         var settlementChunk = settlementChunks.get(settlementCoordinates);
         if (settlementChunk != null)
@@ -396,7 +406,7 @@ public class GlobalDataManager {
 
     public void createCountryDbData(Country country) {
         DatabaseManager.instance().getCountryService().createAsync(country);
-        registeCountry(country);
+        registerCountry(country);
     }
 
     public void updateCountryDbData(Country country) {
@@ -410,7 +420,7 @@ public class GlobalDataManager {
 
     // Cache operations
 
-    public void registeCountry(Country country) {
+    public void registerCountry(Country country) {
         countries.put(country.getUuid(), country);
     }
 

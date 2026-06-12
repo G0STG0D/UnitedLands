@@ -37,31 +37,25 @@ public class AdminCountryDeleteCommand extends CountryAdminCommandHandler {
 
         for (var region : country.getRegions()) {
             for (var settlement : region.getSettlements()) {
-                if (!settlement.hasCountry())
-                    continue;
                 for (var settlementCitizen : settlement.getCitizens()) {
                     settlementCitizen.removeCountryRanks();
                     GlobalDataManager.instance().updateCitizenDbData(settlementCitizen);
                 }
                 settlement.removeCountry();
                 GlobalDataManager.instance().updateSettlementDbData(settlement);
+                Pl3xMapRenderer.instance().renderSettlement(settlement);
             }
-
             region.removeCountry();
             GlobalDataManager.instance().updateRegionDbData(region);
+            
+            Pl3xMapRenderer.instance().removeRegion(region);
+            Pl3xMapRenderer.instance().renderRegion(region);
         }
 
         EconomyManager.instance().deleteAccount(country.getUuid());
 
-        GlobalDataManager.instance().unregisterCountry(country);
         GlobalDataManager.instance().removeCountryDbData(country);
 
-        for (var region : country.getRegions()) {
-            Pl3xMapRenderer.instance().renderRegion(region);
-            for (var settlement : region.getSettlements()) {
-                Pl3xMapRenderer.instance().renderSettlement(settlement);
-            }
-        }
         Pl3xMapRenderer.instance().removeCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.delete"),

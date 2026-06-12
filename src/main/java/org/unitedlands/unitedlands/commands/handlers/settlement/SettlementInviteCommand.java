@@ -73,7 +73,8 @@ public class SettlementInviteCommand extends SettlementCommandHandler {
                     Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
 
         })
-                .setTitle("<aqua>You were invited to join the town of <blue>" + settlement.getCleanName() + "</blue>.")
+                .setTitle(messageProvider.get("settlement.invite.player-message"))
+                .setReplacements(Map.of("settlement", settlement.getCleanName()))
                 .setSender(player)
                 .setReceiver(targetPlayer)
                 .setDiscriminator(settlement.getName())

@@ -62,8 +62,17 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
 
         if (!EconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.settlementCreateCosts))) {
             Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
-                    Map.of("amount", EconomyManager.instance().format(Settings.settlementCreateCosts)), messageProvider.get("prefix"));
+                    Map.of("amount", EconomyManager.instance().format(Settings.settlementCreateCosts)),
+                    messageProvider.get("prefix"));
             return;
+        }
+
+        var region = GlobalDataManager.instance()
+                .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+        if (region != null && region.hasCountry()) {
+            Messenger.sendMessage(player, messageProvider.get("settlement.create.country-warning"),
+                    Map.of("country", region.getCountry().getCleanName()),
+                    messageProvider.get("prefix"));
         }
 
         var confirmation = new Confirmation("settlement");
@@ -80,8 +89,6 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             settlement.setHomeChunkCoordinates(chunkCoords);
             settlement.setSpawn(player.getLocation());
 
-            var region = GlobalDataManager.instance()
-                    .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
             var regionInfo = "no region";
             var countryInfo = "no country";
             if (region != null) {
@@ -129,13 +136,15 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         })
+                .setTitle(messageProvider.get("settlement.create.confirm"))
+                .setReplacements(Map.of("settlement", args[0], "cost",
+                        EconomyManager.instance().format(Settings.settlementCreateCosts)))
                 .setAcceptCommand("/approve settlement")
                 .setCancelCommand("/cancel settlement")
                 .setSender(player)
                 .setReceiver(player)
                 .setDiscriminator(args[0])
                 .setTimeoutSeconds(30)
-                .setTitle("Create settlement with name " + args[0] + " at this location?")
                 .send();
     }
 

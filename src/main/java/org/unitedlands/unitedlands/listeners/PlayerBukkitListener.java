@@ -16,6 +16,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.events.base.PlayerChangeChunkEvent;
+import org.unitedlands.unitedlands.classes.events.cititen.CitizenCreatedEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
@@ -66,6 +67,9 @@ public class PlayerBukkitListener implements Listener {
             citizen.setJoined(System.currentTimeMillis());
             citizen.setName(player.getName());
             citizen.setLastLogon(System.currentTimeMillis());
+
+            (new CitizenCreatedEvent(citizen)).callEvent();
+
             GlobalDataManager.instance().createCitizenDbData(citizen);
         } else {
             citizen.setName(player.getName());

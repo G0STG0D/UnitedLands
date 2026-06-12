@@ -51,7 +51,6 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         GlobalDataManager.instance().updateSettlementDbData(settlement);
 
         Pl3xMapRenderer.instance().renderSettlement(settlement);
-        Pl3xMapRenderer.instance().renderCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.addsettlement.success"),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),

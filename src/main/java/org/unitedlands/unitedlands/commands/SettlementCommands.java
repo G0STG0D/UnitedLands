@@ -20,6 +20,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementDelete
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementDepositCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementInfoCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementInviteCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementJoinCountryCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementKickCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementLeaveCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementMapCommand;
@@ -66,6 +67,7 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("map", new SettlementMapCommand(plugin, messageProvider));
         handlers.put("deposit", new SettlementDepositCommand(plugin, messageProvider));
         handlers.put("withdraw", new SettlementWithdrawCommand(plugin, messageProvider));
+        handlers.put("joincountry", new SettlementJoinCountryCommand(plugin, messageProvider));
     }
 
     @Override

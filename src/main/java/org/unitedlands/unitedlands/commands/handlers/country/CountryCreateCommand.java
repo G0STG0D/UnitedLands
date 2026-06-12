@@ -90,6 +90,7 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             EconomyManager.instance().createAccount(country.getUuid(), country.getName());
             EconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
 
+            Pl3xMapRenderer.instance().removeRegion(region);
             Pl3xMapRenderer.instance().renderRegion(region);
             Pl3xMapRenderer.instance().renderSettlement(settlement);
             Pl3xMapRenderer.instance().renderCountry(country);

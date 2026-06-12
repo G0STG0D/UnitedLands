@@ -76,8 +76,8 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
                     Map.of("settlement", settlement.getCleanName()),
                     messageProvider.get("prefix"));
         })
-                .setTitle("<red>Are you sure you want to delete <blue>" + settlement.getCleanName()
-                        + "</blue>? <bold>This cannot be undone!</bold></red>")
+                .setTitle(messageProvider.get("settlement.delete.confirm"))
+                .setReplacements(Map.of("settlement", settlement.getCleanName()))
                 .setSender(player)
                 .setReceiver(player)
                 .setDiscriminator(settlement.getName())

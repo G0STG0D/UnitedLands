@@ -1,16 +1,22 @@
 package org.unitedlands.unitedlands.classes;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
-
+import org.unitedlands.unitedlands.classes.interfaces.MetadataHolder;
+import org.unitedlands.unitedlands.classes.metadata.MetaDataField;
+import org.unitedlands.unitedlands.utils.JsonUtils;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
-public class GeopolObject implements Identifiable {
+public class GeopolObject implements Identifiable, MetadataHolder {
 
     @DatabaseField(id = true, width = 36, canBeNull = false)
     protected UUID uuid;
@@ -18,7 +24,7 @@ public class GeopolObject implements Identifiable {
     protected String name;
     @DatabaseField(width = 255, columnName = "world_name")
     protected String worldName;
-    
+
     @DatabaseField(width = 36, columnName = "founder_uuid")
     protected UUID founderUuid;
     @DatabaseField(width = 128, columnName = "founder_name")
@@ -26,10 +32,45 @@ public class GeopolObject implements Identifiable {
     @DatabaseField(columnName = "founding_timestamp")
     protected long foundingTimestamp;
 
-    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized")
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized", columnDefinition = "MEDIUMTEXT")
     private String metadataSerialized;
 
     protected transient World world;
+    protected transient Map<String, MetaDataField<?>> metadata;
+
+    public Map<String, MetaDataField<?>> getMetadata() {
+        if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
+            var t = new TypeToken<Collection<MetaDataField<?>>>() {
+            };
+            Collection<MetaDataField<?>> parsedData = JsonUtils.deserialize(metadataSerialized, t);
+            metadata = new HashMap<>();
+            for (var m : parsedData)
+                metadata.put(m.getKey(), m);
+        }
+        return metadata;
+    }
+
+    public MetaDataField<?> getMetadata(String key) {
+        if (getMetadata() == null)
+            return null;
+        return getMetadata().get(key);
+    }
+
+    public void addMetadata(MetaDataField<?> data) {
+        if (getMetadata() == null)
+            metadata = new HashMap<>();
+        metadata.put(data.getKey(), data);
+        metadataSerialized = JsonUtils.serialize(metadata.values());
+    }
+
+    public void removeMetadata(String key) {
+        if (getMetadata() == null)
+            return;
+        metadata.remove(key);
+        metadataSerialized = JsonUtils.serialize(metadata.values());
+    }
+
+    public void saveMetadata() {}
 
     public UUID getUuid() {
         return uuid;
@@ -95,7 +136,6 @@ public class GeopolObject implements Identifiable {
         this.foundingTimestamp = foundingTimestamp;
     }
 
-    
     @Override
     public int hashCode() {
         final int prime = 31;

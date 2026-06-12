@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.settlement;
+package org.unitedlands.unitedlands.commands.handlers.country;
 
 import java.util.List;
 import java.util.Map;
@@ -12,15 +12,15 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Confirmation;
-import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementRankAddCommand extends SettlementCommandHandler {
+public class CountryRankAddCommand extends CountryCommandHandler {
 
-    public SettlementRankAddCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public CountryRankAddCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
 
     }
@@ -31,15 +31,15 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
         var citizen = getCitizen((Player) sender);
         if (citizen == null)
             return null;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
+        var country = getCitizenCountry(citizen);
+        if (country == null)
             return null;
 
         switch (args.length) {
             case 1:
-                return settlement.getCitizens().stream().map(Citizen::getName).collect(Collectors.toList());
+                return country.getCitizens().stream().map(Citizen::getName).collect(Collectors.toList());
             case 2:
-                return PermissionManager.instance().getSettlementRanks();
+                return PermissionManager.instance().getCountryRanks();
             default:
                 break;
         }
@@ -55,13 +55,13 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
         }
 
         var player = (Player) sender;
-
-        var citizen = getCitizen((Player) sender);
-        if (citizen == null)
+        var citizen = GlobalDataManager.instance().getCitizen(player);
+        if (citizen == null || citizen.getCountry() == null) {
+            Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
+                    null, messageProvider.get("prefix"));
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
+        }
+        var country = citizen.getCountry();
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
@@ -74,20 +74,20 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
         if (targetCitizen == null)
             return;
 
-        if (!settlement.equals(targetCitizen.getSettlement())) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.ranks.not-in-settlement"),
+        if (!country.equals(targetCitizen.getCountry())) {
+            Messenger.sendMessage(player, messageProvider.get("country.ranks.not-in-country"),
                     Map.of("name", args[0]), messageProvider.get("prefix"));
             return;
         }
 
-        if (!PermissionManager.instance().getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.ranks.unknown-rank"),
+        if (!PermissionManager.instance().getCountryRanks().contains(args[1])) {
+            Messenger.sendMessage(player, messageProvider.get("country.ranks.unknown-rank"),
                     Map.of("rank", args[1]), messageProvider.get("prefix"));
             return;
         }
 
-        if (targetCitizen.getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.ranks.rank-already-owned"),
+        if (targetCitizen.getCountryRanks().contains(args[1])) {
+            Messenger.sendMessage(player, messageProvider.get("country.ranks.rank-already-owned"),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
                     messageProvider.get("prefix"));
             return;
@@ -95,58 +95,58 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
 
         if (args[1].equals("mayor")) {
 
-            if (!hasPermission("settlement.manage.ranks.mayor", citizen))
+            if (!hasPermission("country.manage.ranks.mayor", citizen))
                 return;
 
-            var confirmation = new Confirmation("new-mayor");
+            var confirmation = new Confirmation("new-leader");
             confirmation.setRunnable(() -> {
 
-                var currentMayor = settlement.getMayor();
-                currentMayor.removeSettlementRank("mayor");
-                targetCitizen.addSettlementRank("mayor");
+                var currentLeader = country.getLeader();
+                currentLeader.removeCountryRank("leader");
+                targetCitizen.addCountryRank("leader");
 
-                GlobalDataManager.instance().updateCitizenDbData(currentMayor);
+                GlobalDataManager.instance().updateCitizenDbData(currentLeader);
                 GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
 
-                if (currentMayor.getPlayer().isOnline()) {
-                    Messenger.sendMessage(currentMayor.getPlayer().getPlayer(),
-                            messageProvider.get("settlement.ranks.lost"),
-                            Map.of("rank", "mayor"), messageProvider.get("prefix"));
+                if (currentLeader.getPlayer().isOnline()) {
+                    Messenger.sendMessage(currentLeader.getPlayer().getPlayer(),
+                            messageProvider.get("country.ranks.lost"),
+                            Map.of("rank", "leader"), messageProvider.get("prefix"));
                 }
                 if (targetPlayer.isOnline()) {
-                    Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.ranks.received"),
-                            Map.of("rank", "mayor"), messageProvider.get("prefix"));
+                    Messenger.sendMessage(targetPlayer, messageProvider.get("country.ranks.received"),
+                            Map.of("rank", "leader"), messageProvider.get("prefix"));
                 }
 
             })
-                    .setTitle("<yellow>Are you sure you want to give the mayorship to " + args[0]
+                    .setTitle("<yellow>Are you sure you want to give the leadership to " + args[0]
                             + " permanently?</yellow>")
                     .setSender(player)
                     .setReceiver(player)
                     .setTimeoutSeconds(30)
-                    .setAcceptCommand("/approve new-mayor")
-                    .setCancelCommand("/reject new-mayor")
-                    .setDiscriminator(settlement.getName())
+                    .setAcceptCommand("/approve new-leader")
+                    .setCancelCommand("/reject new-leader")
+                    .setDiscriminator(country.getName())
                     .send();
 
             ConfirmationManager.instance().queueConfirmation(confirmation);
 
         } else {
 
-            if (!hasPermission("settlement.manage.ranks.other", citizen))
+            if (!hasPermission("country.manage.ranks.other", citizen))
                 return;
 
-            targetCitizen.addSettlementRank(args[1]);
+            targetCitizen.addCountryRank(args[1]);
             GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.ranks.received"),
+                Messenger.sendMessage(targetPlayer, messageProvider.get("country.ranks.received"),
                         Map.of("rank", args[1]), messageProvider.get("prefix"));
             }
 
         }
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.ranks.added"),
+        Messenger.sendMessage(player, messageProvider.get("country.ranks.added"),
                 Map.of("rank", args[1], "name", targetCitizen.getName()),
                 messageProvider.get("prefix"));
 
