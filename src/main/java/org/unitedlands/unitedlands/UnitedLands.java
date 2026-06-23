@@ -21,7 +21,6 @@ import org.unitedlands.unitedlands.listeners.PlayerBukkitListener;
 import org.unitedlands.unitedlands.listeners.PlayerListener;
 import org.unitedlands.unitedlands.listeners.ServerEventListener;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
-import org.unitedlands.unitedlands.managers.DatabaseManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
 import org.unitedlands.unitedlands.managers.EconomyManager;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
@@ -43,7 +42,6 @@ public class UnitedLands extends JavaPlugin {
 
     private MessageProvider messageProvider;
 
-    DatabaseManager databaseManager;
     GlobalDataManager globalDataManager;
     EconomyManager economyManager;
     DisplayManager displayManager;
@@ -75,17 +73,14 @@ public class UnitedLands extends JavaPlugin {
         registerCommands();
         registerListeners();
 
-        databaseManager.initialize();
-
-        getLogger().info("UnitedRegions initialized.");
+        getLogger().info("UnitedLands initialized.");
     }
 
     private void loadManagers() {
 
         mapRenderer = new Pl3xMapRenderer();
         permissionManager = new PermissionManager(this);
-        databaseManager = new DatabaseManager(this);
-        globalDataManager = new GlobalDataManager(databaseManager, mapRenderer);
+        globalDataManager = new GlobalDataManager(this, mapRenderer);
         displayManager = new DisplayManager(this);
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);

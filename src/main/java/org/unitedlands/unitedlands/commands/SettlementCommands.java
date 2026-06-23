@@ -30,9 +30,11 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRename
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetBoardCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetColorCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetSpawnCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetTaxesCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSpawnCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementToggleCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUnclaimCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUseTaxPercentCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementWithdrawCommand;
 import org.unitedlands.unitedlands.managers.GlobalDataManager;
 import org.unitedlands.utils.Formatter;
@@ -68,6 +70,8 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("deposit", new SettlementDepositCommand(plugin, messageProvider));
         handlers.put("withdraw", new SettlementWithdrawCommand(plugin, messageProvider));
         handlers.put("joincountry", new SettlementJoinCountryCommand(plugin, messageProvider));
+        handlers.put("settaxes", new SettlementSetTaxesCommand(plugin, messageProvider));
+        handlers.put("usetaxpercent", new SettlementUseTaxPercentCommand(plugin, messageProvider));
     }
 
     @Override

@@ -21,6 +21,8 @@ settlement:
     - settlement.plot.evict
     - settlement.withdraw
     - settlement.joincountry
+    - settlement.usetaxpercent
+    - settlement.settaxes
   co-mayor:
     - settlement.claim
     - settlement.manage.perms

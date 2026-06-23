@@ -17,12 +17,12 @@ public class CoordinateUtils {
     }
 
     public static Coordinates locationToRegionCoordinates(Location location) {
-        return new Coordinates(Math.floorDiv((int) location.getChunk().getX(), Settings.regionChunkSize),
-                 Math.floorDiv((int) location.getChunk().getZ(), Settings.regionChunkSize), location.getWorld().getName());
+        return new Coordinates(Math.floorDiv((int) location.getBlockX() >> 4, Settings.regionChunkSize),
+                 Math.floorDiv((int) location.getBlockZ() >> 4, Settings.regionChunkSize), location.getWorld().getName());
     }
 
     public static Coordinates locationToChunkCoordinates(Location location) {
-        return new Coordinates(location.getChunk().getX(), location.getChunk().getZ(), location.getWorld().getName());
+        return new Coordinates(location.getBlockX() >> 4, location.getBlockZ() >> 4, location.getWorld().getName());
     }
 
     public static Coordinates worldToRegionCoordinates(Coordinates worldCoords) {

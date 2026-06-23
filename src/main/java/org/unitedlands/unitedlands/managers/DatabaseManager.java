@@ -28,10 +28,10 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class DatabaseManager {
 
-    private static DatabaseManager instance;
-    public static DatabaseManager instance() {
-        return instance;
-    }
+    // private static DatabaseManager instance;
+    // public static DatabaseManager instance() {
+    //     return instance;
+    // }
 
     private final UnitedLands plugin;
 
@@ -52,7 +52,7 @@ public class DatabaseManager {
     public void initialize() {
 
 
-        instance = this;
+        //instance = this;
         
         var fileConfig = plugin.getConfig();
 

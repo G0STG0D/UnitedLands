@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Country;
@@ -39,9 +40,11 @@ public class GlobalDataManager {
     private Map<Coordinates, RegionChunk> regionChunks = new HashMap<>();
     private Map<UUID, Country> countries = new HashMap<>();
 
-    public GlobalDataManager(DatabaseManager databaseManager, Pl3xMapRenderer mapRenderer) {
+    public GlobalDataManager(UnitedLands plugin, Pl3xMapRenderer mapRenderer) {
         instance = this;
-        this.databaseManager = databaseManager;
+        
+        databaseManager = new DatabaseManager(plugin);
+        databaseManager.initialize();
     }
 
     public void loadDataFromDatabase() {
@@ -155,16 +158,16 @@ public class GlobalDataManager {
     // Database operations
 
     public void createCitizenDbData(Citizen citizen) {
-        DatabaseManager.instance().getCitizenService().createAsync(citizen);
+        databaseManager.getCitizenService().createAsync(citizen);
         registerCitizen(citizen);
     }
 
     public void updateCitizenDbData(Citizen citizen) {
-        DatabaseManager.instance().getCitizenService().updateAsync(citizen);
+        databaseManager.getCitizenService().updateAsync(citizen);
     }
 
     public void removeCitizenDbData(Citizen citizen) {
-        DatabaseManager.instance().getCitizenService().deleteAsync(citizen);
+        databaseManager.getCitizenService().deleteAsync(citizen);
         unregisterCitizen(citizen);
     }
 
@@ -207,18 +210,18 @@ public class GlobalDataManager {
     // Database operations
 
     public void createSettlementDbData(Settlement settlement) {
-        DatabaseManager.instance().getSettlementChunkService().createAllAsync(settlement.getChunks());
-        DatabaseManager.instance().getSettlementService().createAsync(settlement);
+        databaseManager.getSettlementChunkService().createAllAsync(settlement.getChunks());
+        databaseManager.getSettlementService().createAsync(settlement);
         registerSettlement(settlement);
     }
 
     public void updateSettlementDbData(Settlement settlement) {
-        DatabaseManager.instance().getSettlementService().updateAsync(settlement);
+        databaseManager.getSettlementService().updateAsync(settlement);
     }
 
     public void removeSettlementDbData(Settlement settlement) {
-        DatabaseManager.instance().getSettlementChunkService().deleteAllAsync(settlement.getChunks());
-        DatabaseManager.instance().getSettlementService().deleteAsync(settlement);
+        databaseManager.getSettlementChunkService().deleteAllAsync(settlement.getChunks());
+        databaseManager.getSettlementService().deleteAsync(settlement);
         unregisterSettlement(settlement);
     }
 
@@ -278,16 +281,16 @@ public class GlobalDataManager {
     // Database operations
 
     public void createSettlementChunkDbData(SettlementChunk settlementChunk) {
-        DatabaseManager.instance().getSettlementChunkService().createAsync(settlementChunk);
+        databaseManager.getSettlementChunkService().createAsync(settlementChunk);
         registerSettlementChunk(settlementChunk);
     }
 
     public void updateSettlementChunkDbData(SettlementChunk settlementChunk) {
-        DatabaseManager.instance().getSettlementChunkService().updateAsync(settlementChunk);
+        databaseManager.getSettlementChunkService().updateAsync(settlementChunk);
     }
 
     public void removeSettlementChunkDbData(SettlementChunk settlementChunk) {
-        DatabaseManager.instance().getSettlementChunkService().deleteAsync(settlementChunk);
+        databaseManager.getSettlementChunkService().deleteAsync(settlementChunk);
         unregisterSettlementChunk(settlementChunk);
     }
 
@@ -313,19 +316,19 @@ public class GlobalDataManager {
 
     public void createRegionDbData(Region region) {
         for (var chunk : region.getChunks())
-            DatabaseManager.instance().getRegionChunkService().createAsync(chunk);
-        DatabaseManager.instance().getRegionService().createAsync(region);
+            databaseManager.getRegionChunkService().createAsync(chunk);
+        databaseManager.getRegionService().createAsync(region);
         registerRegion(region);
     }
 
     public void updateRegionDbData(Region region) {
-        DatabaseManager.instance().getRegionService().updateAsync(region);
+        databaseManager.getRegionService().updateAsync(region);
     }
 
     public void removeRegionDbData(Region region) {
         for (var chunk : region.getChunks())
-            DatabaseManager.instance().getRegionChunkService().deleteAsync(chunk);
-        DatabaseManager.instance().getRegionService().deleteAsync(region);
+            databaseManager.getRegionChunkService().deleteAsync(chunk);
+        databaseManager.getRegionService().deleteAsync(region);
         unregisterRegion(region);
     }
 
@@ -377,16 +380,16 @@ public class GlobalDataManager {
     // Database operations
 
     public void createRegionChunkDbData(RegionChunk regionChunk) {
-        DatabaseManager.instance().getRegionChunkService().createAsync(regionChunk);
+        databaseManager.getRegionChunkService().createAsync(regionChunk);
         registerRegionChunk(regionChunk);
     }
 
     public void updateRegionChunkDbData(RegionChunk regionChunk) {
-        DatabaseManager.instance().getRegionChunkService().updateAsync(regionChunk);
+        databaseManager.getRegionChunkService().updateAsync(regionChunk);
     }
 
     public void removeRegionChunkDbData(RegionChunk regionChunk) {
-        DatabaseManager.instance().getRegionChunkService().deleteAsync(regionChunk);
+        databaseManager.getRegionChunkService().deleteAsync(regionChunk);
         unregisterRegionChunk(regionChunk);
     }
 
@@ -411,16 +414,16 @@ public class GlobalDataManager {
     // Database operations
 
     public void createCountryDbData(Country country) {
-        DatabaseManager.instance().getCountryService().createAsync(country);
+        databaseManager.getCountryService().createAsync(country);
         registerCountry(country);
     }
 
     public void updateCountryDbData(Country country) {
-        DatabaseManager.instance().getCountryService().updateAsync(country);
+        databaseManager.getCountryService().updateAsync(country);
     }
 
     public void removeCountryDbData(Country country) {
-        DatabaseManager.instance().getCountryService().deleteAsync(country);
+        databaseManager.getCountryService().deleteAsync(country);
         unregisterCountry(country);
     }
 

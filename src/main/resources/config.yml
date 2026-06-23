@@ -58,6 +58,11 @@ economy:
   settlement-base-upkeep-per-plot: 6
   settlement-upkeep-per-plot-formula: "base * (0.1 * (claims / 25) + 1.0) / (0.4 * (residents / 2.0) + 1.0)"
 
+  settlement-tax-min-percent: 0.0
+  settlement-tax-max-percent: 0.2
+  settlement-tax-min-amount: 0.0
+  settlement-tax-max-amount: 1500.0
+
   new-country-cost: 80000
   region-claim-base-cost: 80000
   # Available vars: base (base costs), regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).

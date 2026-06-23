@@ -92,7 +92,13 @@ settlement:
     set: "<aqua>Your settlement's spawn has been updated.</aqua>"
   setcolor:
     wrong-format: "<red>You must supply a hexadecimal color (e.g. #FF0000)</red>"
-    set: "<aqua>Successfully changed your settltment color.</aqua>"
+    set: "<aqua>Successfully changed your settlement color.</aqua>"
+  settaxes: 
+    below-min: "<yellow>You can't set taxes lower than {min}, using minimum allowed value.</yellow>"
+    above-max: "<yellow>You can't set taxes higher than {max}, using maximum allowed value.</yellow>"
+    set: "<aqua>Taxes for {settlement} set to {value}</aqua>"
+  usetaxpercent-true: "<aqua>{settlement} now uses percentage taxes.</aqua>"
+  usetaxpercent-false: "<aqua>{settlement} now uses flat taxes.</aqua>"
   permission:
     unknown-membership: "<red>Unknown group: {membership}"
     unknown-permission: "<red>Unknown permission: {permission}"
@@ -225,6 +231,7 @@ info-screens:
     perm-2: "<dark_gray><gray><bold>         </bold></gray><gray>Switch</gray> {switch} | <gray>Use</gray> {use}   | <gray>Interact</gray> {interact}<dark_gray>"
     balance: "<gray><bold>Balance:</bold> {balance}</gray>"
     sizeupkeep: "<dark_gray><gray><bold>Size:</bold> [<aqua>{size}</aqua>]</gray> | <gray><bold>Upkeep:</bold> [<aqua>{upkeep}</aqua>]</gray></dark_gray>"
+    taxes: "<gray><bold>Citizen tax:</bold> {taxes} per day</gray>"
     citizens: "<gray><bold>Citizens:</bold> [<aqua>{citizens-count}</aqua>]</gray>"
     metadata: "<gray>{metadata}</gray>"
   settlementchunk:

@@ -56,6 +56,8 @@ public class PlayerBukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (!event.hasChangedBlock())
+            return;
         if (!updatePlayerLocation(event.getPlayer(), event.getFrom(), event.getTo()))
             event.setCancelled(true);
     }
@@ -83,8 +85,6 @@ public class PlayerBukkitListener implements Listener {
 
         var fromChunkCoords = CoordinateUtils.locationToChunkCoordinates(from);
         var toChunkCoords = CoordinateUtils.locationToChunkCoordinates(to);
-        var fromRegionCoords = CoordinateUtils.locationToRegionCoordinates(from);
-        var toRegionCoords = CoordinateUtils.locationToRegionCoordinates(to);
 
         if (!fromChunkCoords.equals(toChunkCoords)) {
 
@@ -134,6 +134,9 @@ public class PlayerBukkitListener implements Listener {
 
 
             // Region handling
+
+            var fromRegionCoords = CoordinateUtils.locationToRegionCoordinates(from);
+            var toRegionCoords = CoordinateUtils.locationToRegionCoordinates(to);
 
             Region region = null;
             boolean enteredRegion = false;

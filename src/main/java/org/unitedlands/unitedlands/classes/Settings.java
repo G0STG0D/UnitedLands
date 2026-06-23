@@ -44,6 +44,10 @@ public class Settings {
     public static String settlementClaimCostProgression;
     public static int settlementBaseUpkeepPerPlot;
     public static String settlementUpkeepPerPlotFormula;
+    public static float settlementMinTaxPercent;
+    public static float settlementMaxTaxPercent;
+    public static double settlementMinTaxAmount;
+    public static double settlementMaxTaxAmount;
 
     public static int countryCreateCosts;
     public static int regionClaimBaseCosts;
@@ -91,6 +95,11 @@ public class Settings {
         settlementClaimCostProgression = config.getString("economy.settlement-claim-cost-progression", "base + ((claims - 1)^2 * 0.005)");
         settlementBaseUpkeepPerPlot = config.getInt("economy.settlement-base-upkeep-per-plot", 6);
         settlementUpkeepPerPlotFormula = config.getString("economy.settlement-upkeep-per-plot-formula", "base * (0.1 * (claims / 25) + 1.0) / (0.4 * (residents / 2.0) + 1.0)");
+        settlementMinTaxPercent = (float)config.getDouble("economy.settlement-tax-min-percent", 0.0);
+        settlementMaxTaxPercent = (float)config.getDouble("economy.settlement-tax-max-percent", 20.0);
+        settlementMinTaxAmount = config.getDouble("economy.settlement-tax-min-amount", 0.0);
+        settlementMaxTaxAmount = config.getDouble("economy.settlement-tax-max-amount", 1500.0);
+
 
         countryCreateCosts = config.getInt("economy.new-country-cost", 80000);
         regionClaimBaseCosts = config.getInt("economy.region-claim-base-cost", 80000);

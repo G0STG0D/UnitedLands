@@ -93,6 +93,11 @@ public class SettlementInfoScreen extends InfoScreen {
                                                 .format(EconomyManager.instance().getBalance(settlement.getUuid()))));
                 addComponent("balance", balance);
 
+                var taxString = settlement.isUseTaxPercent() ? String.format("%.2f%%", settlement.getTax() * 100) : EconomyManager.instance().format((double)settlement.getTax());
+                var taxes = Messenger.getMessage(messageProvider.get("info-screens.settlement.taxes"),
+                                Map.of("taxes", taxString));
+                addComponent("taxes", taxes);
+
                 var citizenNames = "(no citizens)";
                 var citizenCount = 0;
                 if (settlement.getCitizens() != null) {
