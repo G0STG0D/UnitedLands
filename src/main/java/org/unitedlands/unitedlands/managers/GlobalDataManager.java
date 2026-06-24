@@ -32,6 +32,9 @@ public class GlobalDataManager {
     }
 
     private final DatabaseManager databaseManager;
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
 
     private Map<UUID, Citizen> citizens = new HashMap<>();
     private Map<UUID, Settlement> settlements = new HashMap<>();

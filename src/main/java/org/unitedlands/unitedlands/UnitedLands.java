@@ -12,6 +12,7 @@ import org.unitedlands.unitedlands.commands.RegionChunkCommands;
 import org.unitedlands.unitedlands.commands.RegionCommands;
 import org.unitedlands.unitedlands.commands.SettlementChunkCommands;
 import org.unitedlands.unitedlands.commands.SettlementCommands;
+import org.unitedlands.unitedlands.commands.WebCommands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
 import org.unitedlands.unitedlands.listeners.BlockListener;
@@ -52,6 +53,8 @@ public class UnitedLands extends JavaPlugin {
     private Pl3xMapRenderer mapRenderer;
     private TownyProvider townyProvider;
 
+    private UnitedLandsWebServices webServices;
+
     @Override
     public void onEnable() {
 
@@ -73,7 +76,14 @@ public class UnitedLands extends JavaPlugin {
         registerCommands();
         registerListeners();
 
+        webServices = new UnitedLandsWebServices(this);
+
         getLogger().info("UnitedLands initialized.");
+    }
+
+    @Override
+    public void onDisable() {
+        webServices.stopWebServices();
     }
 
     private void loadManagers() {
@@ -128,6 +138,10 @@ public class UnitedLands extends JavaPlugin {
         var citizenCommand = new CitizenCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("citizen")).setExecutor(citizenCommand);
         Objects.requireNonNull(getCommand("citizen")).setTabCompleter(citizenCommand);
+
+        var webCommand = new WebCommands(this, messageProvider);
+        Objects.requireNonNull(getCommand("ulweb")).setExecutor(webCommand);
+        Objects.requireNonNull(getCommand("ulweb")).setTabCompleter(webCommand);
     }
 
     private void registerListeners() {

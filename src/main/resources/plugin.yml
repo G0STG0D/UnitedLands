@@ -32,3 +32,5 @@ commands:
    settlementchunk:
       description: UnitedLands region chunk commands.
       aliases: [plot]
+   ulweb:
+      description: UnitedLands web UI commands.

@@ -11,11 +11,13 @@ import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.db.CitizenService;
 import org.unitedlands.unitedlands.classes.db.CountryService;
+import org.unitedlands.unitedlands.classes.db.LoginChallengeService;
 import org.unitedlands.unitedlands.classes.db.RegionChunkService;
 import org.unitedlands.unitedlands.classes.db.RegionService;
 import org.unitedlands.unitedlands.classes.db.SchemaVersion;
 import org.unitedlands.unitedlands.classes.db.SettlementChunkService;
 import org.unitedlands.unitedlands.classes.db.SettlementService;
+import org.unitedlands.unitedlands.classes.webservices.LoginChallenge;
 import org.unitedlands.utils.Logger;
 
 import com.j256.ormlite.dao.Dao;
@@ -44,6 +46,7 @@ public class DatabaseManager {
     private SettlementService settlementService;
     private SettlementChunkService settlementChunkService;
     private CitizenService citizenService;
+    private LoginChallengeService loginChallengeService;
 
     public DatabaseManager(UnitedLands plugin) {
         this.plugin = plugin;
@@ -109,6 +112,7 @@ public class DatabaseManager {
         this.settlementService = new SettlementService(getDao(Settlement.class));
         this.settlementChunkService = new SettlementChunkService(getDao(SettlementChunk.class));
         this.citizenService = new CitizenService(getDao(Citizen.class));
+        this.loginChallengeService = new LoginChallengeService(getDao(LoginChallenge.class));
     }
 
     private void verifySchemaVersion() throws SQLException {
@@ -185,6 +189,11 @@ public class DatabaseManager {
     public CitizenService getCitizenService() {
         return citizenService;
     }
+
+    public LoginChallengeService getLoginChallengeService() {
+        return loginChallengeService;
+    }
+
 
     public ConnectionSource getConnectionSource() {
         return connectionSource;
