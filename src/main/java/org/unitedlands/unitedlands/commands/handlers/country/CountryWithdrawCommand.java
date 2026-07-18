@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class CountryWithdrawCommand extends CountryCommandHandler {
@@ -32,7 +32,7 @@ public class CountryWithdrawCommand extends CountryCommandHandler {
             return;
 
         var player = (Player) sender;
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getCountry() == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
                     null, messageProvider.get("prefix"));
@@ -53,17 +53,17 @@ public class CountryWithdrawCommand extends CountryCommandHandler {
             return;
         }
 
-        if (!EconomyManager.instance().has(country.getUuid(), amount)) {
+        if (!UnitedLandsEconomyManager.instance().has(country.getUuid(), amount)) {
             Messenger.sendMessage(player, messageProvider.get("country.no-funds"),
-                    Map.of("amount", EconomyManager.instance().format(amount)), messageProvider.get("prefix"));
+                    Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get("prefix"));
             return;
         }
 
-        EconomyManager.instance().withdraw(country.getUuid(), amount);
-        EconomyManager.instance().deposit(player.getUniqueId(), amount);
+        UnitedLandsEconomyManager.instance().withdraw(country.getUuid(), amount);
+        UnitedLandsEconomyManager.instance().deposit(player.getUniqueId(), amount);
 
         Messenger.sendMessage(player, messageProvider.get("country.withdraw"),
-                Map.of("amount", EconomyManager.instance().format(amount)), messageProvider.get("prefix"));
+                Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get("prefix"));
     }
 
 }

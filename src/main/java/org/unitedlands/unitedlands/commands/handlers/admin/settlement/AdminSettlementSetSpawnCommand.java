@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -53,7 +53,7 @@ public class AdminSettlementSetSpawnCommand extends SettlementAdminCommandHandle
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return GlobalDataManager.instance().getSettlementNames();
+            return UnitedLandsDataManager.instance().getSettlementNames();
         return null;
     }
 

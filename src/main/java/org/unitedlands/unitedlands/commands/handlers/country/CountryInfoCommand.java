@@ -9,8 +9,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.classes.infoscreen.CountryInfoScreen;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 public class CountryInfoCommand extends CountryCommandHandler {
 
@@ -21,7 +20,7 @@ public class CountryInfoCommand extends CountryCommandHandler {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return GlobalDataManager.instance().getCountryNames();
+            return UnitedLandsDataManager.instance().getCountryNames();
         return null;
     }
 
@@ -39,17 +38,13 @@ public class CountryInfoCommand extends CountryCommandHandler {
             if (country == null)
                 return;
         } else if (args.length >= 1) {
-            country = GlobalDataManager.instance().getCountry(args[0]);
+            country = UnitedLandsDataManager.instance().getCountry(args[0]);
             if (country == null) {
                 return;
             }
-        } 
-        
-        var screen = new CountryInfoScreen(plugin, messageProvider, country);
-        if (screen.getComponents().size() > 0) {
-            for (var component : screen.getComponents()) {
-                Messenger.send(player, component.getContent());
-            }
         }
+
+        var screen = new CountryInfoScreen(plugin, messageProvider, country);
+        screen.send(player);
     }
 }

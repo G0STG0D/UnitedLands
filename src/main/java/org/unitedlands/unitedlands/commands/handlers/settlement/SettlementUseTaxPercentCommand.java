@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementUseTaxPercentCommand extends SettlementCommandHandler {
@@ -26,54 +25,47 @@ public class SettlementUseTaxPercentCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.usetaxpercent", citizen))
+        var context = validate(sender, "settlement.usetaxpercent");
+        if (context == null)
             return;
 
         boolean value = Boolean.parseBoolean(args[0]);
 
-        settlement.setUseTaxPercent(value);
+        context.settlement().setUseTaxPercent(value);
 
-        var currTax = settlement.getTax();
-        if (settlement.isUseTaxPercent()) {
+        var currTax = context.settlement().getTax();
+        if (context.settlement().isUseTaxPercent()) {
             if (currTax < Settings.settlementMinTaxPercent) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.below-min"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.below-min"),
                         Map.of("min", String.format("%.2f%%", Settings.settlementMinTaxPercent * 100)),
                         messageProvider.get("prefix"));
-                settlement.setTax(Settings.settlementMinTaxPercent);
+                context.settlement().setTax(Settings.settlementMinTaxPercent);
             } else if (currTax > Settings.settlementMaxTaxPercent) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.above-max"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.above-max"),
                         Map.of("max", String.format("%.2f%%", Settings.settlementMaxTaxPercent * 100)),
                         messageProvider.get("prefix"));
-                settlement.setTax(Settings.settlementMaxTaxPercent);
+                context.settlement().setTax(Settings.settlementMaxTaxPercent);
 
             }
         } else {
             if (currTax < Settings.settlementMinTaxAmount) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.below-min"),
-                        Map.of("min", EconomyManager.instance().format(Settings.settlementMinTaxAmount)),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.below-min"),
+                        Map.of("min", UnitedLandsEconomyManager.instance().format(Settings.settlementMinTaxAmount)),
                         messageProvider.get("prefix"));
-                settlement.setTax((float) Settings.settlementMinTaxAmount);
+                context.settlement().setTax((float) Settings.settlementMinTaxAmount);
 
             } else if (currTax > Settings.settlementMaxTaxAmount) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.above-max"),
-                        Map.of("max", EconomyManager.instance().format(Settings.settlementMaxTaxAmount)),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.above-max"),
+                        Map.of("max", UnitedLandsEconomyManager.instance().format(Settings.settlementMaxTaxAmount)),
                         messageProvider.get("prefix"));
-                settlement.setTax((float) Settings.settlementMaxTaxAmount);
+                context.settlement().setTax((float) Settings.settlementMaxTaxAmount);
             }
         }
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.usetaxpercent-" + value),
-                Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.usetaxpercent-" + value),
+                Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
     }
 
     @Override

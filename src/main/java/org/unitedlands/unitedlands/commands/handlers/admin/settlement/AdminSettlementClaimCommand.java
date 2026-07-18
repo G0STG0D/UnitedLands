@@ -11,7 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -24,7 +24,7 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return GlobalDataManager.instance().getSettlementNames();
+            return UnitedLandsDataManager.instance().getSettlementNames();
         return null;
     }
 
@@ -50,7 +50,7 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
 
         var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
 
-        var existingChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoords);
+        var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
             Messenger.sendMessage(player, messageProvider.get("settlement.claim.already-claimed"),
                     null, messageProvider.get("prefix"));
@@ -67,7 +67,7 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
 
         settlement.addChunk(chunk);
 
-        GlobalDataManager.instance().createSettlementChunkDbData(chunk);
+        UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
 
         Pl3xMapRenderer.instance().renderSettlement(settlement);
 

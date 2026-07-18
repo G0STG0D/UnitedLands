@@ -8,7 +8,6 @@ import org.unitedlands.unitedlands.commands.AdminCommands;
 import org.unitedlands.unitedlands.commands.ApprovalCommand;
 import org.unitedlands.unitedlands.commands.CitizenCommands;
 import org.unitedlands.unitedlands.commands.CountryCommands;
-import org.unitedlands.unitedlands.commands.RegionChunkCommands;
 import org.unitedlands.unitedlands.commands.RegionCommands;
 import org.unitedlands.unitedlands.commands.SettlementChunkCommands;
 import org.unitedlands.unitedlands.commands.SettlementCommands;
@@ -23,8 +22,8 @@ import org.unitedlands.unitedlands.listeners.PlayerListener;
 import org.unitedlands.unitedlands.listeners.ServerEventListener;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
@@ -43,8 +42,8 @@ public class UnitedLands extends JavaPlugin {
 
     private MessageProvider messageProvider;
 
-    GlobalDataManager globalDataManager;
-    EconomyManager economyManager;
+    UnitedLandsDataManager globalDataManager;
+    UnitedLandsEconomyManager economyManager;
     DisplayManager displayManager;
     ConfirmationManager confirmationManager;
     PermissionManager permissionManager;
@@ -90,11 +89,11 @@ public class UnitedLands extends JavaPlugin {
 
         mapRenderer = new Pl3xMapRenderer();
         permissionManager = new PermissionManager(this);
-        globalDataManager = new GlobalDataManager(this, mapRenderer);
+        globalDataManager = new UnitedLandsDataManager(this, mapRenderer);
         displayManager = new DisplayManager(this);
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
-        economyManager = new EconomyManager(this);
+        economyManager = new UnitedLandsEconomyManager(this);
     }
 
     private void loadIntegrations() {
@@ -114,10 +113,6 @@ public class UnitedLands extends JavaPlugin {
         var regionCommands = new RegionCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("region")).setExecutor(regionCommands);
         Objects.requireNonNull(getCommand("region")).setTabCompleter(regionCommands);
-
-        var regionChunkCommands = new RegionChunkCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("regionchunk")).setExecutor(regionChunkCommands);
-        Objects.requireNonNull(getCommand("regionchunk")).setTabCompleter(regionChunkCommands);
 
         var settlementCommands = new SettlementCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("settlement")).setExecutor(settlementCommands);
@@ -179,6 +174,10 @@ public class UnitedLands extends JavaPlugin {
 
     public TownyProvider getTownyProvider() {
         return townyProvider;
+    }
+
+    public UnitedLandsWebServices getWebServices() {
+        return webServices;
     }
 
 }

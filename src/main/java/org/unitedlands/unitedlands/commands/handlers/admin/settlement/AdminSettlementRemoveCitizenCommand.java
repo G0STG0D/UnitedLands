@@ -11,7 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandHandler {
@@ -58,8 +58,8 @@ public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandH
 
         (new SettlementPlayerLeaveEvent(settlement, citizen.getPlayer().getPlayer())).callEvent();
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
-        GlobalDataManager.instance().updateCitizenDbData(citizen);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
         Messenger.sendMessage(player, messageProvider.get("admin.settlement.removecitizen.success"),
                 Map.of("settlement", args[0], "name", args[1]), messageProvider.get("prefix"));
@@ -69,9 +69,9 @@ public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandH
     public List<String> handleTab(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1:
-                return GlobalDataManager.instance().getSettlementNames();
+                return UnitedLandsDataManager.instance().getSettlementNames();
             case 2:
-                var settlement = GlobalDataManager.instance().getSettlement(args[0]);
+                var settlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
                 return settlement.getCitizens().stream().map(Citizen::getName).collect(Collectors.toList());
         }
         return null;

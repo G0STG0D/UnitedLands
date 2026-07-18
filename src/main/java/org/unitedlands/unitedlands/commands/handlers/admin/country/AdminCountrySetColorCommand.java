@@ -9,7 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -44,10 +44,10 @@ public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
         country.setFillColor(args[1] + "10");
         country.setStrokeColor(args[1]);
 
-        GlobalDataManager.instance().updateCountryDbData(country);
+        UnitedLandsDataManager.instance().updateCountryDbData(country);
 
         for (var region : country.getRegions()) {
-            Pl3xMapRenderer.instance().renderRegion(region);
+            Pl3xMapRenderer.instance().renderPolyRegion(region);
         }
         Pl3xMapRenderer.instance().renderCountry(country);
         for (var region : country.getRegions()) {
@@ -63,7 +63,7 @@ public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
     @Override
     public List<String> handleTab(CommandSender arg0, String[] args) {
         if (args.length == 1) {
-            return GlobalDataManager.instance().getCountryNames();
+            return UnitedLandsDataManager.instance().getCountryNames();
         }
         return null;
     }

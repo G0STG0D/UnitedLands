@@ -10,7 +10,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementUnclaimEvent;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -42,7 +42,7 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
 
         var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
 
-        var existingChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoords);
+        var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk == null) {
             Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.not-claimed"),
                     null, messageProvider.get("prefix"));
@@ -68,8 +68,8 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
 
         (new SettlementUnclaimEvent(settlement, chunkCoords)).callEvent();
 
-        GlobalDataManager.instance().removeSettlementChunkDbData(existingChunk);
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().removeSettlementChunkDbData(existingChunk);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
         Pl3xMapRenderer.instance().renderSettlement(settlement);
 

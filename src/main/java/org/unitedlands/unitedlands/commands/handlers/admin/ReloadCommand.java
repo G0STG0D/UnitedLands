@@ -22,6 +22,8 @@ public class ReloadCommand extends BaseCommandHandler<UnitedLands> {
         plugin.getPermissionConfig().reload();
         plugin.getMessageProvider().reload(plugin.getMessageConfig().get());
         plugin.getPermissionManager().reloadRankPermissions();
+        plugin.getWebServices().reloadConfig();
+        
         Settings.loadSettings(plugin.getConfig());
         
         Messenger.sendMessage(sender, messageProvider.get("reload"), null, messageProvider.get("prefix"));

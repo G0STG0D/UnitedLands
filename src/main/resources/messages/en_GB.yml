@@ -71,6 +71,7 @@ admin:
       error: "<red>Error while importing: {message}"
       success-settlement: "<gray>Successfully imported settlement <blue>{settlement}</blue> ({plots} chunks) from Towny."
       success-country: "<gray>Successfully imported country <green>{country}</green> from Towny."
+      finished: "<green>Import complete. Use '/ula map <world_name> all' to rerender the world map.</green>"
       
 settlement:
   create:
@@ -109,7 +110,7 @@ settlement:
   claim:
     already-claimed: "<yellow>This chunk is already claimed</yellow>"
     success: "<aqua>Claimed chunk at {chunk} for {settlement} for {costs}</aqua>"
-    has-country: "<yellow>This chunk belongs to a region owned by <green>{country}</green>, and they do not allow foreign towns to claim.</yellow>"
+    has-country: "<yellow>This chunk belongs to a region owned by <green>{country}</green>, and they do not allow foreigners to claim.</yellow>"
     outside-of-region: "<yellow>Claiming outside of a settlement's home region is not allowed.</yellow>"
   unclaim:
     has-spawn: "<yellow>You cannot unclaim this chunk, it contains the settlement spawn. Move the spawn first.</yellow>"
@@ -155,11 +156,13 @@ settlement:
 
 settlementchunk:
   toggle:
-    unknown-toggle: "<yellow>Unknown toggle: {toggle}"
+    usage: "Usage: /plot toggle <toggle> <on|off>"
+    unknown-toggle: "<yellow>Unknown toggle: {toggle}</yellow>"
     set: "<aqua>Toggled plot {field} to {state}</aqua>"
   permission:
-    unknown-membership: "<yellow>Unknown group: {membership}"
-    unknown-permission: "<yellow>Unknown permission: {permission}"
+    usage: "<gray>Usage: /plot permission <permission> <group> <on|off></gray>"
+    unknown-membership: "<yellow>Unknown group: {membership}</yellow>"
+    unknown-permission: "<yellow>Unknown permission: {permission}</yellow>"
     set: "<aqua>Plot permission {permission} for {membership} set to {state}</aqua>"
   sell:
     has-owner: "<yellow>This plot is already owned by {owner}. Evict the current owner before putting this plot up for sale.</yellow>"
@@ -174,6 +177,10 @@ settlementchunk:
   abandon:
     not-owner: "<yellow>You are not the owner of this plot.</yellow>"
     success: "<aqua>You abandoned this plot.</aqua>"
+  settype:
+    unknown-type: "<yellow>Unknown type: {type}.</yellow>"
+    too-many-of-type: "<yellow>The settlement can only have {max} plots of type {type}."
+    success: "<aqua>Set plot type to {type}."
 
 country:
   create:
@@ -191,6 +198,8 @@ country:
   setcolor:
     wrong-format: "<yellow>You must supply a hexadecimal color (e.g. #FF0000)</yellow>"
     set: "<aqua>Successfully changed your nation color.</aqua>"
+  setname:
+    set: "<aqua>Successfully changed your nation name to {country}.</aqua>"
   no-funds: "<yellow>The country doesn't have {amount} in its bank.</yellow>"
   deposit: "<aqua>You deposited {amount} into the country bank.</aqua>"
   withdraw: "<aqua>You took {amount} from the country bank.</aqua>"
@@ -235,6 +244,7 @@ info-screens:
     citizens: "<gray><bold>Citizens:</bold> [<aqua>{citizens-count}</aqua>]</gray>"
     metadata: "<gray>{metadata}</gray>"
   settlementchunk:
+    type: "<dark_gray><gray><bold>Plot type:</bold> {type}</gray></dark_gray>"
     owner: "<dark_gray><gray><bold>Owner:</bold> {owner}</gray> | <gray><bold>Claimed:</bold> {claimed}</gray></dark_gray>"
     sale: "<dark_gray><gray><bold>For sale:</bold> {forsale}</gray> | <gray><bold>Price:</bold> {price}</gray></dark_gray>"
     toggles: "<gray><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>"
@@ -256,3 +266,8 @@ info-screens:
     country-ranks: "<gray><bold>Country ranks:</bold> {countryranks}</gray>"
     balance: "<gray><bold>Balance:</bold> {balance}</gray>"
     metadata: "<gray>{metadata}</gray>"
+  diplomacy:
+    allies: "<gray><bold>Allies ({count}):</bold> {allies}</gray>"
+    naps: "<gray><bold>Non-Agression Pacts ({count}):</bold> {naps}</gray>"
+    trade-treaties: "<gray><bold>Trade Treaties ({count}):</bold> {trade-treaties}</gray>"
+    claim-permissions: "<gray><bold>Claim permissions ({count}):</bold> {claim-permissions}</gray>"

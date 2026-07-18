@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
@@ -13,8 +12,8 @@ import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPreClaimEvent;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.utils.Messenger;
@@ -33,48 +32,46 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
+        var context = validate(sender, "settlement.claim");
+        if (context == null)
             return;
 
-        if (!hasPermission("settlement.claim", citizen))
-            return;
+        var chunkCoords = CoordinateUtils.locationToChunkCoordinates(context.player().getLocation());
 
-        var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
-
-        var existingChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoords);
+        var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.claim.already-claimed"),
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.already-claimed"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        var regionCoords = CoordinateUtils.locationToRegionCoordinates(player.getLocation());
-        var region = GlobalDataManager.instance().getRegion(regionCoords);
+        var region = UnitedLandsDataManager.instance()
+                .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(context.player().getLocation()));
         if (region != null) {
-            if (!region.equals(settlement.getRegion()) && !Settings.allowTownClaimsOutsideHomeRegion) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.claim.outside-of-region"),
+            if (!region.equals(context.settlement().getRegion()) && !Settings.allowTownClaimsOutsideHomeRegion) {
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.outside-of-region"),
                         null, messageProvider.get("prefix"));
                 return;
             }
 
             if (region.hasCountry()) {
-                // TODO Country checks
+                if (!region.getCountry().getSettlementClaimWhitelist().contains(context.settlement())) {
+                    Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.has-country"),
+                            Map.of("country", region.getCountry().getCleanName()), messageProvider.get("prefix"));
+                    return;
+                }
             }
         }
 
-        var claimCosts = CostUtils.getSettlementClaimCosts(settlement);
-        if (!EconomyManager.instance().has(settlement.getUuid(), claimCosts)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.no-funds"),
-                    Map.of("amount", EconomyManager.instance().format(claimCosts)), messageProvider.get("prefix"));
+        var claimCosts = CostUtils.getSettlementClaimCosts(context.settlement());
+        if (!UnitedLandsEconomyManager.instance().has(context.settlement().getUuid(), claimCosts)) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.no-funds"),
+                    Map.of("amount", UnitedLandsEconomyManager.instance().format(claimCosts)),
+                    messageProvider.get("prefix"));
             return;
         }
 
-        var preEvent = new SettlementPreClaimEvent(settlement, chunkCoords);
+        var preEvent = new SettlementPreClaimEvent(context.settlement(), chunkCoords);
         preEvent.callEvent();
         if (preEvent.isCancelled())
             return;
@@ -83,22 +80,22 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
 
         chunk.setUuid(UUID.randomUUID());
         chunk.setCoordinates(chunkCoords);
-        chunk.setWorld(player.getLocation().getWorld());
+        chunk.setWorld(context.player().getLocation().getWorld());
         chunk.setClaimTimestamp(System.currentTimeMillis());
-        chunk.setSettlement(settlement);
+        chunk.setSettlement(context.settlement());
 
-        settlement.addChunk(chunk);
+        context.settlement().addChunk(chunk);
 
-        GlobalDataManager.instance().createSettlementChunkDbData(chunk);
+        UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
 
-        EconomyManager.instance().withdraw(settlement.getUuid(), claimCosts);
+        UnitedLandsEconomyManager.instance().withdraw(context.settlement().getUuid(), claimCosts);
 
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
+        Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.claim.success"),
-                Map.of("settlement", settlement.getCleanName(),
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.success"),
+                Map.of("settlement", context.settlement().getCleanName(),
                         "chunk", chunkCoords.toString(),
-                        "costs", EconomyManager.instance().format(claimCosts)),
+                        "costs", UnitedLandsEconomyManager.instance().format(claimCosts)),
                 messageProvider.get("prefix"));
     }
 

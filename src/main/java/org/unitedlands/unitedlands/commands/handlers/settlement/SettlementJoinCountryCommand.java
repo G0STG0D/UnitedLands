@@ -5,13 +5,12 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementJoinCountryCommand extends SettlementCommandHandler {
@@ -32,31 +31,24 @@ public class SettlementJoinCountryCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.joincountry");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.joincountry", citizen))
-            return;
-
-        if (settlement.hasCountry()) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.joincountry.already-in-country"),
+        
+        if (context.settlement().hasCountry()) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.joincountry.already-in-country"),
                     null, messageProvider.get("prefix"));
             return;
         }
-        if (!settlement.hasRegion()) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.joincountry.no-region"),
+        if (!context.settlement().hasRegion()) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.joincountry.no-region"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        var region = settlement.getRegion();
+        var region = context.settlement().getRegion();
         if (!region.hasCountry()) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.joincountry.no-country"),
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.joincountry.no-country"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -66,21 +58,21 @@ public class SettlementJoinCountryCommand extends SettlementCommandHandler {
         Confirmation join = new Confirmation("country-join");
         join.setRunnable(() -> {
 
-            settlement.setCountry(country);
-            country.addSettlement(settlement);
+            context.settlement().setCountry(country);
+            country.addSettlement(context.settlement());
 
-            GlobalDataManager.instance().updateSettlementDbData(settlement);
+            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-            Pl3xMapRenderer.instance().renderSettlement(settlement);
+            Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("settlement.joincountry.broadcast"),
-                    Map.of("settlement", settlement.getCleanName(), "country", country.getCleanName()),
+                    Map.of("settlement", context.settlement().getCleanName(), "country", country.getCleanName()),
                     messageProvider.get("prefix"));
         })
                 .setTitle(messageProvider.get("settlement.joincountry.confirm"))
                 .setReplacements(Map.of("country", country.getCleanName()))
-                .setSender(player)
-                .setReceiver(player)
+                .setSender(context.player())
+                .setReceiver(context.player())
                 .setDiscriminator(country.getName())
                 .setAcceptCommand("/approve country-join")
                 .setCancelCommand("/cancel country-join")

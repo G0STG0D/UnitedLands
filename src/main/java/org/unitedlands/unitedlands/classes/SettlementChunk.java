@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
 import org.unitedlands.unitedlands.classes.interfaces.CoordinateHolder;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Logger;
 
 import com.j256.ormlite.field.DataType;
@@ -26,13 +26,16 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
     private String name;
     @DatabaseField(width = 255, columnName = "world_name")
     private String worldName;
-    @DatabaseField(width = 255, columnName = "region_uuid")
+    @DatabaseField(width = 255, columnName = "settlement_uuid")
     private UUID settlementUuid;
 
     @DatabaseField()
     private int x;
     @DatabaseField()
     private int z;
+
+    @DatabaseField(width = 32, columnName = "chunk_type")
+    private String chunkType = "none";
 
     @DatabaseField(width = 36, columnName = "owner_uuid")
     private UUID ownerUuid;
@@ -138,7 +141,7 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
 
     public Settlement getSettlement() {
         if (settlement == null)
-            settlement = GlobalDataManager.instance().getSettlement(settlementUuid);
+            settlement = UnitedLandsDataManager.instance().getSettlement(settlementUuid);
         return settlement;
     }
 
@@ -149,6 +152,14 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
 
     public UUID getSettlementUuid() {
         return settlementUuid;
+    }
+
+    public String getChunkType() {
+        return chunkType;
+    }
+
+    public void setChunkType(String chunkType) {
+        this.chunkType = chunkType;
     }
 
     public void setOwner(Citizen owner) {
@@ -163,7 +174,7 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
 
     public Citizen getOwner() {
         if (owner == null && ownerUuid != null)
-            owner = GlobalDataManager.instance().getCitizen(ownerUuid);
+            owner = UnitedLandsDataManager.instance().getCitizen(ownerUuid);
         return owner;
     }
 
@@ -191,8 +202,7 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         this.salePrice = salePrice;
     }
 
-    public boolean isForSale()
-    {
+    public boolean isForSale() {
         return salePrice != null;
     }
 
@@ -213,7 +223,7 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
             if (trustListSerialized != null) {
                 try {
                     trustList = Arrays.stream(trustListSerialized.split("#"))
-                            .map(c -> GlobalDataManager.instance().getCitizen(UUID.fromString(c)))
+                            .map(c -> UnitedLandsDataManager.instance().getCitizen(UUID.fromString(c)))
                             .collect(Collectors.toSet());
                 } catch (Exception ex) {
                     Logger.logError("Unable to parse trustList of " + getName() + ": " + ex.getMessage());

@@ -14,8 +14,8 @@ import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
@@ -31,7 +31,7 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             return;
 
         var player = (Player) sender;
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getSettlement() == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.not-in-settlement"),
                     null, messageProvider.get("prefix"));
@@ -53,9 +53,9 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             return;
         }
 
-        if (!EconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.countryCreateCosts))) {
+        if (!UnitedLandsEconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.countryCreateCosts))) {
             Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
-                    Map.of("amount", EconomyManager.instance().format(Settings.countryCreateCosts)),
+                    Map.of("amount", UnitedLandsEconomyManager.instance().format(Settings.countryCreateCosts)),
                     messageProvider.get("prefix"));
             return;
         }
@@ -82,16 +82,16 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
 
             citizen.addCountryRank("leader");
 
-            GlobalDataManager.instance().createCountryDbData(country);
-            GlobalDataManager.instance().updateRegionDbData(region);
-            GlobalDataManager.instance().updateSettlementDbData(settlement);
-            GlobalDataManager.instance().updateCitizenDbData(citizen);
+            UnitedLandsDataManager.instance().createCountryDbData(country);
+            UnitedLandsDataManager.instance().updateRegionDbData(region);
+            UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-            EconomyManager.instance().createAccount(country.getUuid(), country.getName());
-            EconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
+            UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
+            UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
 
             Pl3xMapRenderer.instance().removeRegion(region);
-            Pl3xMapRenderer.instance().renderRegion(region);
+            Pl3xMapRenderer.instance().renderPolyRegion(region);
             Pl3xMapRenderer.instance().renderSettlement(settlement);
             Pl3xMapRenderer.instance().renderCountry(country);
 

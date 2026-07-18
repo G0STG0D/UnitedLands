@@ -9,10 +9,10 @@ import org.unitedlands.unitedlands.integrations.economy.IEconomyProvider;
 import org.unitedlands.unitedlands.integrations.economy.VaultEconomyProvider;
 import org.unitedlands.utils.Logger;
 
-public class EconomyManager {
-    protected static EconomyManager instance;
+public class UnitedLandsEconomyManager {
+    protected static UnitedLandsEconomyManager instance;
 
-    public static EconomyManager instance() {
+    public static UnitedLandsEconomyManager instance() {
         return instance;
     }
 
@@ -20,7 +20,7 @@ public class EconomyManager {
 
     private IEconomyProvider economyProvider;
 
-    public EconomyManager(UnitedLands plugin) {
+    public UnitedLandsEconomyManager(UnitedLands plugin) {
         this.plugin = plugin;
         instance = this;
     }

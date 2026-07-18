@@ -20,8 +20,10 @@ import org.unitedlands.unitedlands.commands.handlers.country.CountryDepositComma
 import org.unitedlands.unitedlands.commands.handlers.country.CountryInfoCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryRankSubcommands;
 import org.unitedlands.unitedlands.commands.handlers.country.CountrySetColorCommand;
+import org.unitedlands.unitedlands.commands.handlers.country.CountrySetNameCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryWithdrawCommand;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.commands.handlers.country.diplomacy.CountryDiplomacySubcommands;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Formatter;
 
 public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
@@ -40,9 +42,11 @@ public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("create", new CountryCreateCommand(plugin, messageProvider));
         handlers.put("claim", new CountryClaimCommand(plugin, messageProvider));
         handlers.put("setcolor", new CountrySetColorCommand(plugin, messageProvider));
+        handlers.put("setname", new CountrySetNameCommand(plugin, messageProvider));
         handlers.put("delete", new CountryDeleteCommand(plugin, messageProvider));
         handlers.put("info", infoCommand);
         handlers.put("rank", new CountryRankSubcommands(plugin, messageProvider));
+        handlers.put("diplomacy", new CountryDiplomacySubcommands(plugin, messageProvider));
     }
 
     @Override
@@ -53,7 +57,7 @@ public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
         if (args.length == 1) {
             options = new ArrayList<String>(this.handlers.keySet());
             if (args[0].length() >= 3)
-                options.addAll(GlobalDataManager.instance().getCountryNames());
+                options.addAll(UnitedLandsDataManager.instance().getCountryNames());
         } else {
             String subcommand = args[0].toLowerCase();
             ICommandHandler handler = (ICommandHandler) this.handlers.get(subcommand);

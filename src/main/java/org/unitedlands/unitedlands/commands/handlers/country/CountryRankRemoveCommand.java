@@ -11,7 +11,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
@@ -38,7 +38,7 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
                 var targetPlayer = Bukkit.getPlayer(args[0]);
                 if (targetPlayer == null)
                     return null;
-                var targetCitizen = GlobalDataManager.instance().getCitizen(targetPlayer);
+                var targetCitizen = UnitedLandsDataManager.instance().getCitizen(targetPlayer);
                 if (targetCitizen == null)
                     return null;
                 return targetCitizen.getCountryRanks().stream().collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
         }
 
         var player = (Player) sender;
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getCountry() == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
                     null, messageProvider.get("prefix"));
@@ -110,7 +110,7 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
                 return;
 
             targetCitizen.removeCountryRank(args[1]);
-            GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
+            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
                 Messenger.sendMessage(targetPlayer, messageProvider.get("country.ranks.lost"),

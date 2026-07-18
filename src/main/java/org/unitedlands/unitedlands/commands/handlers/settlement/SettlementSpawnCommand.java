@@ -12,7 +12,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
@@ -25,7 +25,7 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return GlobalDataManager.instance().getSettlementNames();
+            return UnitedLandsDataManager.instance().getSettlementNames();
         return null;
     }
 
@@ -44,7 +44,7 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
                 return;
             targetSettlement = settlement;
         } else {
-            var settlement = GlobalDataManager.instance().getSettlement(args[0]);
+            var settlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
             if (settlement == null) {
                 Messenger.sendMessage(player, messageProvider.get("errors.settlement-not-found"),
                         Map.of("settlement", args[0]), messageProvider.get("prefix"));

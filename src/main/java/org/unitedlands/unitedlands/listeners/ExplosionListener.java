@@ -8,7 +8,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
 public class ExplosionListener implements Listener {
@@ -51,14 +51,13 @@ public class ExplosionListener implements Listener {
 
     private boolean isExplosionAllowed(Location location) {
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(location);
-        var settlementchunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
+        var settlementchunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementchunk != null) {
             if (!settlementchunk.allowExplosions()) {
                 return false;
             }
         } else {
-            var regionCoords = CoordinateUtils.locationToRegionCoordinates(location);
-            var region = GlobalDataManager.instance().getRegion(regionCoords);
+            var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(location));
             if (region != null) {
                 if (!region.allowExplosions()) {
                     return false;
@@ -70,14 +69,13 @@ public class ExplosionListener implements Listener {
 
     private boolean isFireAllowed(Location location) {
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(location);
-        var settlementchunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
+        var settlementchunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementchunk != null) {
             if (!settlementchunk.allowFire()) {
                 return false;
             }
         } else {
-            var regionCoords = CoordinateUtils.locationToRegionCoordinates(location);
-            var region = GlobalDataManager.instance().getRegion(regionCoords);
+            var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(location));
             if (region != null) {
                 if (!region.allowFire()) {
                     return false;

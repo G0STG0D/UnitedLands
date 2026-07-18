@@ -6,11 +6,10 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementChunkToggleCommand extends SettlementChunkCommandHandler {
@@ -40,15 +39,8 @@ public class SettlementChunkToggleCommand extends SettlementChunkCommandHandler 
         if (args.length != 2)
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlementChunk = getSettlementChunk(player);
-        if (settlementChunk == null)
-            return;
-
-        if (!hasChunkPermission(settlementChunk, player))
+        var context = validate(sender, "settlement.plot.toggle");
+        if (context == null)
             return;
         
         @Nullable
@@ -61,29 +53,29 @@ public class SettlementChunkToggleCommand extends SettlementChunkCommandHandler 
 
         switch (args[0]) {
             case "pvp":
-                settlementChunk.setAllowPvp(enable);
+                context.settlementChunk().setAllowPvp(enable);
                 break;
             case "monsters":
-                settlementChunk.setAllowMonsters(enable);
+                context.settlementChunk().setAllowMonsters(enable);
                 break;
             case "animals":
-                settlementChunk.setAllowAnimals(enable);
+                context.settlementChunk().setAllowAnimals(enable);
                 break;
             case "fire":
-                settlementChunk.setAllowFire(enable);
+                context.settlementChunk().setAllowFire(enable);
                 break;
             case "explosions":
-                settlementChunk.setAllowExplosions(enable);
+                context.settlementChunk().setAllowExplosions(enable);
                 break;
             default:
-                Messenger.sendMessage(player, messageProvider.get("settlementchunk.toggle.unknown-toggle"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlementchunk.toggle.unknown-toggle"),
                         Map.of("toggle", args[0]), messageProvider.get("prefix"));
                 return;
         }
 
-        GlobalDataManager.instance().updateSettlementChunkDbData(settlementChunk);
+        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
 
-        Messenger.sendMessage(player, messageProvider.get("settlementchunk.toggle.set"), Map.of(
+        Messenger.sendMessage(context.player(), messageProvider.get("settlementchunk.toggle.set"), Map.of(
                 "field", args[0],
                 "state",
                 enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>"),

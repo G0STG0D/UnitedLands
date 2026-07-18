@@ -10,8 +10,8 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class AdminSettlementDeleteCommand extends SettlementAdminCommandHandler {
@@ -61,12 +61,12 @@ public class AdminSettlementDeleteCommand extends SettlementAdminCommandHandler 
             settlementCitizen.removeSettlement();
             settlementCitizen.removeSettlementRanks();
             settlementCitizen.removeCountryRanks();
-            GlobalDataManager.instance().updateCitizenDbData(settlementCitizen);
+            UnitedLandsDataManager.instance().updateCitizenDbData(settlementCitizen);
         }
 
-        EconomyManager.instance().deleteAccount(settlement.getUuid());
+        UnitedLandsEconomyManager.instance().deleteAccount(settlement.getUuid());
 
-        GlobalDataManager.instance().removeSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().removeSettlementDbData(settlement);
 
         Pl3xMapRenderer.instance().removeSettlement(settlement);
 
@@ -78,7 +78,7 @@ public class AdminSettlementDeleteCommand extends SettlementAdminCommandHandler 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return GlobalDataManager.instance().getSettlementNames();
+            return UnitedLandsDataManager.instance().getSettlementNames();
         return null;
     }
 

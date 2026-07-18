@@ -22,8 +22,8 @@ import org.unitedlands.unitedlands.classes.metadata.LocationMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -73,23 +73,25 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                 var spawnLocation = town.getSpawnOrNull();
                 if (spawnLocation == null)
                     continue;
-                var regionCoords = CoordinateUtils.locationToRegionCoordinates(spawnLocation);
-                var region = GlobalDataManager.instance().getRegion(regionCoords);
+                var region = UnitedLandsDataManager.instance()
+                        .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(spawnLocation));
                 if (region == null)
                     continue;
 
                 importTown(player, town);
             }
+
+            Messenger.sendMessage(player, messageProvider.get("admin.towny.import.finished"),
+                    null, messageProvider.get("prefix"));
         }
 
     }
 
     private void importTown(Player player, Town town) {
 
-
         var plots = town.getTownBlocks();
 
-        if (GlobalDataManager.instance().getSettlement(town.getUUID()) != null) {
+        if (UnitedLandsDataManager.instance().getSettlement(town.getUUID()) != null) {
             return;
         }
 
@@ -106,8 +108,8 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
             settlement.setSpawn(spawnLocation);
             settlement.setWorld(spawnLocation.getWorld());
 
-            var regionCoords = CoordinateUtils.locationToRegionCoordinates(spawnLocation);
-            var region = GlobalDataManager.instance().getRegion(regionCoords);
+            var region = UnitedLandsDataManager.instance()
+                    .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(spawnLocation));
             if (region != null) {
                 region.addSettlement(settlement);
                 settlement.setRegion(region);
@@ -185,17 +187,15 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
 
             }
 
-            GlobalDataManager.instance().registerSettlement(settlement);
-            GlobalDataManager.instance().createSettlementDbData(settlement);
+            UnitedLandsDataManager.instance().registerSettlement(settlement);
+            UnitedLandsDataManager.instance().createSettlementDbData(settlement);
 
-            EconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
+            UnitedLandsEconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
 
             var residents = town.getResidents();
-            for (var resident : residents)
-            {
-                var citizen = GlobalDataManager.instance().getCitizen(resident.getUUID());
-                if (citizen == null)
-                {
+            for (var resident : residents) {
+                var citizen = UnitedLandsDataManager.instance().getCitizen(resident.getUUID());
+                if (citizen == null) {
                     citizen = new Citizen();
                     citizen.setUuid(resident.getUUID());
                     citizen.setName(resident.getName());
@@ -204,10 +204,9 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                     citizen.setSettlement(settlement);
                     settlement.addCitizen(citizen);
 
-                    GlobalDataManager.instance().createCitizenDbData(citizen);
+                    UnitedLandsDataManager.instance().createCitizenDbData(citizen);
                 }
             }
-
 
             Messenger.sendMessage(player, messageProvider.get("admin.towny.import.success-settlement"),
                     Map.of("settlement", settlement.getName(), "plots", plots.size() + ""),
@@ -216,7 +215,7 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
             if (town.hasNation() && town.isCapital() && region != null && !region.hasCountry()) {
                 var nation = town.getNation();
 
-                var country = GlobalDataManager.instance().getCountry(nation.getUUID());
+                var country = UnitedLandsDataManager.instance().getCountry(nation.getUUID());
                 if (country == null) {
 
                     country = new Country();
@@ -228,7 +227,7 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                     country.setStrokeColor(nation.getMapColorHexCode());
                     country.setFillColor(nation.getMapColorHexCode() + "10");
 
-                    EconomyManager.instance().createAccount(country.getUuid(), country.getName());
+                    UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
 
                     country.addRegion(region);
                     country.addSettlement(settlement);
@@ -237,19 +236,17 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                     region.setCountry(country);
                     settlement.setCountry(country);
 
-                    GlobalDataManager.instance().createCountryDbData(country);
-                    GlobalDataManager.instance().updateRegionDbData(region);
-                    GlobalDataManager.instance().updateSettlementDbData(settlement);
+                    UnitedLandsDataManager.instance().createCountryDbData(country);
+                    UnitedLandsDataManager.instance().updateRegionDbData(region);
+                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-                    Pl3xMapRenderer.instance().renderRegion(region);
+                    Pl3xMapRenderer.instance().renderPolyRegion(region);
                     Pl3xMapRenderer.instance().renderCountry(country);
 
                     Messenger.sendMessage(player, messageProvider.get("admin.towny.import.success-country"),
                             Map.of("country", country.getName()), messageProvider.get("prefix"));
                 }
             }
-
-            Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         } catch (Exception ex) {
             Messenger.sendMessage(player, messageProvider.get("admin.towny.import.error"),

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.unitedlands.unitedlands.classes.webservices.ApiResponse;
 import org.unitedlands.unitedlands.classes.webservices.LoginChallenge;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -26,7 +26,7 @@ public class AuthStartHandler implements HttpHandler {
         challenge.setCreatedAt(System.currentTimeMillis());
         challenge.setExpiresAt(System.currentTimeMillis() + 600000);
 
-        GlobalDataManager.instance().getDatabaseManager().getLoginChallengeService().createAsync(challenge);
+        UnitedLandsDataManager.instance().getDatabaseManager().getLoginChallengeService().createAsync(challenge);
 
         ApiResponse.send(exchange, 200, challenge);
     }

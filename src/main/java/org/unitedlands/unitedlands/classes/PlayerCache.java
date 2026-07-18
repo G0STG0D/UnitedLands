@@ -10,7 +10,6 @@ public class PlayerCache {
     @SuppressWarnings("unused")
     private final UnitedLands plugin;
 
-    private Coordinates cachedRegionCoordinates;
     private Coordinates cachedChunkCoordinates;
 
     private Region cachedRegion;
@@ -24,10 +23,6 @@ public class PlayerCache {
     public PlayerCache(Player player, UnitedLands plugin) {
         this.player = player;
         this.plugin = plugin;
-    }
-
-    public Coordinates getCachedRegionCoordinates() {
-        return this.cachedRegionCoordinates;
     }
     
     public Coordinates getCachedChunkCoordinates() {
@@ -58,13 +53,11 @@ public class PlayerCache {
         this.cachedSettlement = null;
     }
 
-    public void updateRegionCache(Coordinates regionCoordinates, Region region) {
-        this.cachedRegionCoordinates = regionCoordinates;
+    public void updateRegionCache(Region region) {
         this.cachedRegion = region;
     }
 
     public void clearRegionCache() {
-        this.cachedRegionCoordinates = null;
         this.cachedRegion = null;
     }
 

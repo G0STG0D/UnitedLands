@@ -3,13 +3,12 @@ package org.unitedlands.unitedlands.commands.handlers.settlement;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementLeaveCommand extends SettlementCommandHandler {
@@ -26,22 +25,18 @@ public class SettlementLeaveCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, null);
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (citizen.hasSettlementRank("mayor")) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.leave.is-mayor"),
+        
+        if (context.citizen().hasSettlementRank("mayor")) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.leave.is-mayor"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        if (citizen.hasCountryRank("leader")) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.leave.is-leader"),
+        if (context.citizen().hasCountryRank("leader")) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.leave.is-leader"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -49,26 +44,26 @@ public class SettlementLeaveCommand extends SettlementCommandHandler {
         Confirmation leave = new Confirmation("settlement-leave");
         leave.setRunnable(() -> {
 
-            settlement.removeCitizen(citizen);
-            citizen.removeSettlementRanks();
-            citizen.removeSettlement();
+            context.settlement().removeCitizen(context.citizen());
+            context.citizen().removeSettlementRanks();
+            context.citizen().removeSettlement();
 
-            (new SettlementPlayerLeaveEvent(settlement, player)).callEvent();
+            (new SettlementPlayerLeaveEvent(context.settlement(), context.player())).callEvent();
 
-            GlobalDataManager.instance().updateSettlementDbData(settlement);
-            GlobalDataManager.instance().updateCitizenDbData(citizen);
+            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+            UnitedLandsDataManager.instance().updateCitizenDbData(context.citizen());
 
-            Messenger.sendMessage(settlement.getOnlinePlayers(), messageProvider.get("settlement.leave.player-left"),
-                    Map.of("name", player.getName()), messageProvider.get("prefix"));
-            Messenger.sendMessage(player, messageProvider.get("settlement.leave.settlement-left"),
-                    Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.settlement().getOnlinePlayers(), messageProvider.get("settlement.leave.player-left"),
+                    Map.of("name", context.player().getName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.leave.settlement-left"),
+                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
 
         })
                 .setTitle(messageProvider.get("settlement.leave.confirm"))
-                .setReplacements(Map.of("settlement", settlement.getCleanName()))
-                .setSender(player)
-                .setReceiver(player)
-                .setDiscriminator(settlement.getName())
+                .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
+                .setSender(context.player())
+                .setReceiver(context.player())
+                .setDiscriminator(context.settlement().getName())
                 .setAcceptCommand("/approve settlement-leave")
                 .setCancelCommand("/cancel settlement-leave")
                 .setTimeoutSeconds(60)

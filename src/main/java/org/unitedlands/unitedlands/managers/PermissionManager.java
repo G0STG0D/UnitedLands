@@ -110,7 +110,7 @@ public class PermissionManager {
     public boolean checkLocationPermissions(Player player, Location eventLocation, PermissionType type) {
 
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(eventLocation);
-        var settlementChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
+        var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementChunk != null) {
             var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
             boolean hasSettlementChunkPermission = false;
@@ -127,8 +127,8 @@ public class PermissionManager {
 
             return event.isCancelled();
         } else {
-            var regionCoords = CoordinateUtils.locationToRegionCoordinates(eventLocation);
-            var region = GlobalDataManager.instance().getRegion(regionCoords);
+            //var regionCoords = CoordinateUtils.locationToRegionCoordinates(eventLocation);
+            var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(eventLocation));
             if (region != null) {
                 var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
                 if (region.equals(playerCache.getCachedRegion())) {
@@ -167,7 +167,7 @@ public class PermissionManager {
 
     public int calculateChunkMembership(SettlementChunk settlementChunk, Player player) {
 
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
             Logger.logError("CRITICAL: Could not retrieve citizen data of player " + player.getName());
             return 0;
@@ -213,7 +213,7 @@ public class PermissionManager {
 
     public int calculateRegionMembership(Region region, Player player) {
 
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
             Logger.logError("CRITICAL: Could not retrieve citizen data of player " + player.getName());
             return 0;

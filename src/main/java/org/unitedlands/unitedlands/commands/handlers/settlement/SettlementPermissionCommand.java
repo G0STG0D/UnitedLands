@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementPermissionCommand extends SettlementCommandHandler {
@@ -44,17 +43,10 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
             // TODO: Usage info
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.manage.perms");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.manage.perms", citizen))
-            return;
-
+        
         int membership = 0;
         switch (args[1]) {
             case "town_residents":
@@ -70,7 +62,7 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
                 membership = LocationMembership.FOREIGNER;
                 break;
             default:
-                Messenger.sendMessage(player, messageProvider.get("settlement.permission.unknown-membership"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.permission.unknown-membership"),
                         Map.of("membership", args[1]), messageProvider.get("prefix"));
                 return;
         }
@@ -80,66 +72,66 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
         int p = 0;
         switch (args[0]) {
             case "break":
-                p = settlement.getBreakPermissions();
+                p = context.settlement().getBreakPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setBreakPermissions(p);
+                context.settlement().setBreakPermissions(p);
                 break;
             case "place":
-                p = settlement.getPlacePermissions();
+                p = context.settlement().getPlacePermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setPlacePermissions(p);
+                context.settlement().setPlacePermissions(p);
                 break;
             case "containers":
-                p = settlement.getContainerPermissions();
+                p = context.settlement().getContainerPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setContainerPermissions(p);
+                context.settlement().setContainerPermissions(p);
                 break;
             case "switch":
-                p = settlement.getSwitchPermissions();
+                p = context.settlement().getSwitchPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setSwitchPermissions(p);
+                context.settlement().setSwitchPermissions(p);
                 break;
             case "block_use":
-                p = settlement.getBlockUsePermissions();
+                p = context.settlement().getBlockUsePermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setBlockUsePermissions(p);
+                context.settlement().setBlockUsePermissions(p);
                 break;
             case "interact":
-                p = settlement.getInteractPermissions();
+                p = context.settlement().getInteractPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                settlement.setInteractPermissions(p);
+                context.settlement().setInteractPermissions(p);
                 break;
             default:
-                Messenger.sendMessage(player, messageProvider.get("settlement.permission.unknown-permission"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.permission.unknown-permission"),
                         Map.of("permission", args[0]), messageProvider.get("prefix"));
                 return;
         }
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.permission.set"), Map.of(
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.permission.set"), Map.of(
                 "permission", args[0],
                 "membership", args[0],
                 "state", add ? "<green>on</green>" : "<red>off</red>"),
                 messageProvider.get("prefix"));
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
     }
 
 }

@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementRenameCommand extends SettlementCommandHandler {
@@ -24,23 +23,16 @@ public class SettlementRenameCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.rename");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
+        
+        context.settlement().setName(args[0]);
 
-        if (!hasPermission("settlement.rename", citizen))
-            return;
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        settlement.setName(args[0]);
-
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
-
-        Messenger.sendMessage(player, messageProvider.get("settlement.rename"),
-                Map.of("name", settlement.getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.rename"),
+                Map.of("name", context.settlement().getCleanName()), messageProvider.get("prefix"));
     }
 
     @Override

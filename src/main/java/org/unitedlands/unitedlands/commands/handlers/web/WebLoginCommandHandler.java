@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 public class WebLoginCommandHandler extends BaseCommandHandler<UnitedLands> {
 
@@ -24,7 +24,7 @@ public class WebLoginCommandHandler extends BaseCommandHandler<UnitedLands> {
 
         var code = args[0];
 
-        var loginChallenge = GlobalDataManager.instance().getDatabaseManager().getLoginChallengeService()
+        var loginChallenge = UnitedLandsDataManager.instance().getDatabaseManager().getLoginChallengeService()
                 .getByCode(code);
         if (loginChallenge == null) {
             // TODO: Errors
@@ -42,7 +42,7 @@ public class WebLoginCommandHandler extends BaseCommandHandler<UnitedLands> {
         loginChallenge.setMcUsername(player.getName());
         loginChallenge.setStatus("completed");
 
-        GlobalDataManager.instance().getDatabaseManager().getLoginChallengeService()
+        UnitedLandsDataManager.instance().getDatabaseManager().getLoginChallengeService()
                 .updateAsync(loginChallenge);
     }
 

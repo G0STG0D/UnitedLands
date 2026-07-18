@@ -4,7 +4,9 @@ import java.util.LinkedList;
 
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.utils.Messenger;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -54,6 +56,15 @@ public abstract class InfoScreen {
 
     public void removeComponent(int index) {
         components.remove(index);
+    }
+
+    public void send(Audience receiver) {
+        var components = getComponents();
+        if (components != null && !components.isEmpty()) {
+            for (var component : components) {
+                Messenger.send(receiver, component.getContent());
+            }
+        }
     }
 
     public Component buildHeader(String name) {

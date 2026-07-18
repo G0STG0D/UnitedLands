@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.unitedlands.unitedlands.classes.webservices.ApiResponse;
 import org.unitedlands.unitedlands.classes.webservices.LoginChallenge;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import io.undertow.server.HttpServerExchange;
 
 public class AuthStatusHandler extends BaseGetHandler {
@@ -32,7 +32,7 @@ public class AuthStatusHandler extends BaseGetHandler {
 
         LoginChallenge challenge = null;
         try {
-            challenge = GlobalDataManager.instance().getDatabaseManager().getLoginChallengeService().getAsync(id).get()
+            challenge = UnitedLandsDataManager.instance().getDatabaseManager().getLoginChallengeService().getAsync(id).get()
                     .orElse(null);
         } catch (Exception ex) {
             ApiResponse.send(exchange, 404, null);

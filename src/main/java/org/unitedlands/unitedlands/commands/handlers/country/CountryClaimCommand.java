@@ -5,18 +5,18 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
+import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.utils.Messenger;
 
-public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
+public class CountryClaimCommand extends CountryCommandHandler {
 
     public CountryClaimCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
@@ -26,17 +26,20 @@ public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
     public void handleCommand(CommandSender sender, String[] args) {
 
         var player = (Player) sender;
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getCountry() == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
+        if (!hasPermission("country.setcolor", citizen))
+            return;
+        
         var country = citizen.getCountry();
 
-        var region = GlobalDataManager.instance()
-                .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+        var region = UnitedLandsDataManager.instance()
+                .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(player.getLocation()));
         if (region == null) {
             Messenger.sendMessage(player, messageProvider.get("country.claim.no-region"),
                     null, messageProvider.get("prefix"));
@@ -56,9 +59,10 @@ public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
 
             region.setCountry(country);
             country.addRegion(region);
-            GlobalDataManager.instance().updateRegionDbData(region);
+            UnitedLandsDataManager.instance().updateRegionDbData(region);
 
-            Pl3xMapRenderer.instance().renderRegion(region);
+            Pl3xMapRenderer.instance().removeRegion(region);
+            Pl3xMapRenderer.instance().renderPolyRegion(region);
             Pl3xMapRenderer.instance().renderCountry(country);
 
             Messenger.sendMessage(player, messageProvider.get("country.claim.success"),
@@ -73,7 +77,7 @@ public class CountryClaimCommand extends BaseCommandHandler<UnitedLands> {
 
         })
                 .setTitle(
-                        "Claiming this region will cost " + EconomyManager.instance().format(claimCost) + ". Continue?")
+                        "Claiming this region will cost " + UnitedLandsEconomyManager.instance().format(claimCost) + ". Continue?")
                 .setSender(player)
                 .setReceiver(player)
                 .setAcceptCommand("/approve region-claim")

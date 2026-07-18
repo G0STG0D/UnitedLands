@@ -10,10 +10,14 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settlement;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementCommandHandler extends BaseCommandHandler<UnitedLands> {
+
+    public record SettlementCommandHandlerContext(Player player, Citizen citizen,
+            Settlement settlement) {
+    }
 
     public SettlementCommandHandler(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
@@ -29,8 +33,25 @@ public class SettlementCommandHandler extends BaseCommandHandler<UnitedLands> {
         return null;
     }
 
+    protected SettlementCommandHandlerContext validate(CommandSender sender, String permission) {
+
+        var player = (Player) sender;
+        var citizen = getCitizen(player);
+        if (citizen == null)
+            return null;
+        var settlement = getCitizenSettlement(citizen);
+        if (settlement == null)
+            return null;
+
+        if (permission != null)
+            if (!hasPermission(permission, citizen))
+                return null;
+
+        return new SettlementCommandHandlerContext(player, citizen, settlement);
+    }
+
     protected Citizen getCitizen(Player player) {
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.no-citizen-data"),
                     null, messageProvider.get("prefix"));

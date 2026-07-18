@@ -4,15 +4,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.awt.Color;
+import java.math.BigDecimal;
 
 import javax.annotation.Nullable;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
+import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.unitedlands.utils.SerializationUtils;
 import org.unitedlands.utils.Logger;
 
@@ -185,6 +189,13 @@ public class Settlement extends GeopolObject implements PermissionHolder {
         return chunks;
     }
 
+    public Set<SettlementChunk> getChunksOfType(String type) {
+        CompletableFuture<Set<SettlementChunk>> chunkTypeFuture = CompletableFuture.supplyAsync(() -> {
+            return getChunks().stream().filter(c -> type.equals(c.getChunkType())).collect(Collectors.toSet());
+        });
+        return chunkTypeFuture.join();
+    }
+
     public void setChunks(Set<SettlementChunk> chunks) {
         this.chunks = chunks;
     }
@@ -212,7 +223,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     public Region getRegion() {
         if (this.region == null && this.regionUuid != null)
-            this.region = GlobalDataManager.instance().getRegion(regionUuid);
+            this.region = UnitedLandsDataManager.instance().getRegion(regionUuid);
         return this.region;
     }
 
@@ -231,13 +242,19 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     public Country getCountry() {
         if (this.country == null && this.countryUuid != null)
-            this.country = GlobalDataManager.instance().getCountry(countryUuid);
+            this.country = UnitedLandsDataManager.instance().getCountry(countryUuid);
         return this.country;
     }
 
     public void removeCountry() {
         this.country = null;
         this.countryUuid = null;
+    }
+
+    public boolean isCapital() {
+        if (getCountry() == null)
+            return false;
+        return getCountry().getCapital().equals(this);
     }
 
     public UUID getCountryUuid() {
@@ -284,6 +301,11 @@ public class Settlement extends GeopolObject implements PermissionHolder {
         return isPublic;
     }
 
+    // TODO: Neutrality
+    public boolean isNeutral() {
+        return false;
+    }
+
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
@@ -309,7 +331,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
             if (citizensSerialized != null) {
                 try {
                     citizens = Arrays.stream(citizensSerialized.split("#"))
-                            .map(c -> GlobalDataManager.instance().getCitizen(UUID.fromString(c)))
+                            .map(c -> UnitedLandsDataManager.instance().getCitizen(UUID.fromString(c)))
                             .collect(Collectors.toSet());
                 } catch (Exception ex) {
                     Logger.logError("Unable to parse citizens_serialized of " + getName() + ": " + ex.getMessage());
@@ -360,7 +382,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
             if (trustListSerialized != null) {
                 try {
                     trustList = Arrays.stream(trustListSerialized.split("#"))
-                            .map(c -> GlobalDataManager.instance().getCitizen(UUID.fromString(c)))
+                            .map(c -> UnitedLandsDataManager.instance().getCitizen(UUID.fromString(c)))
                             .collect(Collectors.toSet());
                 } catch (Exception ex) {
                     Logger.logError("Unable to parse trustList of " + getName() + ": " + ex.getMessage());
@@ -524,10 +546,26 @@ public class Settlement extends GeopolObject implements PermissionHolder {
         this.allowExplosions = allowExplosions;
     }
 
+    public int getSize() {
+        return getChunks().size();
+    }
+
+    public int getCitizenCount() {
+        return getCitizens().size();
+    }
+
+    public BigDecimal getBalance() {
+        return UnitedLandsEconomyManager.instance().getBalance(uuid);
+    }
+
+    public double getUpkeep() {
+        return CostUtils.getSettlementUpkeep(this);
+    }
+
     @Override
     public void saveMetadata() {
         Logger.log("Saving settlement...");
-        GlobalDataManager.instance().updateSettlementDbData(this);
+        UnitedLandsDataManager.instance().updateSettlementDbData(this);
     }
 
 }

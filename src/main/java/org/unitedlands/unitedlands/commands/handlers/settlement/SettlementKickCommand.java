@@ -12,7 +12,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementKickCommand extends SettlementCommandHandler {
@@ -39,26 +39,19 @@ public class SettlementKickCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.kick");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.kick", citizen))
-            return;
-
+        
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.player-not-found"),
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
                     Map.of("name", args[0]), messageProvider.get("prefix"));
             return;
         }
 
-        if (player.equals(targetPlayer)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.kick.cannot-kick-yourself"),
+        if (context.player().equals(targetPlayer)) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.cannot-kick-yourself"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -67,32 +60,32 @@ public class SettlementKickCommand extends SettlementCommandHandler {
         if (targetCitizen == null)
             return;
 
-        if (!settlement.getCitizens().contains(targetCitizen)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.kick.not-in-settlement"),
+        if (!context.settlement().getCitizens().contains(targetCitizen)) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.not-in-settlement"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
         if (targetCitizen.hasCountryRank("leader")) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.kick.is-leader"),
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.is-leader"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        settlement.removeCitizen(targetCitizen);
+        context.settlement().removeCitizen(targetCitizen);
         targetCitizen.removeSettlementRanks();
         targetCitizen.removeSettlement();
 
-        (new SettlementPlayerLeaveEvent(settlement, targetPlayer)).callEvent();
+        (new SettlementPlayerLeaveEvent(context.settlement(), targetPlayer)).callEvent();
 
-        GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
+        UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
         if (targetPlayer.isOnline()) {
             Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.kick.kicked"),
-                    Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
+                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
         }
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.kick.success"),
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.success"),
                 Map.of("name", targetPlayer.getName()), messageProvider.get("prefix"));
     }
 

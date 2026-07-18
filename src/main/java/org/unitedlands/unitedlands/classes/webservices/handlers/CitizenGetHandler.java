@@ -1,17 +1,12 @@
 package org.unitedlands.unitedlands.classes.webservices.handlers;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.unitedlands.unitedlands.classes.webservices.ApiResponse;
 import org.unitedlands.unitedlands.classes.webservices.dto.CititzenDTO;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 import io.undertow.server.HttpServerExchange;
 
@@ -40,7 +35,7 @@ public class CitizenGetHandler extends BaseGetHandler {
             return;
         }
 
-        var citizen = GlobalDataManager.instance().getCitizen(id);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(id);
         if (citizen == null) {
             ApiResponse.send(exchange, 404, null);
             return;

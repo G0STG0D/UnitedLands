@@ -14,7 +14,7 @@ import org.unitedlands.unitedlands.classes.metadata.FloatMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
-import org.unitedlands.unitedlands.managers.EconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.utils.Messenger;
 
 public class CitizenInfoScreen extends InfoScreen {
@@ -54,7 +54,7 @@ public class CitizenInfoScreen extends InfoScreen {
 
                 var balance = Messenger.getMessage(messageProvider.get("info-screens.citizen.balance"),
                                 Map.of("balance",
-                                                EconomyManager.instance().format(EconomyManager.instance()
+                                                UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance()
                                                                 .getBalance(citizen.getUuid()))));
                 addComponent("balance", balance);
 

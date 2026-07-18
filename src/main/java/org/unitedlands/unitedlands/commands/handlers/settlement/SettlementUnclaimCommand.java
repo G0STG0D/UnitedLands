@@ -3,13 +3,12 @@ package org.unitedlands.unitedlands.commands.handlers.settlement;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementUnclaimEvent;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -27,56 +26,49 @@ public class SettlementUnclaimCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
+        var context = validate(sender, "settlement.unclaim");
+        if (context == null)
             return;
 
-        if (!hasPermission("settlement.unclaim", citizen))
-            return;
+        var chunkCoords = CoordinateUtils.locationToChunkCoordinates(context.player().getLocation());
 
-        var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
-
-        var existingChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoords);
+        var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk == null) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.not-claimed"),
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.unclaim.not-claimed"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        if (!existingChunk.getSettlement().equals(settlement)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.not-in-settlement"),
+        if (!existingChunk.getSettlement().equals(context.settlement())) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.unclaim.not-in-settlement"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        var spawnChunkCoords = CoordinateUtils.locationToChunkCoordinates(settlement.getSpawn());
+        var spawnChunkCoords = CoordinateUtils.locationToChunkCoordinates(context.settlement().getSpawn());
         if (spawnChunkCoords.equals(chunkCoords)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.has-spawn"),
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.unclaim.has-spawn"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        if (settlement.getHomeChunkCoordinates().equals(chunkCoords)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.is-home-chunk"),
+        if (context.settlement().getHomeChunkCoordinates().equals(chunkCoords)) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.unclaim.is-home-chunk"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        settlement.removeChunk(existingChunk);
+        context.settlement().removeChunk(existingChunk);
 
-        (new SettlementUnclaimEvent(settlement, chunkCoords)).callEvent();
+        (new SettlementUnclaimEvent(context.settlement(), chunkCoords)).callEvent();
 
-        GlobalDataManager.instance().removeSettlementChunkDbData(existingChunk);
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().removeSettlementChunkDbData(existingChunk);
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
+        Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.success"),
-                Map.of("settlement", settlement.getCleanName(),
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.unclaim.success"),
+                Map.of("settlement", context.settlement().getCleanName(),
                         "chunk", chunkCoords.toString()),
                 messageProvider.get("prefix"));
     }

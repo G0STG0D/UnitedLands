@@ -6,7 +6,7 @@ import java.util.Map;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
-import org.unitedlands.unitedlands.managers.EconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.utils.Messenger;
 
 public class CountryInfoScreen extends InfoScreen {
@@ -45,8 +45,8 @@ public class CountryInfoScreen extends InfoScreen {
         addComponent("capital", capital);
 
         var balance = Messenger.getMessage(messageProvider.get("info-screens.country.balance"),
-                Map.of("balance", EconomyManager.instance()
-                        .format(EconomyManager.instance().getBalance(country.getUuid()))));
+                Map.of("balance", UnitedLandsEconomyManager.instance()
+                        .format(UnitedLandsEconomyManager.instance().getBalance(country.getUuid()))));
         addComponent("balance", balance);
 
         // var citizenCount = country.getCitizens().size();

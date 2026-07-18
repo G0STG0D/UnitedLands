@@ -11,12 +11,16 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementChunkCommandHandler extends BaseCommandHandler<UnitedLands> {
+
+    public record SettlementChunkCommandHandlerContext(Player player, Citizen citizen,
+            SettlementChunk settlementChunk) {
+    }
 
     public SettlementChunkCommandHandler(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
@@ -32,8 +36,25 @@ public class SettlementChunkCommandHandler extends BaseCommandHandler<UnitedLand
         return null;
     }
 
+    protected SettlementChunkCommandHandlerContext validate(CommandSender sender, String permission) {
+
+        var player = (Player) sender;
+        var citizen = getCitizen(player);
+        if (citizen == null)
+            return null;
+        var settlementChunk = getSettlementChunk(player);
+        if (settlementChunk == null)
+            return null;
+
+        if (permission != null)
+            if (!hasPermission(permission, citizen, settlementChunk))
+                return null;
+
+        return new SettlementChunkCommandHandlerContext(player, citizen, settlementChunk);
+    }
+
     protected Citizen getCitizen(Player player) {
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.no-citizen-data"),
                     null, messageProvider.get("prefix"));
@@ -44,7 +65,7 @@ public class SettlementChunkCommandHandler extends BaseCommandHandler<UnitedLand
 
     protected SettlementChunk getSettlementChunk(Player player) {
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
-        var settlementChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
+        var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementChunk == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.not-in-claim"),
                     null, messageProvider.get("prefix"));
@@ -57,7 +78,7 @@ public class SettlementChunkCommandHandler extends BaseCommandHandler<UnitedLand
         if (!settlementChunk.getSettlement().equals(citizen.getSettlement())) {
             Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get("errors.no-claim-permission"),
                     null, messageProvider.get("prefix"));
-            return false;            
+            return false;
         }
         if (!plugin.getPermissionManager().hasRankPermission(permission, citizen)) {
             Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get("errors.no-settlement-permission"),

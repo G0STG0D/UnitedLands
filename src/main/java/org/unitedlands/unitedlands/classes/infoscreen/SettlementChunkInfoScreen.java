@@ -6,7 +6,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
-import org.unitedlands.unitedlands.managers.EconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementChunkInfoScreen extends InfoScreen {
@@ -22,6 +22,11 @@ public class SettlementChunkInfoScreen extends InfoScreen {
                 var header = buildHeader(chunk.getCoordinates().toCleanString());
                 addComponent("header", header);
 
+                var type = Messenger.getMessage(messageProvider.get("info-screens.settlementchunk.type"),
+                                Map.of("type", chunk.getChunkType() != null ? chunk.getChunkType() : "None"));
+                addComponent("type", type);
+
+
                 var claimedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(chunk.getClaimTimestamp());
 
                 var owner = Messenger.getMessage(messageProvider.get("info-screens.settlementchunk.owner"),
@@ -31,7 +36,7 @@ public class SettlementChunkInfoScreen extends InfoScreen {
 
                 var forsale = chunk.isForSale() ? "<green>yes</green>" : "<red>no</red>";
                 var price = chunk.isForSale()
-                                ? "<white>" + EconomyManager.instance().format(chunk.getSalePrice()) + "</white>"
+                                ? "<white>" + UnitedLandsEconomyManager.instance().format(chunk.getSalePrice()) + "</white>"
                                 : "-";
                 var sale = Messenger.getMessage(messageProvider.get("info-screens.settlementchunk.sale"),
                                 Map.of("forsale", forsale, "price", price));

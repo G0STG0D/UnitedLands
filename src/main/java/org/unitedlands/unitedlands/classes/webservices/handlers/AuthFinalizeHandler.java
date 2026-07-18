@@ -3,21 +3,21 @@ package org.unitedlands.unitedlands.classes.webservices.handlers;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
 import org.unitedlands.unitedlands.classes.webservices.ApiResponse;
 import org.unitedlands.unitedlands.classes.webservices.LoginChallenge;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ClassLoaderUtil;
-import org.unitedlands.utils.Logger;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.form.FormData;
+import io.undertow.util.Headers;
 
 public class AuthFinalizeHandler extends BasePostHandler {
 
@@ -45,7 +45,7 @@ public class AuthFinalizeHandler extends BasePostHandler {
 
         LoginChallenge challenge = null;
         try {
-            challenge = GlobalDataManager.instance().getDatabaseManager().getLoginChallengeService().getAsync(id).get()
+            challenge = UnitedLandsDataManager.instance().getDatabaseManager().getLoginChallengeService().getAsync(id).get()
                     .orElse(null);
         } catch (Exception ex) {
             ApiResponse.send(exchange, 404, null);
@@ -57,16 +57,17 @@ public class AuthFinalizeHandler extends BasePostHandler {
             return;
         }
 
-        Logger.log(challenge.getStatus(), "UnitedLands");
-
         if (!challenge.getStatus().equals("completed")) {
             ApiResponse.send(exchange, 403, null);
             return;
         }
 
         String jwtToken = issueToken(challenge.getMcUsername(), challenge.getMcUUID());
+        Map<String, Object> response = Map.of("success", true);
 
-        ApiResponse.send(exchange, 200, jwtToken);
+        var cookieString = "session=" + jwtToken + "; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=2147483647";
+
+        ApiResponse.send(exchange, 200, response, Map.of(Headers.SET_COOKIE, cookieString));
     }
 
     public String issueToken(String username, UUID userUuid) {

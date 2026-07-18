@@ -1,7 +1,9 @@
 package org.unitedlands.unitedlands.classes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,9 +12,13 @@ import org.bukkit.Tag;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.unitedlands.utils.Logger;
 
+@SuppressWarnings("unused")
 public class Settings {
 
     public static int regionChunkSize = 8;
+    public static int importScale = 1;
+    public static double importOffsetX = 0;
+    public static double importOffsetY = 0;
 
     public static int defaultCountryFillColour;
     public static int defaultCountryStrokeColour;
@@ -61,9 +67,14 @@ public class Settings {
     public static List<String> blacklistedMonsters = new ArrayList<>();
     public static List<String> blacklistedAnimals = new ArrayList<>();
 
+    public static Map<String, SettlementChunkType> settlementChunkTypes = new HashMap<>();
+
     public static void loadSettings(FileConfiguration config) {
 
         regionChunkSize = config.getInt("general.region-chunk-size", 8);
+        importScale = config.getInt("general.import-scale", 1);
+        importOffsetX = config.getDouble("general.import-offset-x", 0);
+        importOffsetY = config.getDouble("general.import-offset-y", 0);
 
         defaultCountryStrokeColour = config.getInt("general.country-default-stroke-colour", 540787967);
         defaultCountryFillColour = config.getInt("general.country-default-fill-colour", -13399809);
@@ -120,6 +131,34 @@ public class Settings {
         protectedInteractEntities = config.getStringList("protection.interact");
         blacklistedMonsters = config.getStringList("protection.monsters");
         blacklistedAnimals = config.getStringList("protection.animals");
+
+        var settlementChunkSection = config.getConfigurationSection("settlement-chunks");
+        for (var key : settlementChunkSection.getKeys(false))
+        {
+            settlementChunkTypes.put(key, 
+                new SettlementChunkType(
+                    key,
+                    settlementChunkSection.getString(key + ".map-icon", "X"),
+                    settlementChunkSection.getString(key + ".map-color", "gray"),
+                    settlementChunkSection.getInt(key + ".max-per-settlement", -1)
+                )
+            );
+        }
+
+    }
+
+    public static class SettlementChunkType {
+        public String key;
+        public String icon;
+        public String color;
+        public int maxPerSettlement;
+
+        public SettlementChunkType(String key, String icon, String color, int maxPerSettlement) {
+            this.key = key;
+            this.icon = icon;
+            this.color = color;
+            this.maxPerSettlement = maxPerSettlement;
+        }
 
     }
 

@@ -9,7 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler {
@@ -48,7 +48,7 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         settlement.setCountry(country);
         country.addSettlement(settlement);
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
         Pl3xMapRenderer.instance().renderSettlement(settlement);
 
@@ -61,9 +61,9 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
     public List<String> handleTab(CommandSender arg0, String[] args) {
         switch (args.length) {
             case 1:
-                return GlobalDataManager.instance().getCountryNames();
+                return UnitedLandsDataManager.instance().getCountryNames();
             case 2:
-                return GlobalDataManager.instance().getSettlementNames();
+                return UnitedLandsDataManager.instance().getSettlementNames();
         }
         return null;
     }

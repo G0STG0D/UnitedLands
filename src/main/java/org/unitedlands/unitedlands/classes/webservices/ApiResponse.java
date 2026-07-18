@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
+import io.undertow.util.HttpString;
 
 public class ApiResponse {
 
@@ -18,9 +19,17 @@ public class ApiResponse {
 
     public static void send(HttpServerExchange exchange, int status, Object payload) {
         String json = GSON.toJson(payload);
-        //byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
         exchange.setStatusCode(status);
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json; charset=utf-8");
+        exchange.getResponseSender().send(json);
+    }
+
+    public static void send(HttpServerExchange exchange, int status, Object payload, Map<HttpString, String> headers) {
+        String json = GSON.toJson(payload);
+        exchange.setStatusCode(status);
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json; charset=utf-8");
+        for (var e : headers.entrySet())
+            exchange.getResponseHeaders().put(e.getKey(), e.getValue());
         exchange.getResponseSender().send(json);
     }
 

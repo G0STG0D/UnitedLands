@@ -9,7 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -36,8 +36,8 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
             return;
         }
 
-        var region = GlobalDataManager.instance()
-                .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+        var region = UnitedLandsDataManager.instance()
+                .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(player.getLocation()));
         if (region == null) {
             Messenger.sendMessage(player, messageProvider.get("country.claim.no-region"),
                     null, messageProvider.get("prefix"));
@@ -52,9 +52,10 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
 
         region.setCountry(country);
         country.addRegion(region);
-        GlobalDataManager.instance().updateRegionDbData(region);
+        UnitedLandsDataManager.instance().updateRegionDbData(region);
 
-        Pl3xMapRenderer.instance().renderRegion(region);
+        Pl3xMapRenderer.instance().removeRegion(region);
+        Pl3xMapRenderer.instance().renderPolyRegion(region);
         Pl3xMapRenderer.instance().renderCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.claim"),
@@ -66,7 +67,7 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
     @Override
     public List<String> handleTab(CommandSender arg0, String[] args) {
         if (args.length == 1) {
-            return GlobalDataManager.instance().getCountryNames();
+            return UnitedLandsDataManager.instance().getCountryNames();
         }
         return null;
     }

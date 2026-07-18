@@ -11,7 +11,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementInviteCommand extends SettlementCommandHandler {
@@ -36,20 +36,13 @@ public class SettlementInviteCommand extends SettlementCommandHandler {
             return;
         }
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.invite");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.invite", citizen))
-            return;
-
+        
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            Messenger.sendMessage(player, messageProvider.get("errors.player-not-found"),
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -61,25 +54,25 @@ public class SettlementInviteCommand extends SettlementCommandHandler {
         Confirmation invite = new Confirmation("settlement-invite");
         invite.setRunnable(() -> {
 
-            settlement.addCitizen(targetCitizen);
-            targetCitizen.setSettlement(settlement);
+            context.settlement().addCitizen(targetCitizen);
+            targetCitizen.setSettlement(context.settlement());
 
-            GlobalDataManager.instance().updateSettlementDbData(settlement);
-            GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
+            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
-            Messenger.sendMessage(settlement.getOnlinePlayers(), messageProvider.get("settlement.invite.player-joined"),
+            Messenger.sendMessage(context.settlement().getOnlinePlayers(), messageProvider.get("settlement.invite.player-joined"),
                     Map.of("name", targetPlayer.getName()), messageProvider.get("prefix"));
             Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.invite.settlement-joined"),
-                    Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
+                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
 
         })
                 .setTitle(messageProvider.get("settlement.invite.player-message"))
-                .setReplacements(Map.of("settlement", settlement.getCleanName()))
-                .setSender(player)
+                .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
+                .setSender(context.player())
                 .setReceiver(targetPlayer)
-                .setDiscriminator(settlement.getName())
-                .setAcceptCommand("/approve invite [" + settlement.getName() + "]")
-                .setCancelCommand("/reject invite [" + settlement.getName() + "]")
+                .setDiscriminator(context.settlement().getName())
+                .setAcceptCommand("/approve invite [" + context.settlement().getName() + "]")
+                .setCancelCommand("/reject invite [" + context.settlement().getName() + "]")
                 .setTimeoutSeconds(60)
                 .send();
     }

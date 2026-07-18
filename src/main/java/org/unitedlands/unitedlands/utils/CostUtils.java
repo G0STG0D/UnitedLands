@@ -47,7 +47,7 @@ public class CostUtils {
 
         var upkeepCosts = expression.evaluate();
         upkeepCosts *= settlement.getChunks().size();
-        
+
         SettlementUpkeepCostCalculatedEvent event = new SettlementUpkeepCostCalculatedEvent(upkeepCosts);
         event.callEvent();
 
@@ -76,5 +76,28 @@ public class CostUtils {
         return event.getFinalCosts();
     }
 
+    public static double getCountryUpkeep(Country country) {
+
+        // var baseUpkeepPerPlot = Settings.settlementBaseUpkeepPerPlot;
+        // var upkeepPerPlotFormula = Settings.settlementUpkeepPerPlotFormula;
+
+        // Expression expression = new ExpressionBuilder(upkeepPerPlotFormula)
+        //         .variables("base", "claims", "residents")
+        //         .build()
+        //         .setVariable("base", baseUpkeepPerPlot)
+        //         .setVariable("claims", settlement.getChunks().size())
+        //         .setVariable("residents", settlement.getCitizens().size())
+        //         .setVariable("claims", settlement.getChunks().size());
+
+        // var upkeepCosts = expression.evaluate();
+        // upkeepCosts *= settlement.getChunks().size();
+
+        // SettlementUpkeepCostCalculatedEvent event = new SettlementUpkeepCostCalculatedEvent(upkeepCosts);
+        // event.callEvent();
+
+        // return event.getFinalCosts();
+
+        return 0d;
+    }
 
 }
