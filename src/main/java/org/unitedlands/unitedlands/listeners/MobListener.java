@@ -7,7 +7,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
 public class MobListener implements Listener {
@@ -36,7 +36,7 @@ public class MobListener implements Listener {
         var location = event.getLocation();
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(location);
 
-        var settlementChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoordinates);
+        var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementChunk != null) {
             if (!settlementChunk.allowMonsters() && isMonster) {
                 event.setCancelled(true);
@@ -47,8 +47,7 @@ public class MobListener implements Listener {
                 return;
             }
         } else {
-            var regionCoordinates = CoordinateUtils.locationToRegionCoordinates(location);
-            var region = GlobalDataManager.instance().getRegion(regionCoordinates);
+            var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(location));
             if (region != null) {
                 if (!region.allowMonsters() && isMonster) {
                     event.setCancelled(true);

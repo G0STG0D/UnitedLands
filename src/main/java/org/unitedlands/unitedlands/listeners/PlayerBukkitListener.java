@@ -20,7 +20,7 @@ import org.unitedlands.unitedlands.classes.events.player.PlayerEnterRegionEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitRegionEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
@@ -63,7 +63,7 @@ public class PlayerBukkitListener implements Listener {
     }
 
     private void updateCitizenRecord(Player player) {
-        Citizen citizen = GlobalDataManager.instance().getCitizen(player);
+        Citizen citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
             citizen = new Citizen(player);
             citizen.setJoined(System.currentTimeMillis());
@@ -72,11 +72,11 @@ public class PlayerBukkitListener implements Listener {
 
             (new CitizenCreatedEvent(citizen)).callEvent();
 
-            GlobalDataManager.instance().createCitizenDbData(citizen);
+            UnitedLandsDataManager.instance().createCitizenDbData(citizen);
         } else {
             citizen.setName(player.getName());
             citizen.setLastLogon(System.currentTimeMillis());
-            GlobalDataManager.instance().updateCitizenDbData(citizen);
+            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
         }
 
     }
@@ -95,7 +95,7 @@ public class PlayerBukkitListener implements Listener {
             boolean enteredSettlement = false;
             boolean leftSettlement = false;
             Settlement lastSettlement = null;
-            SettlementChunk settlementChunk = GlobalDataManager.instance().getSettlementChunk(toChunkCoords);
+            SettlementChunk settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(toChunkCoords);
 
             if (settlementChunk != null) {
                 // Entered a valid settlement chunk
@@ -132,43 +132,34 @@ public class PlayerBukkitListener implements Listener {
                     return false;
             }
 
-
             // Region handling
 
-            var fromRegionCoords = CoordinateUtils.locationToRegionCoordinates(from);
-            var toRegionCoords = CoordinateUtils.locationToRegionCoordinates(to);
-
-            Region region = null;
             boolean enteredRegion = false;
             boolean leftRegion = false;
             Region lastRegion = null;
 
-            if (!fromRegionCoords.equals(toRegionCoords)) {
-                // Changed region chunk
-                region = GlobalDataManager.instance().getRegion(toRegionCoords);
-                if (region != null) {
-                    // Entered a valid region
-                    if (!region.equals(playerCache.getCachedRegion())) {
-                        // New region is different from cached region
-                        enteredRegion = true;
-                        if (playerCache.getCachedRegion() != null) {
-                            // Entered from a different region
-                            leftRegion = true;
-                            lastRegion = playerCache.getCachedRegion();
-                        }
-                        playerCache.updateRegionCache(toRegionCoords, region);
-                    }
-                } else {
-                    // Entered a regionless zone
+            var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(to));
+            if (region != null) {
+                // Entered a valid region
+                if (!region.equals(playerCache.getCachedRegion())) {
+                    // New region is different from cached region
+                    enteredRegion = true;
                     if (playerCache.getCachedRegion() != null) {
-                        // Entered regionless zone from a region
+                        // Entered from a different region
                         leftRegion = true;
                         lastRegion = playerCache.getCachedRegion();
                     }
-                    playerCache.clearRegionCache();
+                    playerCache.updateRegionCache(region);
                 }
+            } else {
+                // Entered a regionless zone
+                if (playerCache.getCachedRegion() != null) {
+                    // Entered regionless zone from a region
+                    leftRegion = true;
+                    lastRegion = playerCache.getCachedRegion();
+                }
+                playerCache.clearRegionCache();
             }
-
 
             if (enteredRegion) {
                 var enterRegionEvent = new PlayerEnterRegionEvent(region, player);
@@ -197,5 +188,6 @@ public class PlayerBukkitListener implements Listener {
 
         return true;
     }
+
 
 }

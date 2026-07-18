@@ -11,8 +11,8 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class CountryDeleteCommand extends CountryCommandHandler {
@@ -49,22 +49,22 @@ public class CountryDeleteCommand extends CountryCommandHandler {
                         continue;
                     for (var settlementCitizen : settlement.getCitizens()) {
                         settlementCitizen.removeCountryRanks();
-                        GlobalDataManager.instance().updateCitizenDbData(settlementCitizen);
+                        UnitedLandsDataManager.instance().updateCitizenDbData(settlementCitizen);
                     }
                     settlement.removeCountry();
-                    GlobalDataManager.instance().updateSettlementDbData(settlement);
+                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
                     Pl3xMapRenderer.instance().renderSettlement(settlement);
                 }
 
                 region.removeCountry();
-                GlobalDataManager.instance().updateRegionDbData(region);
+                UnitedLandsDataManager.instance().updateRegionDbData(region);
                 Pl3xMapRenderer.instance().removeRegion(region);
-                Pl3xMapRenderer.instance().renderRegion(region);
+                Pl3xMapRenderer.instance().renderPolyRegion(region);
             }
 
-            EconomyManager.instance().deleteAccount(country.getUuid());
+            UnitedLandsEconomyManager.instance().deleteAccount(country.getUuid());
 
-            GlobalDataManager.instance().removeCountryDbData(country);
+            UnitedLandsDataManager.instance().removeCountryDbData(country);
 
             Pl3xMapRenderer.instance().removeCountry(country);
 

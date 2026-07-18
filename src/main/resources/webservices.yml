@@ -1,0 +1,10 @@
+host: localhost
+port: 8090
+
+# Base64 key for JWT bearer token signing. Must be at least 256 bytes. Changing this key will invalidate all sessions.
+signing-key: "dkFycUlwb2t2YWczdWZ4YmNka2p0VkhIc1ZNeW9neUtrRGxPN1Z6UDRYalVTODVxUw==="
+
+# Origins that may access the API
+cors-origins:
+  - "http://localhost:3000"
+  - "http://192.168.0.100:3000"

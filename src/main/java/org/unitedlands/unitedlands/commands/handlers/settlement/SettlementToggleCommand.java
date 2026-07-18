@@ -6,11 +6,10 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementToggleCommand extends SettlementCommandHandler {
@@ -40,15 +39,8 @@ public class SettlementToggleCommand extends SettlementCommandHandler {
         if (args.length != 2)
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.manage.toggle", citizen))
+        var context = validate(sender, "settlement.manage.toggle");
+        if (context == null)
             return;
         
         @Nullable
@@ -64,32 +56,32 @@ public class SettlementToggleCommand extends SettlementCommandHandler {
                 // public can't be inherited, enforce value 
                 if (enable == null)
                     enable = false;
-                settlement.setPublic(enable);
+                context.settlement().setPublic(enable);
                 break;
             case "pvp":
-                settlement.setAllowPvp(enable);
+                context.settlement().setAllowPvp(enable);
                 break;
             case "monsters":
-                settlement.setAllowMonsters(enable);
+                context.settlement().setAllowMonsters(enable);
                 break;
             case "animals":
-                settlement.setAllowAnimals(enable);
+                context.settlement().setAllowAnimals(enable);
                 break;
             case "fire":
-                settlement.setAllowFire(enable);
+                context.settlement().setAllowFire(enable);
                 break;
             case "explosions":
-                settlement.setAllowExplosions(enable);
+                context.settlement().setAllowExplosions(enable);
                 break;
             default:
-                Messenger.sendMessage(player, messageProvider.get("settlement.toggle.unknown-toggle"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.toggle.unknown-toggle"),
                         Map.of("toggle", args[0]), messageProvider.get("prefix"));
                 return;
         }
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.toggle.set"), Map.of(
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.toggle.set"), Map.of(
                 "field", args[0],
                 "state",
                 enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>"),

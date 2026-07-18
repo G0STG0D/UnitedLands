@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.EconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementDepositCommand extends SettlementCommandHandler {
@@ -30,34 +29,30 @@ public class SettlementDepositCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, null);
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
+        
         BigDecimal amount = new BigDecimal(0);
         try {
             amount = new BigDecimal(args[0]);
         } catch (Exception ex) {
-            Messenger.sendMessage(player, messageProvider.get("errors.wrong-number-format"),
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.wrong-number-format"),
                     Map.of("input", args[1]), messageProvider.get("prefix"));
             return;
         }
 
-        if (!EconomyManager.instance().has(player.getUniqueId(), amount)) {
-            Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
-                    Map.of("amount", EconomyManager.instance().format(amount)), messageProvider.get("prefix"));
+        if (!UnitedLandsEconomyManager.instance().has(context.player().getUniqueId(), amount)) {
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.no-funds"),
+                    Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get("prefix"));
             return;
         }
 
-        EconomyManager.instance().withdraw(player.getUniqueId(), amount);
-        EconomyManager.instance().deposit(settlement.getUuid(), amount);
+        UnitedLandsEconomyManager.instance().withdraw(context.player().getUniqueId(), amount);
+        UnitedLandsEconomyManager.instance().deposit(context.settlement().getUuid(), amount);
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.deposit"),
-                Map.of("amount", EconomyManager.instance().format(amount)), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.deposit"),
+                Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get("prefix"));
     }
 
 }

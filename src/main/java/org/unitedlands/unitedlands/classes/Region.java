@@ -1,13 +1,16 @@
 package org.unitedlands.unitedlands.classes;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Location;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
+import org.unitedlands.unitedlands.utils.PolygonUtils;
 import org.unitedlands.unitedlands.utils.SerializationUtils;
-
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
 public class Region extends GeopolObject implements PermissionHolder {
@@ -16,6 +19,8 @@ public class Region extends GeopolObject implements PermissionHolder {
     private int homeChunkCoordinatesX;
     @DatabaseField(canBeNull = true, columnName = "home_chunk_z")
     private int homeChunkCoordinatesZ;
+    @DatabaseField(canBeNull = true, columnName = "polygon_serialized", dataType = DataType.LONG_STRING)
+    private String polygonSerialized;
     @DatabaseField(canBeNull = true, columnName = "spawn_serialized")
     private String spawnSerialized;
 
@@ -46,12 +51,19 @@ public class Region extends GeopolObject implements PermissionHolder {
     @DatabaseField(columnName = "allow_explosions", canBeNull = false)
     private boolean allowExplosions = true;
 
+    @DatabaseField(columnName = "debug_stroke_color", canBeNull = true)
+    private int debugStrokeColor;
+    @DatabaseField(columnName = "debug_fill_color", canBeNull = true)
+    private int debugFillColor;
+
     private transient Coordinates homeChunkCoordinates;
     private transient Location spawn;
     private transient Country country;
 
+    private transient double minX, minZ, maxX, maxZ;
+
     private transient Set<Settlement> settlements = new HashSet<>();
-    private transient Set<RegionChunk> chunks = new HashSet<>();
+    // private transient Set<RegionChunk> chunks = new HashSet<>();
 
     public Region() {
 
@@ -92,6 +104,52 @@ public class Region extends GeopolObject implements PermissionHolder {
         return spawn;
     }
 
+    public String getPolygonSerialized() {
+        return polygonSerialized;
+    }
+
+    public void setPolygonSerialized(String polygonSerialized) {
+        this.polygonSerialized = polygonSerialized;
+    }
+
+    public void setPolygon(double[] points) {
+        this.polygonSerialized = Arrays.stream(points).mapToObj(String::valueOf).collect(Collectors.joining(";"));
+        calculateBounds(points);
+    }
+
+    public double[] getPolygon() {
+        if (this.polygonSerialized == null)
+            return null;
+        return Arrays.stream(this.polygonSerialized.split(";"))
+                .mapToDouble(Double::parseDouble)
+                .toArray();
+    }
+
+    public void calculateBounds() {
+        calculateBounds(getPolygon());
+    }
+
+    public void calculateBounds(double[] points) {
+
+        this.minX = Double.POSITIVE_INFINITY;
+        this.minZ = Double.POSITIVE_INFINITY;
+        this.maxX = Double.NEGATIVE_INFINITY;
+        this.maxZ = Double.NEGATIVE_INFINITY;
+
+        for (int x = 0; x <= points.length - 2; x += 2) {
+            if (points[x] < this.minX)
+                this.minX = points[x];
+            if (points[x] > this.maxX)
+                this.maxX = points[x];
+        }
+        for (int z = 1; z <= points.length - 1; z += 2) {
+            if (points[z] < this.minZ)
+                this.minZ = points[z];
+            if (points[z] > this.maxZ)
+                this.maxZ = points[z];
+        }
+    }
+
     public void setHomeChunkCoordinates(Coordinates coordinates) {
         this.homeChunkCoordinates = coordinates;
         this.homeChunkCoordinatesX = coordinates.getX();
@@ -112,7 +170,7 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     public Country getCountry() {
         if (this.country == null && this.countryUuid != null)
-            country = GlobalDataManager.instance().getCountry(countryUuid);
+            country = UnitedLandsDataManager.instance().getCountry(countryUuid);
         return country;
     }
 
@@ -135,30 +193,6 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     public void removeSettlement(Settlement settlement) {
         settlements.remove(settlement);
-    }
-
-    public Set<RegionChunk> getChunks() {
-        return chunks;
-    }
-
-    public void setChunks(Set<RegionChunk> chunks) {
-        this.chunks = chunks;
-    }
-
-    public void addChunk(RegionChunk chunk) {
-        this.chunks.add(chunk);
-    }
-
-    public void removeChunk(RegionChunk chunk) {
-        this.chunks.remove(chunk);
-    }
-
-    public boolean hasChunkAtCoordinates(Coordinates coords) {
-        return chunks.stream().anyMatch(c -> c.getCoordinates().equals(coords));
-    }
-
-    public RegionChunk getChunkAtCoordinates(Coordinates coords) {
-        return chunks.stream().filter(c -> c.getCoordinates().equals(coords)).findFirst().orElse(null);
     }
 
     @Override
@@ -241,6 +275,46 @@ public class Region extends GeopolObject implements PermissionHolder {
         if (hasCountry())
             return country.getStrokeColor();
         return Settings.defaultRegionStrokeColour;
+    }
+
+    public int getDebugStrokeColor() {
+        return debugStrokeColor;
+    }
+
+    public void setDebugStrokeColor(int debugStrokeColor) {
+        this.debugStrokeColor = debugStrokeColor;
+    }
+
+    public int getDebugFillColor() {
+        return debugFillColor;
+    }
+
+    public void setDebugFillColor(int debugFillColor) {
+        this.debugFillColor = debugFillColor;
+    }
+
+    public double getMaxZ() {
+        return maxZ;
+    }
+
+    public double getMaxX() {
+        return maxX;
+    }
+
+    public double getMinZ() {
+        return minZ;
+    }
+
+    public double getMinX() {
+        return minX;
+    }
+
+    public boolean isPointInRegion(double px, double py) {
+        var regionPolygon = getPolygon();
+        if (regionPolygon == null)
+            return false;
+
+        return PolygonUtils.isPointInPolygon(regionPolygon, px, py);
     }
 
     @Override

@@ -14,7 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
 import org.unitedlands.unitedlands.classes.interfaces.MetadataHolder;
 import org.unitedlands.unitedlands.classes.metadata.MetaDataField;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.JsonUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -65,7 +65,7 @@ public class Citizen implements Identifiable, MetadataHolder {
     public UUID getUuid() {
         return uuid;
     }
-    
+
     @Override
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
@@ -108,7 +108,7 @@ public class Citizen implements Identifiable, MetadataHolder {
 
     public Settlement getSettlement() {
         if (settlement == null && settlementUuid != null)
-            settlement = GlobalDataManager.instance().getSettlement(settlementUuid);
+            settlement = UnitedLandsDataManager.instance().getSettlement(settlementUuid);
         return settlement;
     }
 
@@ -118,6 +118,10 @@ public class Citizen implements Identifiable, MetadataHolder {
 
     public boolean isMayor() {
         return hasSettlementRank("mayor");
+    }
+
+    public boolean isLeader() {
+        return getCountry() != null && hasCountryRank("country-leader");
     }
 
     public void setSettlement(Settlement settlement) {
@@ -229,6 +233,11 @@ public class Citizen implements Identifiable, MetadataHolder {
     }
 
     @Override
+    public boolean hasMetadata(String key) {
+        return getMetadata().containsKey(key);
+    }
+
+    @Override
     public Map<String, MetaDataField<?>> getMetadata() {
         if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
             var t = new TypeToken<Collection<MetaDataField<?>>>() {
@@ -266,7 +275,7 @@ public class Citizen implements Identifiable, MetadataHolder {
 
     @Override
     public void saveMetadata() {
-        GlobalDataManager.instance().updateCitizenDbData(this);
+        UnitedLandsDataManager.instance().updateCitizenDbData(this);
     }
 
     @Override

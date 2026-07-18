@@ -14,7 +14,7 @@ import org.unitedlands.interfaces.ICommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.commands.handlers.citizen.CitizenInfoCommand;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Formatter;
 
 public class CitizenCommands extends BaseCommandExecutor<UnitedLands> {
@@ -39,7 +39,7 @@ public class CitizenCommands extends BaseCommandExecutor<UnitedLands> {
         if (args.length == 1) {
             options = new ArrayList<String>(this.handlers.keySet());
             if (args[0].length() >= 3)
-                options.addAll(GlobalDataManager.instance().getCitizenNames());
+                options.addAll(UnitedLandsDataManager.instance().getCitizenNames());
         } else {
             String subcommand = args[0].toLowerCase();
             ICommandHandler handler = (ICommandHandler) this.handlers.get(subcommand);

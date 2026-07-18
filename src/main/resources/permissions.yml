@@ -19,6 +19,8 @@ settlement:
     - settlement.kick
     - settlement.plot.sell
     - settlement.plot.evict
+    - settlement.plot.settype
+    - settlement.plot.toggle
     - settlement.withdraw
     - settlement.joincountry
     - settlement.usetaxpercent
@@ -55,6 +57,8 @@ country:
     - country.releasesettlement
     - country.manage.ranks.leader
     - country.manage.ranks.other
+    - country.setname
+    - country.setcolor
     - region.claim
     - region.unclaim
     - region.manage.toggle

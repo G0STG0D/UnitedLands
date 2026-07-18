@@ -2,12 +2,11 @@ package org.unitedlands.unitedlands.commands.handlers.settlement;
 
 import java.util.List;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -24,30 +23,23 @@ public class SettlementSetColorCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.setcolor");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.setcolor", citizen))
-            return;
-
+        
         if (!(args[0].length() == 7) || !ColorUtils.isValidHexColor(args[0])) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.setcolor.wrong-format"),
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.setcolor.wrong-format"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        settlement.setFillColor(args[0] + "10");
-        settlement.setStrokeColor(args[0]);
+        context.settlement().setFillColor(args[0] + "10");
+        context.settlement().setStrokeColor(args[0]);
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.setcolor.set"),
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.setcolor.set"),
                 null, messageProvider.get("prefix"));
     }
 

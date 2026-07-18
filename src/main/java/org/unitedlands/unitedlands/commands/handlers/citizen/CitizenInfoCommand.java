@@ -9,7 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.infoscreen.CitizenInfoScreen;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class CitizenInfoCommand extends BaseCommandHandler<UnitedLands> {
@@ -21,7 +21,7 @@ public class CitizenInfoCommand extends BaseCommandHandler<UnitedLands> {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return GlobalDataManager.instance().getCitizenNames();
+            return UnitedLandsDataManager.instance().getCitizenNames();
         return null;
     }
 
@@ -30,11 +30,11 @@ public class CitizenInfoCommand extends BaseCommandHandler<UnitedLands> {
 
         Citizen citizen = null;
         if (args.length == 0) {
-            citizen = GlobalDataManager.instance().getCitizen((Player) sender);
+            citizen = UnitedLandsDataManager.instance().getCitizen((Player) sender);
             if (citizen == null)
                 return;
         } else if (args.length >= 1) {
-            citizen = GlobalDataManager.instance().getCitizen(args[0]);
+            citizen = UnitedLandsDataManager.instance().getCitizen(args[0]);
             if (citizen == null) {
                 return;
             }

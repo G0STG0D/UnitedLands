@@ -10,6 +10,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -122,18 +123,13 @@ public class Pl3xMapRenderer {
 
     private void renderCountryAsync(Country country) {
 
-        SimpleLayer layer = getOrCreateSimpleLayer(country.getWorldName(),
-                "countries",
-                "Countries",
-                1,
-                1000);
+        SimpleLayer layer = getOrCreateSimpleLayer(country.getWorldName(), "countries", "Countries", 1, 1000);
 
         var key = "country-" + country.getUuid().toString();
         if (layer.hasMarker(key))
             layer.removeMarker(key);
 
-        var popup = new Popup(
-                "<div><p><strong>" + country.getCleanName() + "</strong></p><p><strong>Owner: </strong>");
+        var popup = new Popup("<div><p><strong>" + country.getCleanName() + "</strong></p><p><strong>Owner: </strong>");
 
         int strokeWidth = Settings.defaultCountryStrokeWidth;
 
@@ -145,35 +141,23 @@ public class Pl3xMapRenderer {
                 .tooltipContent(country.getCleanName()).build()
                 .setPopup(popup);
 
-        var countryChunks = country.getRegions().stream().flatMap(r -> r.getChunks().stream())
-                .collect(Collectors.toSet());
+        var countryPolygons = country.getRegions().stream().map(Region::getPolygon).collect(Collectors.toList());
+        var mergedPolygons = mergePolygons(countryPolygons);
 
-        var chunkClusters = findClusters(countryChunks);
-        List<Polygon> polygons = new ArrayList<>();
+        List<Polygon> finalPolygons = new ArrayList<>();
 
         int i = 0;
-        for (var cluster : chunkClusters) {
-
-            List<Polyline> clusterLines = new ArrayList<>();
-
-            clusterLines.add(new Polyline("border-" + country.getUuid().toString() + "-" + i,
-                    generatePolygon(cluster.chunks)));
-
-            var holeClusters = findHoles(cluster, country.getWorldName());
-            int j = 0;
-            for (var holeCluster : holeClusters) {
-                clusterLines.add(new Polyline(
-                        "hole-" + country.getUuid().toString() + "-" + j,
-                        generatePolygon(holeCluster.chunks)));
-                j++;
+        for (var mergedPolygon : mergedPolygons) {
+            LinkedList<Point> polygonPoints = new LinkedList<>();
+            for (int j = 0; j < mergedPolygon.length - 2; j = j + 2) {
+                polygonPoints.add(new Point((int) mergedPolygon[j], (int) mergedPolygon[j + 1]));
             }
-
-            polygons.add(new Polygon("cluster-" + country.getUuid().toString() + "-" + i, clusterLines));
+            finalPolygons.add(
+                    new Polygon(key, new Polyline("border-" + country.getUuid().toString() + "-" + i, polygonPoints)));
         }
-        MultiPolygon mapPolygon = new MultiPolygon(key, polygons);
 
+        MultiPolygon mapPolygon = new MultiPolygon(key, finalPolygons);
         mapPolygon.setOptions(markerOptions);
-
         layer.addMarker(mapPolygon);
     }
 
@@ -203,11 +187,15 @@ public class Pl3xMapRenderer {
     // Region rendering
     // *********************************************************
 
-    public void renderRegion(Region region) {
-        renderRegions(List.of(region));
+    public void renderPolyRegion(Region region) {
+        renderPolyRegions(List.of(region), false);
     }
 
-    public void renderRegions(Collection<Region> regions) {
+    public void renderPolyRegion(Region region, boolean debug) {
+        renderPolyRegions(List.of(region), debug);
+    }
+
+    public void renderPolyRegions(Collection<Region> regions, boolean debug) {
 
         Logger.log("Starting region map rendering...", "UnitedLands");
 
@@ -218,7 +206,7 @@ public class Pl3xMapRenderer {
 
         var startTime = System.currentTimeMillis();
         List<CompletableFuture<Void>> futures = regions.stream()
-                .map(region -> CompletableFuture.runAsync(() -> renderRegionAsync(region)))
+                .map(region -> CompletableFuture.runAsync(() -> renderPolyRegionAsync(region, debug)))
                 .toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
@@ -233,7 +221,7 @@ public class Pl3xMapRenderer {
 
     }
 
-    private void renderRegionAsync(Region region) {
+    private void renderPolyRegionAsync(Region region, boolean debug) {
         SimpleLayer regionLayer;
         if (!region.hasCountry()) {
             regionLayer = getOrCreateSimpleLayer(region.getWorldName(),
@@ -248,14 +236,15 @@ public class Pl3xMapRenderer {
                     6,
                     0);
         }
-
         SimpleLayer regionCenterMarkerLayer = getOrCreateSimpleLayer(region.getWorldName(), "regioncenters",
                 "Region Centers", 10, 100);
 
+
         var key = "region-" + region.getUuid().toString();
-        var centerMarkerKey = "center-" + region.getUuid();
         if (regionLayer.hasMarker(key))
             regionLayer.removeMarker(key);
+
+        var centerMarkerKey = "center-" + region.getUuid();
         if (regionLayer.hasMarker(centerMarkerKey))
             regionLayer.removeMarker(centerMarkerKey);
 
@@ -276,46 +265,42 @@ public class Pl3xMapRenderer {
             strokeWidth = Settings.countryRegionStrokeWidth;
         }
 
+        int fillColor;
+        int strokeColor;
+        if (debug) {
+            fillColor = region.getDebugFillColor();
+            strokeColor = region.getDebugStrokeColor();
+            strokeWidth = 2;
+            dash = "99999";
+        } else {
+            fillColor = region.getFillColor();
+            strokeColor = region.getStrokeColor();
+        }
+
         var tooltip = region.getCleanName()
                 + (region.hasCountry() ? " (" + region.getCountry().getCleanName() + ")" : "");
         var markerOptions = Options.builder()
                 .fill(true)
                 .fillType(Fill.Type.NONZERO)
-                .fillColor(region.getFillColor())
+                .fillColor(fillColor)
                 .stroke(true)
-                .strokeColor(region.getStrokeColor())
+                .strokeColor(strokeColor)
                 .strokeDashPattern(dash)
                 .strokeWeight(strokeWidth)
                 .tooltipContent(tooltip).build()
                 .setPopup(popup);
 
-        var chunkClusters = findClusters(region.getChunks());
-        List<Polygon> polygons = new ArrayList<>();
-
-        int i = 0;
-        for (var cluster : chunkClusters) {
-
-            List<Polyline> clusterLines = new ArrayList<>();
-
-            clusterLines.add(new Polyline("border-" + region.getUuid().toString() + "-" + i,
-                    generatePolygon(cluster.chunks)));
-
-            var holeClusters = findHoles(cluster, region.getWorldName());
-            int j = 0;
-            for (var holeCluster : holeClusters) {
-                clusterLines.add(new Polyline(
-                        "hole-" + region.getUuid().toString() + "-" + j,
-                        generatePolygon(holeCluster.chunks)));
-                j++;
-            }
-
-            polygons.add(new Polygon("cluster-" + region.getUuid().toString() + "-" + i, clusterLines));
+        var polyPoints = region.getPolygon();
+        LinkedList<Point> points = new LinkedList<>();
+        for (int i = 0; i < polyPoints.length - 2; i = i + 2) {
+            points.add(new Point((int) polyPoints[i], (int) polyPoints[i + 1]));
         }
-        MultiPolygon mapPolygon = new MultiPolygon(key, polygons);
 
-        mapPolygon.setOptions(markerOptions);
+        Polygon polygon = new Polygon(key, new Polyline("border-" + region.getUuid().toString(), points));
 
-        regionLayer.addMarker(mapPolygon);
+        polygon.setOptions(markerOptions);
+
+        regionLayer.addMarker(polygon);
     }
 
     public void removeRegion(Region region) {
@@ -336,8 +321,6 @@ public class Pl3xMapRenderer {
         if (claimedLayer.hasMarker(key))
             claimedLayer.removeMarker(key);
     }
-
-    // #endregion
 
     // #region Settlement rendering
 
@@ -367,10 +350,12 @@ public class Pl3xMapRenderer {
                 .thenRun(() -> {
                     var executionTime = System.currentTimeMillis() - startTime;
                     Logger.log(
-                            "Created " + settlements.size() + " settlements in map overlay in " + executionTime + "ms");
+                            "Created " + settlements.size() + " settlements in map overlay in " +
+                                    executionTime + "ms");
                 })
                 .exceptionally(ex -> {
-                    Logger.logError("Error rendering settlements: " + ex.getMessage(), "UnitedLands");
+                    Logger.logError("Error rendering settlements: " + ex.getMessage(),
+                            "UnitedLands");
                     return null;
                 });
     }
@@ -390,8 +375,10 @@ public class Pl3xMapRenderer {
         // layer.removeMarker(key);
 
         var popup = new Popup(
-                "<div><p><strong>" + settlement.getCleanName() + "</strong></p><p><strong>Owner: </strong>"
-                        + (settlement.hasFounder() ? settlement.getFounderName() : "-") + "</p></div>");
+                "<div><p><strong>" + settlement.getCleanName() +
+                        "</strong></p><p><strong>Owner: </strong>"
+                        + (settlement.hasFounder() ? settlement.getFounderName() : "-") +
+                        "</p></div>");
 
         int strokeWidth = Settings.defaultSettlementStrokeWidth;
         String dash = Settings.defaultSettlementDash;
@@ -449,7 +436,9 @@ public class Pl3xMapRenderer {
         if (settlementsLayer != null) {
             var settlemenMarkers = settlementsLayer.getMarkers();
             var poly = settlemenMarkers.stream()
-                    .filter(m -> m.getKey().equals("settlement-" + settlement.getUuid().toString())).findFirst()
+                    .filter(m -> m.getKey().equals("settlement-" +
+                            settlement.getUuid().toString()))
+                    .findFirst()
                     .orElse(null);
             if (poly != null) {
                 Logger.log("Removing settlement...", "UnitedLands");
@@ -471,7 +460,8 @@ public class Pl3xMapRenderer {
         if (chunks == null || chunks.isEmpty())
             return Collections.emptySet();
 
-        Map<String, CoordinateHolder> lookup = new HashMap<>((4 * chunks.size()) / 3);
+        Map<String, CoordinateHolder> lookup = new HashMap<>((4 * chunks.size()) /
+                3);
         for (CoordinateHolder chunk : chunks) {
             lookup.put(toKey(chunk.getCoordinates()), chunk);
         }
@@ -583,7 +573,8 @@ public class Pl3xMapRenderer {
                     }
                 }
             } catch (Exception ex) {
-                Logger.logError("Could not parse x, y for key " + key + ": " + ex.getMessage(), "UnitedLands");
+                Logger.logError("Could not parse x, y for key " + key + ": " +
+                        ex.getMessage(), "UnitedLands");
             }
         }
 
@@ -744,11 +735,13 @@ public class Pl3xMapRenderer {
         return layer;
     }
 
-    private boolean isChunkAtCoordinates(Set<CoordinateHolder> chunks, Coordinates coords) {
+    private boolean isChunkAtCoordinates(Set<CoordinateHolder> chunks,
+            Coordinates coords) {
         return chunks.stream().anyMatch(c -> c.getCoordinates().equals(coords));
     }
 
-    private CoordinateHolder getChunkAtCoordinates(Set<CoordinateHolder> chunks, Coordinates coords) {
+    private CoordinateHolder getChunkAtCoordinates(Set<CoordinateHolder> chunks,
+            Coordinates coords) {
         return chunks.stream().filter(c -> c.getCoordinates().equals(coords)).findFirst().orElse(null);
     }
 
@@ -763,4 +756,260 @@ public class Pl3xMapRenderer {
         }
         return rightmost;
     }
+
+    // *******************************
+    // Polygon merging
+    // *******************************
+
+    // Yes this is AI code, but icba to spend weeks learning complex polygon merging
+    // from scratch -_-
+
+    private final double SNAP_EPS = 1e-6;
+    private final double T_EPS = 1e-9; // parametric tolerance for "strictly between" endpoints
+
+    private final class Pt {
+        double x, y;
+
+        Pt(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    private final class EdgeKey {
+        final int a, b;
+
+        EdgeKey(int a, int b) {
+            this.a = Math.min(a, b);
+            this.b = Math.max(a, b);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof EdgeKey))
+                return false;
+            EdgeKey e = (EdgeKey) o;
+            return a == e.a && b == e.b;
+        }
+
+        @Override
+        public int hashCode() {
+            return a * 31 + b;
+        }
+    }
+
+    // ---------- Step 1: snap near-coincident vertices across all polygons
+    // ----------
+
+    private int[] snapVertices(List<double[]> polygons, List<Pt> canonicalPoints) {
+        Map<Long, List<Integer>> grid = new HashMap<>();
+        int totalVerts = 0;
+        for (double[] poly : polygons)
+            totalVerts += poly.length / 2;
+
+        int[] canonicalIndex = new int[totalVerts];
+        double cellSize = SNAP_EPS * 2;
+        int idx = 0;
+
+        for (double[] poly : polygons) {
+            for (int i = 0; i < poly.length; i += 2) {
+                double x = poly[i], y = poly[i + 1];
+                long cx = Math.round(x / cellSize);
+                long cy = Math.round(y / cellSize);
+
+                Integer match = null;
+                outer: for (long dx = -1; dx <= 1; dx++) {
+                    for (long dy = -1; dy <= 1; dy++) {
+                        long key = ((cx + dx) * 1000003L) ^ (cy + dy);
+                        List<Integer> bucket = grid.get(key);
+                        if (bucket == null)
+                            continue;
+                        for (int cand : bucket) {
+                            Pt c = canonicalPoints.get(cand);
+                            if (Math.abs(c.x - x) <= SNAP_EPS && Math.abs(c.y - y) <= SNAP_EPS) {
+                                match = cand;
+                                break outer;
+                            }
+                        }
+                    }
+                }
+
+                if (match != null) {
+                    canonicalIndex[idx] = match;
+                } else {
+                    int newIdx = canonicalPoints.size();
+                    canonicalPoints.add(new Pt(x, y));
+                    long key = (cx * 1000003L) ^ cy;
+                    grid.computeIfAbsent(key, k -> new ArrayList<>()).add(newIdx);
+                    canonicalIndex[idx] = newIdx;
+                }
+                idx++;
+            }
+        }
+        return canonicalIndex;
+    }
+
+    // ---------- Step 2: split every edge at any other vertex lying on it
+    // (T-junctions) ----------
+
+    private List<Integer> splitRingAtTJunctions(List<Integer> ring, List<Pt> pts) {
+        int n = ring.size();
+        List<Integer> expanded = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            int aIdx = ring.get(i);
+            int bIdx = ring.get((i + 1) % n);
+            expanded.add(aIdx);
+            if (aIdx == bIdx)
+                continue;
+
+            Pt a = pts.get(aIdx), b = pts.get(bIdx);
+            double dx = b.x - a.x, dy = b.y - a.y;
+            double lenSq = dx * dx + dy * dy;
+            if (lenSq == 0)
+                continue;
+
+            // Find every other point that lies strictly on segment a-b
+            List<double[]> onEdge = new ArrayList<>(); // {t, pointIndex}
+            for (int p = 0; p < pts.size(); p++) {
+                if (p == aIdx || p == bIdx)
+                    continue;
+                Pt c = pts.get(p);
+
+                double t = ((c.x - a.x) * dx + (c.y - a.y) * dy) / lenSq;
+                if (t <= T_EPS || t >= 1 - T_EPS)
+                    continue; // not strictly between endpoints
+
+                // perpendicular distance from c to the line through a-b
+                double projX = a.x + t * dx, projY = a.y + t * dy;
+                double distSq = (c.x - projX) * (c.x - projX) + (c.y - projY) * (c.y - projY);
+                if (distSq <= SNAP_EPS * SNAP_EPS) {
+                    onEdge.add(new double[] { t, p });
+                }
+            }
+
+            if (!onEdge.isEmpty()) {
+                onEdge.sort((x, y) -> Double.compare(x[0], y[0]));
+                for (double[] entry : onEdge) {
+                    expanded.add((int) entry[1]);
+                }
+            }
+        }
+        return expanded;
+    }
+
+    // ---------- Step 3: merge (edge cancellation + ring tracing) ----------
+
+    public List<double[]> mergePolygons(List<double[]> polygons) {
+
+        List<Pt> canonicalPoints = new ArrayList<>();
+        int[] canonicalIndex = snapVertices(polygons, canonicalPoints);
+
+        Map<EdgeKey, Integer> netCount = new HashMap<>();
+        Map<EdgeKey, int[]> edgeEndpoints = new HashMap<>();
+
+        int cursor = 0;
+        for (double[] poly : polygons) {
+            int n = poly.length / 2;
+            List<Integer> ring = new ArrayList<>(n);
+            for (int i = 0; i < n; i++)
+                ring.add(canonicalIndex[cursor++]);
+
+            if (isClockwise(ring, canonicalPoints))
+                Collections.reverse(ring);
+
+            // Expand the ring so any T-junction vertices from other polygons are included
+            ring = splitRingAtTJunctions(ring, canonicalPoints);
+
+            int m = ring.size();
+            for (int i = 0; i < m; i++) {
+                int a = ring.get(i);
+                int b = ring.get((i + 1) % m);
+                if (a == b)
+                    continue;
+
+                boolean forward = a <= b;
+                int lo = forward ? a : b;
+                int hi = forward ? b : a;
+                EdgeKey key = new EdgeKey(lo, hi);
+
+                edgeEndpoints.putIfAbsent(key, new int[] { lo, hi });
+                netCount.merge(key, forward ? 1 : -1, Integer::sum);
+            }
+        }
+
+        Map<Integer, Deque<Integer>> adjacency = new HashMap<>();
+        for (Map.Entry<EdgeKey, Integer> e : netCount.entrySet()) {
+            int net = e.getValue();
+            if (net == 0)
+                continue;
+            int[] ends = edgeEndpoints.get(e.getKey());
+            int from = net > 0 ? ends[0] : ends[1];
+            int to = net > 0 ? ends[1] : ends[0];
+            for (int i = 0; i < Math.abs(net); i++) {
+                adjacency.computeIfAbsent(from, k -> new ArrayDeque<>()).add(to);
+            }
+        }
+
+        List<double[]> result = new ArrayList<>();
+        for (Integer start : new ArrayList<>(adjacency.keySet())) {
+            Deque<Integer> outs = adjacency.get(start);
+            while (outs != null && !outs.isEmpty()) {
+                List<Integer> ring = new ArrayList<>();
+                int current = start;
+                ring.add(current);
+                boolean closed = false;
+                while (true) {
+                    Deque<Integer> currentOuts = adjacency.get(current);
+                    if (currentOuts == null || currentOuts.isEmpty()) {
+                        Pt stranded = canonicalPoints.get(current);
+                        System.err.printf(
+                                "WARNING: ring did not close — dead end at (%.6f, %.6f).%n",
+                                stranded.x, stranded.y);
+                        break;
+                    }
+                    int next = currentOuts.poll();
+                    if (next == start) {
+                        closed = true;
+                        break;
+                    }
+                    ring.add(next);
+                    current = next;
+                }
+                if (closed && ring.size() >= 3) {
+                    result.add(toArray(ring, canonicalPoints));
+                }
+                outs = adjacency.get(start);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean isClockwise(List<Integer> ring, List<Pt> pts) {
+        double sum = 0;
+        int n = ring.size();
+        for (int i = 0; i < n; i++) {
+            Pt a = pts.get(ring.get(i));
+            Pt b = pts.get(ring.get((i + 1) % n));
+            sum += (b.x - a.x) * (b.y + a.y);
+        }
+        return sum > 0;
+    }
+
+    private static double[] toArray(List<Integer> ring, List<Pt> pts) {
+        int n = ring.size();
+        double[] arr = new double[(n + 1) * 2]; // +1 to re-close the ring
+        for (int i = 0; i < n; i++) {
+            Pt p = pts.get(ring.get(i));
+            arr[2 * i] = p.x;
+            arr[2 * i + 1] = p.y;
+        }
+        // repeat the first vertex to explicitly close the ring
+        Pt first = pts.get(ring.get(0));
+        arr[2 * n] = first.x;
+        arr[2 * n + 1] = first.y;
+        return arr;
+    }
+
 }

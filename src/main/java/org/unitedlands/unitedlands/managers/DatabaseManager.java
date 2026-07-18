@@ -6,16 +6,16 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Region;
-import org.unitedlands.unitedlands.classes.RegionChunk;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.db.CitizenService;
 import org.unitedlands.unitedlands.classes.db.CountryService;
-import org.unitedlands.unitedlands.classes.db.RegionChunkService;
+import org.unitedlands.unitedlands.classes.db.LoginChallengeService;
 import org.unitedlands.unitedlands.classes.db.RegionService;
 import org.unitedlands.unitedlands.classes.db.SchemaVersion;
 import org.unitedlands.unitedlands.classes.db.SettlementChunkService;
 import org.unitedlands.unitedlands.classes.db.SettlementService;
+import org.unitedlands.unitedlands.classes.webservices.LoginChallenge;
 import org.unitedlands.utils.Logger;
 
 import com.j256.ormlite.dao.Dao;
@@ -28,11 +28,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class DatabaseManager {
 
-    // private static DatabaseManager instance;
-    // public static DatabaseManager instance() {
-    //     return instance;
-    // }
-
     private final UnitedLands plugin;
 
     private HikariDataSource hikariDataSource;
@@ -40,10 +35,10 @@ public class DatabaseManager {
 
     private CountryService countryService;
     private RegionService regionService;
-    private RegionChunkService regionChunkService;
     private SettlementService settlementService;
     private SettlementChunkService settlementChunkService;
     private CitizenService citizenService;
+    private LoginChallengeService loginChallengeService;
 
     public DatabaseManager(UnitedLands plugin) {
         this.plugin = plugin;
@@ -105,10 +100,10 @@ public class DatabaseManager {
     private void registerServices() throws SQLException {
         this.countryService = new CountryService(getDao(Country.class));
         this.regionService = new RegionService(getDao(Region.class));
-        this.regionChunkService = new RegionChunkService(getDao(RegionChunk.class));
         this.settlementService = new SettlementService(getDao(Settlement.class));
         this.settlementChunkService = new SettlementChunkService(getDao(SettlementChunk.class));
         this.citizenService = new CitizenService(getDao(Citizen.class));
+        this.loginChallengeService = new LoginChallengeService(getDao(LoginChallenge.class));
     }
 
     private void verifySchemaVersion() throws SQLException {
@@ -170,10 +165,6 @@ public class DatabaseManager {
         return regionService;
     }
 
-    public RegionChunkService getRegionChunkService() {
-        return regionChunkService;
-    }
-
     public SettlementService getSettlementService() {
         return settlementService;
     }
@@ -185,6 +176,11 @@ public class DatabaseManager {
     public CitizenService getCitizenService() {
         return citizenService;
     }
+
+    public LoginChallengeService getLoginChallengeService() {
+        return loginChallengeService;
+    }
+
 
     public ConnectionSource getConnectionSource() {
         return connectionSource;

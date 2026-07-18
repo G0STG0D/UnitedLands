@@ -11,7 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class AdminCountrySetCapitalCommand extends CountryAdminCommandHandler {
@@ -50,7 +50,7 @@ public class AdminCountrySetCapitalCommand extends CountryAdminCommandHandler {
 
         country.setCapital(settlement);
 
-        GlobalDataManager.instance().updateCountryDbData(country);
+        UnitedLandsDataManager.instance().updateCountryDbData(country);
 
         Pl3xMapRenderer.instance().renderSettlement(settlement);
         Pl3xMapRenderer.instance().renderCountry(country);
@@ -64,9 +64,9 @@ public class AdminCountrySetCapitalCommand extends CountryAdminCommandHandler {
     public List<String> handleTab(CommandSender arg0, String[] args) {
         switch (args.length) {
             case 1:
-                return GlobalDataManager.instance().getCountryNames();
+                return UnitedLandsDataManager.instance().getCountryNames();
             case 2:
-                var country = GlobalDataManager.instance().getCountry(args[0]);
+                var country = UnitedLandsDataManager.instance().getCountry(args[0]);
                 if (country != null)
                     return country.getSettlements().stream().map(Settlement::getName).collect(Collectors.toList());
         }

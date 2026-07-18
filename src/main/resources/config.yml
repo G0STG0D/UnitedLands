@@ -16,8 +16,14 @@ mysql:
   database: unitedregions
 
 general:
-  # The width / height of a region chunk in 16x16 minecraft chunks,
-  # e.g. a region chunk size of 8 equals a width / Height of 8 * 16 = 128 blocks
+
+  # Scale multiplier for the import SVG
+  import-scale: 1
+  # Offsets to be subtracted from the imported vertex positions. These will usually be 
+  # half of the map width / height
+  import-offset-x: 0
+  import-offset-y: 0
+
   region-chunk-size: 8
   # Colours as int values (e.g. https://argb-int-calculator.netlify.app/)
 
@@ -122,3 +128,13 @@ protection:
     - COW
     - SHEEP
     - PIG
+
+settlement-chunks:
+  none:
+    map-icon: "+"
+    map-icon-color: "§7"
+    max-per-settlement: -1
+  fortress:
+    map-icon: "F"
+    map-icon-color: "§f"
+    max-per-settlement: 1

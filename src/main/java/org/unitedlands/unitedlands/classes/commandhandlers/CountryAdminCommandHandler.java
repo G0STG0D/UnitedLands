@@ -11,7 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settlement;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
@@ -32,7 +32,7 @@ public class CountryAdminCommandHandler extends BaseCommandHandler<UnitedLands> 
     }
 
     protected Country getCountry(Player player, String name) {
-        var country = GlobalDataManager.instance().getCountry(name);
+        var country = UnitedLandsDataManager.instance().getCountry(name);
         if (country == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.country-not-found"),
                     Map.of("country", name), messageProvider.get("prefix"));
@@ -42,7 +42,7 @@ public class CountryAdminCommandHandler extends BaseCommandHandler<UnitedLands> 
     }
 
     protected Settlement getSettlement(Player player, String name) {
-        var settlement = GlobalDataManager.instance().getSettlement(name);
+        var settlement = UnitedLandsDataManager.instance().getSettlement(name);
         if (settlement == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.settlement-not-found"),
                     Map.of("settlement", name), messageProvider.get("prefix"));
@@ -52,7 +52,7 @@ public class CountryAdminCommandHandler extends BaseCommandHandler<UnitedLands> 
     }
 
     protected Citizen getCitizen(Player player, String name) {
-        var citizen = GlobalDataManager.instance().getCitizen(name);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(name);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.citizen-not-found"),
                     Map.of("name", name), messageProvider.get("prefix"));

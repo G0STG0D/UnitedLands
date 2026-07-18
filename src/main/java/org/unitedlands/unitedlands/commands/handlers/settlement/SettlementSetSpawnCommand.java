@@ -3,7 +3,6 @@ package org.unitedlands.unitedlands.commands.handlers.settlement;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
@@ -19,27 +18,20 @@ public class SettlementSetSpawnCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
+        var context = validate(sender, "settlement.setspawn");
+        if (context == null)
             return;
 
-        if (!hasPermission("settlement.setspawn", citizen))
-            return;
-
-        var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
-        if (!settlement.hasChunkAtCoordinates(chunkCoordinates)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.setspawn.not-in-claims"),
+        var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(context.player().getLocation());
+        if (!context.settlement().hasChunkAtCoordinates(chunkCoordinates)) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.setspawn.not-in-claims"),
                     null, messageProvider.get("prefix"));
             return;
         }
 
-        settlement.setSpawn(player.getLocation());
+        context.settlement().setSpawn(context.player().getLocation());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.setspawn.set"),
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.setspawn.set"),
                 null, messageProvider.get("prefix"));
     }
 

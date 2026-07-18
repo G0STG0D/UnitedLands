@@ -10,7 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
@@ -30,7 +30,7 @@ public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
     }
 
     protected Citizen getCitizen(Player player) {
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.no-citizen-data"),
                     null, messageProvider.get("prefix"));

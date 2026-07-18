@@ -9,6 +9,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlementchunk.SettlementC
 import org.unitedlands.unitedlands.commands.handlers.settlementchunk.SettlementChunkForSaleCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlementchunk.SettlementChunkInfoCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlementchunk.SettlementChunkPermissionCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlementchunk.SettlementChunkSetType;
 import org.unitedlands.unitedlands.commands.handlers.settlementchunk.SettlementChunkToggleCommand;
 
 public class SettlementChunkCommands extends BaseCommandExecutor<UnitedLands> {
@@ -26,6 +27,7 @@ public class SettlementChunkCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("info", new SettlementChunkInfoCommand(plugin, messageProvider));
         handlers.put("permission", new SettlementChunkPermissionCommand(plugin, messageProvider));
         handlers.put("toggle", new SettlementChunkToggleCommand(plugin, messageProvider));
+        handlers.put("settype", new SettlementChunkSetType(plugin, messageProvider));
     }
 
 }

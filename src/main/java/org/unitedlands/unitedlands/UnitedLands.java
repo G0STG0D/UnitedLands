@@ -8,10 +8,10 @@ import org.unitedlands.unitedlands.commands.AdminCommands;
 import org.unitedlands.unitedlands.commands.ApprovalCommand;
 import org.unitedlands.unitedlands.commands.CitizenCommands;
 import org.unitedlands.unitedlands.commands.CountryCommands;
-import org.unitedlands.unitedlands.commands.RegionChunkCommands;
 import org.unitedlands.unitedlands.commands.RegionCommands;
 import org.unitedlands.unitedlands.commands.SettlementChunkCommands;
 import org.unitedlands.unitedlands.commands.SettlementCommands;
+import org.unitedlands.unitedlands.commands.WebCommands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
 import org.unitedlands.unitedlands.listeners.BlockListener;
@@ -22,8 +22,8 @@ import org.unitedlands.unitedlands.listeners.PlayerListener;
 import org.unitedlands.unitedlands.listeners.ServerEventListener;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
@@ -42,8 +42,8 @@ public class UnitedLands extends JavaPlugin {
 
     private MessageProvider messageProvider;
 
-    GlobalDataManager globalDataManager;
-    EconomyManager economyManager;
+    UnitedLandsDataManager globalDataManager;
+    UnitedLandsEconomyManager economyManager;
     DisplayManager displayManager;
     ConfirmationManager confirmationManager;
     PermissionManager permissionManager;
@@ -51,6 +51,8 @@ public class UnitedLands extends JavaPlugin {
 
     private Pl3xMapRenderer mapRenderer;
     private TownyProvider townyProvider;
+
+    private UnitedLandsWebServices webServices;
 
     @Override
     public void onEnable() {
@@ -73,18 +75,25 @@ public class UnitedLands extends JavaPlugin {
         registerCommands();
         registerListeners();
 
+        webServices = new UnitedLandsWebServices(this);
+
         getLogger().info("UnitedLands initialized.");
+    }
+
+    @Override
+    public void onDisable() {
+        webServices.stopWebServices();
     }
 
     private void loadManagers() {
 
         mapRenderer = new Pl3xMapRenderer();
         permissionManager = new PermissionManager(this);
-        globalDataManager = new GlobalDataManager(this, mapRenderer);
+        globalDataManager = new UnitedLandsDataManager(this, mapRenderer);
         displayManager = new DisplayManager(this);
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
-        economyManager = new EconomyManager(this);
+        economyManager = new UnitedLandsEconomyManager(this);
     }
 
     private void loadIntegrations() {
@@ -105,10 +114,6 @@ public class UnitedLands extends JavaPlugin {
         Objects.requireNonNull(getCommand("region")).setExecutor(regionCommands);
         Objects.requireNonNull(getCommand("region")).setTabCompleter(regionCommands);
 
-        var regionChunkCommands = new RegionChunkCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("regionchunk")).setExecutor(regionChunkCommands);
-        Objects.requireNonNull(getCommand("regionchunk")).setTabCompleter(regionChunkCommands);
-
         var settlementCommands = new SettlementCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("settlement")).setExecutor(settlementCommands);
         Objects.requireNonNull(getCommand("settlement")).setTabCompleter(settlementCommands);
@@ -128,6 +133,10 @@ public class UnitedLands extends JavaPlugin {
         var citizenCommand = new CitizenCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("citizen")).setExecutor(citizenCommand);
         Objects.requireNonNull(getCommand("citizen")).setTabCompleter(citizenCommand);
+
+        var webCommand = new WebCommands(this, messageProvider);
+        Objects.requireNonNull(getCommand("ulweb")).setExecutor(webCommand);
+        Objects.requireNonNull(getCommand("ulweb")).setTabCompleter(webCommand);
     }
 
     private void registerListeners() {
@@ -165,6 +174,10 @@ public class UnitedLands extends JavaPlugin {
 
     public TownyProvider getTownyProvider() {
         return townyProvider;
+    }
+
+    public UnitedLandsWebServices getWebServices() {
+        return webServices;
     }
 
 }

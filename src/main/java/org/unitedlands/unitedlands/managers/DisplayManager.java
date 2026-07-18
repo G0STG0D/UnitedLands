@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Region;
+import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import io.papermc.paper.scoreboard.numbers.NumberFormat;
@@ -46,8 +47,8 @@ public class DisplayManager {
         instance = this;
     }
 
-    public void showRegionName(Region region, Player player) {
-        player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>" + region.getCleanName() + "</red>"));
+    public void showRegionName(Region region, Player player, String addionalDisplay) {
+        player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>" + region.getCleanName() + "</red>" + addionalDisplay));
     }
 
     public void showSettlementNameDisplay(Settlement settlement, Player player) {
@@ -134,10 +135,12 @@ public class DisplayManager {
     }
 
     private String getChunkSymbol(Coordinates coords) {
-        var chunk = GlobalDataManager.instance().getSettlementChunk(coords);
+        var chunk = UnitedLandsDataManager.instance().getSettlementChunk(coords);
         if (chunk != null) {
             if (chunk.isForSale())
                 return "$";
+            if (chunk.getChunkType() != null)
+                return Settings.settlementChunkTypes.get(chunk.getChunkType()).icon;
             return "+";
         }
         return "-";

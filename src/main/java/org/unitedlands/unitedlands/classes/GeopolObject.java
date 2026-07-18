@@ -118,6 +118,11 @@ public class GeopolObject implements Identifiable, MetadataHolder {
     }
 
     @Override
+    public boolean hasMetadata(String key) {
+        return getMetadata().containsKey(key);
+    }
+
+    @Override
     public MetaDataField<?> getMetadata(String key) {
         if (getMetadata() == null)
             return null;

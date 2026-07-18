@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHandler {
@@ -52,8 +52,8 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
         settlement.addCitizen(citizen);
         citizen.setSettlement(settlement);
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
-        GlobalDataManager.instance().updateCitizenDbData(citizen);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
         Messenger.sendMessage(player, messageProvider.get("admin.settlement.addcitizen.success"),
                 Map.of("settlement", args[0], "name", args[1]), messageProvider.get("prefix"));
@@ -63,7 +63,7 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
     public List<String> handleTab(CommandSender sender, String[] args) {
         switch (args.length) {
             case 1:
-                return GlobalDataManager.instance().getSettlementNames();
+                return UnitedLandsDataManager.instance().getSettlementNames();
             case 2:
                 return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         }

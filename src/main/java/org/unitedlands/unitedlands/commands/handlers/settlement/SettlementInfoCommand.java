@@ -9,8 +9,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.infoscreen.SettlementInfoScreen;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 public class SettlementInfoCommand extends SettlementCommandHandler {
 
@@ -21,7 +20,7 @@ public class SettlementInfoCommand extends SettlementCommandHandler {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 2)
-            return GlobalDataManager.instance().getSettlementNames();
+            return UnitedLandsDataManager.instance().getSettlementNames();
         return null;
     }
 
@@ -39,17 +38,14 @@ public class SettlementInfoCommand extends SettlementCommandHandler {
             if (settlement == null)
                 return;
         } else if (args.length >= 1) {
-            settlement = GlobalDataManager.instance().getSettlement(args[0]);
+            settlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
             if (settlement == null) {
                 return;
             }
         }
 
         var screen = new SettlementInfoScreen(plugin, messageProvider, settlement);
-        if (screen.getComponents().size() > 0) {
-            for (var component : screen.getComponents()) {
-                Messenger.send(player, component.getContent());
-            }
-        }
+        screen.send(player);
+
     }
 }

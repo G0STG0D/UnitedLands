@@ -12,8 +12,8 @@ import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -44,7 +44,7 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
         }
 
         var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
-        var existingChunk = GlobalDataManager.instance().getSettlementChunk(chunkCoords);
+        var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
             Messenger.sendMessage(player, messageProvider.get("settlement.create.claimed"),
                     null, messageProvider.get("prefix"));
@@ -61,8 +61,8 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
         settlement.setHomeChunkCoordinates(chunkCoords);
         settlement.setSpawn(player.getLocation());
 
-        var region = GlobalDataManager.instance()
-                .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+        var region = UnitedLandsDataManager.instance()
+                .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(player.getLocation()));
         if (region != null) {
             settlement.setRegion(region);
         }
@@ -76,12 +76,12 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
 
         settlement.addChunk(chunk);
 
-        GlobalDataManager.instance().registerSettlement(settlement);
-        GlobalDataManager.instance().registerSettlementChunk(chunk);
+        UnitedLandsDataManager.instance().registerSettlement(settlement);
+        UnitedLandsDataManager.instance().registerSettlementChunk(chunk);
 
-        GlobalDataManager.instance().createSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().createSettlementDbData(settlement);
 
-        EconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
+        UnitedLandsEconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
 
         Messenger.sendMessage(player, messageProvider.get("admin.settlement.create"),
                 Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));

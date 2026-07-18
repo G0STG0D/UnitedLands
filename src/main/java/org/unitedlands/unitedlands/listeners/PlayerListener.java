@@ -31,7 +31,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEnterRegion(PlayerEnterRegionEvent event) {
-        DisplayManager.instance().showRegionName(event.getRegion(), event.getPlayer());
+        DisplayManager.instance().showRegionName(event.getRegion(), event.getPlayer(), event.getAdditionalDisplay());
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

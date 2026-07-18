@@ -10,7 +10,7 @@ import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
 
@@ -18,7 +18,7 @@ public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
         super(plugin, messageProvider);
     }
 
-    List<String> modes = List.of("settlements", "regions", "countries", "all");
+    List<String> modes = List.of("settlements", "regions", "regionsdebug", "countries", "all");
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -37,18 +37,21 @@ public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
 
         switch (args[1]) {
             case "settlements":
-                renderer.renderSettlements(GlobalDataManager.instance().getSettlements());
+                renderer.renderSettlements(UnitedLandsDataManager.instance().getSettlements());
                 break;
             case "regions":
-                renderer.renderRegions(GlobalDataManager.instance().getRegions());
+                renderer.renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
+                break;
+            case "regionsdebug":
+                renderer.renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), true);
                 break;
             case "countries":
-                renderer.renderCountries(GlobalDataManager.instance().getCountries());
+                renderer.renderCountries(UnitedLandsDataManager.instance().getCountries());
                 break;
             case "all":
-                renderer.renderSettlements(GlobalDataManager.instance().getSettlements());
-                renderer.renderRegions(GlobalDataManager.instance().getRegions());
-                renderer.renderCountries(GlobalDataManager.instance().getCountries());
+                renderer.renderSettlements(UnitedLandsDataManager.instance().getSettlements());
+                renderer.renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
+                renderer.renderCountries(UnitedLandsDataManager.instance().getCountries());
                 break;            
         }
 

@@ -9,7 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
@@ -33,10 +33,10 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
         Region region;
 
         if (args.length == 0) {
-            region = GlobalDataManager.instance()
-                    .getRegion(CoordinateUtils.locationToRegionCoordinates(player.getLocation()));
+            region = UnitedLandsDataManager.instance()
+                    .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(player.getLocation()));
         } else {
-            region = GlobalDataManager.instance().getRegion(args[0]);
+            region = UnitedLandsDataManager.instance().getRegion(args[0]);
         }
 
         if (region != null) {
@@ -46,17 +46,16 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
                 region.setName(args[1]);
             }
 
-            GlobalDataManager.instance().updateRegionDbData(region);
+            UnitedLandsDataManager.instance().updateRegionDbData(region);
 
-            Pl3xMapRenderer.instance().removeRegion(region);
-            Pl3xMapRenderer.instance().renderRegion(region);
+            Pl3xMapRenderer.instance().renderPolyRegion(region);
         }
     }
 
     @Override
     public List<String> handleTab(CommandSender arg0, String[] args) {
         if (args.length == 1) {
-            return GlobalDataManager.instance().getRegionNames();
+            return UnitedLandsDataManager.instance().getRegionNames();
         }
         return null;
     }

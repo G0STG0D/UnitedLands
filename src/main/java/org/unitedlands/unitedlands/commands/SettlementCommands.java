@@ -36,7 +36,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementToggle
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUnclaimCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementUseTaxPercentCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementWithdrawCommand;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Formatter;
 
 public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
@@ -82,7 +82,7 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         if (args.length == 1) {
             options = new ArrayList<String>(this.handlers.keySet());
             if (args[0].length() >= 3)
-                options.addAll(GlobalDataManager.instance().getSettlementNames());
+                options.addAll(UnitedLandsDataManager.instance().getSettlementNames());
         } else {
             String subcommand = args[0].toLowerCase();
             ICommandHandler handler = (ICommandHandler) this.handlers.get(subcommand);

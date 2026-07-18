@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.events.base.SettlementPlayerEvent;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
 public class SettlementPlayerLeaveEvent extends SettlementPlayerEvent {
 
@@ -13,7 +13,7 @@ public class SettlementPlayerLeaveEvent extends SettlementPlayerEvent {
     }
 
     public Citizen getCitizen() {
-        return GlobalDataManager.instance().getCitizen(getPlayer());
+        return UnitedLandsDataManager.instance().getCitizen(getPlayer());
     }
 
 }

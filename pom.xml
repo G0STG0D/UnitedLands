@@ -14,7 +14,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
   </properties>
 
   <repositories>
@@ -87,6 +87,39 @@
       <version>6.3.2</version>
     </dependency>
 
+    <!-- WebAPI and WebUI dependency -->
+
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+      <version>2.1.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
+      <version>2.1.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-websockets-jsr</artifactId>
+      <version>2.1.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-gson</artifactId>
+      <version>0.11.5</version>
+    </dependency>
+
     <!-- Vault Economy -->
 
     <dependency>
@@ -155,7 +188,18 @@
                   <pattern>com.google.code.gson</pattern>
                   <shadedPattern>org.unitedlands.unitedlands.libs.gson</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>io.undertow</pattern>
+                  <shadedPattern>org.unitedlands.unitedlands.libs.undertow</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.jsonwebtoken</pattern>
+                  <shadedPattern>org.unitedlands.unitedlands.libs.jsonwebtoken</shadedPattern>
+                </relocation>
               </relocations>
+              <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                </transformers>
             </configuration>
           </execution>
         </executions>

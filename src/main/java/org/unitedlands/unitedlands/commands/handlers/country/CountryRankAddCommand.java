@@ -14,7 +14,7 @@ import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
@@ -55,7 +55,7 @@ public class CountryRankAddCommand extends CountryCommandHandler {
         }
 
         var player = (Player) sender;
-        var citizen = GlobalDataManager.instance().getCitizen(player);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getCountry() == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
                     null, messageProvider.get("prefix"));
@@ -105,8 +105,8 @@ public class CountryRankAddCommand extends CountryCommandHandler {
                 currentLeader.removeCountryRank("leader");
                 targetCitizen.addCountryRank("leader");
 
-                GlobalDataManager.instance().updateCitizenDbData(currentLeader);
-                GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
+                UnitedLandsDataManager.instance().updateCitizenDbData(currentLeader);
+                UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
                 if (currentLeader.getPlayer().isOnline()) {
                     Messenger.sendMessage(currentLeader.getPlayer().getPlayer(),
@@ -137,7 +137,7 @@ public class CountryRankAddCommand extends CountryCommandHandler {
                 return;
 
             targetCitizen.addCountryRank(args[1]);
-            GlobalDataManager.instance().updateCitizenDbData(targetCitizen);
+            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
                 Messenger.sendMessage(targetPlayer, messageProvider.get("country.ranks.received"),

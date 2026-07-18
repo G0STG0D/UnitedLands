@@ -11,7 +11,7 @@ import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
@@ -73,12 +73,12 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         region.setCountry(country);
         settlement.setCountry(country);
 
-        GlobalDataManager.instance().createCountryDbData(country);
-        GlobalDataManager.instance().updateRegionDbData(region);
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().createCountryDbData(country);
+        UnitedLandsDataManager.instance().updateRegionDbData(region);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
         Pl3xMapRenderer.instance().removeRegion(region);
-        Pl3xMapRenderer.instance().renderRegion(region);
+        Pl3xMapRenderer.instance().renderPolyRegion(region);
         Pl3xMapRenderer.instance().renderSettlement(settlement);
         Pl3xMapRenderer.instance().renderCountry(country);
 
@@ -90,7 +90,7 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            return GlobalDataManager.instance().getSettlementNames();
+            return UnitedLandsDataManager.instance().getSettlementNames();
         }
         return null;
     }

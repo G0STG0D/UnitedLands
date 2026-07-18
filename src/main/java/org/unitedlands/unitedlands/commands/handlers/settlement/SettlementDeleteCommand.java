@@ -5,14 +5,13 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementDeleteCommand extends SettlementCommandHandler {
@@ -29,19 +28,12 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
+        var context = validate(sender, "settlement.delete");
+        if (context == null)
             return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.delete", citizen))
-            return;
-
-        if (settlement.hasCountry() && settlement.getCountry().getCapital().equals(settlement)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.delete.is-capital"), null,
+        
+        if (context.settlement().hasCountry() && context.settlement().getCountry().getCapital().equals(context.settlement())) {
+            Messenger.sendMessage(context.player(), messageProvider.get("settlement.delete.is-capital"), null,
                     messageProvider.get("prefix"));
             return;
         }
@@ -49,38 +41,38 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
         Confirmation leave = new Confirmation("settlement-delete");
         leave.setRunnable(() -> {
 
-            if (settlement.hasRegion()) {
-                var region = settlement.getRegion();
-                region.removeSettlement(settlement);
+            if (context.settlement().hasRegion()) {
+                var region = context.settlement().getRegion();
+                region.removeSettlement(context.settlement());
             }
 
-            if (settlement.hasCountry()) {
-                var country = settlement.getCountry();
-                country.removeSettlement(settlement);
+            if (context.settlement().hasCountry()) {
+                var country = context.settlement().getCountry();
+                country.removeSettlement(context.settlement());
             }
 
-            for (var settlementCitizen : settlement.getCitizens()) {
+            for (var settlementCitizen : context.settlement().getCitizens()) {
                 settlementCitizen.removeSettlement();
                 settlementCitizen.removeSettlementRanks();
                 settlementCitizen.removeCountryRanks();
-                GlobalDataManager.instance().updateCitizenDbData(settlementCitizen);
+                UnitedLandsDataManager.instance().updateCitizenDbData(settlementCitizen);
             }
 
-            EconomyManager.instance().deleteAccount(settlement.getUuid());
+            UnitedLandsEconomyManager.instance().deleteAccount(context.settlement().getUuid());
 
-            GlobalDataManager.instance().removeSettlementDbData(settlement);
+            UnitedLandsDataManager.instance().removeSettlementDbData(context.settlement());
 
-            Pl3xMapRenderer.instance().removeSettlement(settlement);
+            Pl3xMapRenderer.instance().removeSettlement(context.settlement());
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("settlement.delete.deleted-broadcast"),
-                    Map.of("settlement", settlement.getCleanName()),
+                    Map.of("settlement", context.settlement().getCleanName()),
                     messageProvider.get("prefix"));
         })
                 .setTitle(messageProvider.get("settlement.delete.confirm"))
-                .setReplacements(Map.of("settlement", settlement.getCleanName()))
-                .setSender(player)
-                .setReceiver(player)
-                .setDiscriminator(settlement.getName())
+                .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
+                .setSender(context.player())
+                .setReceiver(context.player())
+                .setDiscriminator(context.settlement().getName())
                 .setAcceptCommand("/approve settlement-delete")
                 .setCancelCommand("/cancel settlement-delete")
                 .setTimeoutSeconds(60)

@@ -10,7 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settlement;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
@@ -31,7 +31,7 @@ public class SettlementAdminCommandHandler extends BaseCommandHandler<UnitedLand
     }
 
     protected Settlement getSettlement(Player player, String name) {
-        var settlement = GlobalDataManager.instance().getSettlement(name);
+        var settlement = UnitedLandsDataManager.instance().getSettlement(name);
         if (settlement == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.settlement-not-found"),
                     Map.of("settlement", name), messageProvider.get("prefix"));
@@ -41,7 +41,7 @@ public class SettlementAdminCommandHandler extends BaseCommandHandler<UnitedLand
     }
 
     protected Citizen getCitizen(Player player, String name) {
-        var citizen = GlobalDataManager.instance().getCitizen(name);
+        var citizen = UnitedLandsDataManager.instance().getCitizen(name);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.citizen-not-found"),
                     Map.of("name", name), messageProvider.get("prefix"));

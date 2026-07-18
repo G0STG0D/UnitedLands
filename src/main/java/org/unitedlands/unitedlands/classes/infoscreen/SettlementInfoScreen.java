@@ -17,7 +17,7 @@ import org.unitedlands.unitedlands.classes.metadata.FloatMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
-import org.unitedlands.unitedlands.managers.EconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.utils.Messenger;
 
@@ -89,11 +89,11 @@ public class SettlementInfoScreen extends InfoScreen {
                 addComponent("perm2", perm2);
 
                 var balance = Messenger.getMessage(messageProvider.get("info-screens.settlement.balance"),
-                                Map.of("balance", EconomyManager.instance()
-                                                .format(EconomyManager.instance().getBalance(settlement.getUuid()))));
+                                Map.of("balance", UnitedLandsEconomyManager.instance()
+                                                .format(UnitedLandsEconomyManager.instance().getBalance(settlement.getUuid()))));
                 addComponent("balance", balance);
 
-                var taxString = settlement.isUseTaxPercent() ? String.format("%.2f%%", settlement.getTax() * 100) : EconomyManager.instance().format((double)settlement.getTax());
+                var taxString = settlement.isUseTaxPercent() ? String.format("%.2f%%", settlement.getTax() * 100) : UnitedLandsEconomyManager.instance().format((double)settlement.getTax());
                 var taxes = Messenger.getMessage(messageProvider.get("info-screens.settlement.taxes"),
                                 Map.of("taxes", taxString));
                 addComponent("taxes", taxes);
@@ -117,7 +117,7 @@ public class SettlementInfoScreen extends InfoScreen {
 
                 var sizeupkeep = Messenger.getMessage(messageProvider.get("info-screens.settlement.sizeupkeep"),
                                 Map.of("size", String.valueOf(settlement.getChunks().size()),
-                                                "upkeep", EconomyManager.instance()
+                                                "upkeep", UnitedLandsEconomyManager.instance()
                                                                 .format(CostUtils.getSettlementUpkeep(settlement))));
                 addComponent("sizeupkeep", sizeupkeep);
 

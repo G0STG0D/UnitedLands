@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.managers.EconomyManager;
-import org.unitedlands.unitedlands.managers.GlobalDataManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
 public class SettlementSetTaxesCommand extends SettlementCommandHandler {
@@ -26,61 +25,54 @@ public class SettlementSetTaxesCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var settlement = getCitizenSettlement(citizen);
-        if (settlement == null)
-            return;
-
-        if (!hasPermission("settlement.settaxes", citizen))
+        var context = validate(sender, "settlement.settaxes");
+        if (context == null)
             return;
 
         double value = 0.0f;
         try {
             value = Float.parseFloat(args[0]);
         } catch (NumberFormatException ex) {
-            Messenger.sendMessage(player, messageProvider.get("errors.wrong-number-format"),
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.wrong-number-format"),
                     Map.of("input", args[0]), messageProvider.get("prefix"));
             return;
         }
 
-        if (settlement.isUseTaxPercent()) {
+        if (context.settlement().isUseTaxPercent()) {
             if (value < Settings.settlementMinTaxPercent) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.below-min"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.below-min"),
                         Map.of("min", String.format("%.2f%%", Settings.settlementMinTaxPercent * 100)),
                         messageProvider.get("prefix"));
                 value = Settings.settlementMinTaxPercent;
             } else if (value > Settings.settlementMaxTaxPercent) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.above-max"),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.above-max"),
                         Map.of("max", String.format("%.2f%%", Settings.settlementMaxTaxPercent * 100)),
                         messageProvider.get("prefix"));
                 value = Settings.settlementMaxTaxPercent;
             }
         } else {
             if (value < Settings.settlementMinTaxAmount) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.below-min"),
-                        Map.of("min", EconomyManager.instance().format(Settings.settlementMinTaxAmount)),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.below-min"),
+                        Map.of("min", UnitedLandsEconomyManager.instance().format(Settings.settlementMinTaxAmount)),
                         messageProvider.get("prefix"));
                 value = Settings.settlementMinTaxAmount;
             } else if (value > Settings.settlementMaxTaxAmount) {
-                Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.above-max"),
-                        Map.of("max", EconomyManager.instance().format(Settings.settlementMaxTaxAmount)),
+                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.above-max"),
+                        Map.of("max", UnitedLandsEconomyManager.instance().format(Settings.settlementMaxTaxAmount)),
                         messageProvider.get("prefix"));
                 value = Settings.settlementMaxTaxAmount;
             }
         }
 
-        settlement.setTax((float)value);
+        context.settlement().setTax((float) value);
 
-        var valueString = settlement.isUseTaxPercent() ? String.format("%.2f%%", value * 100)
-                : EconomyManager.instance().format((double) value);
+        var valueString = context.settlement().isUseTaxPercent() ? String.format("%.2f%%", value * 100)
+                : UnitedLandsEconomyManager.instance().format((double) value);
 
-        GlobalDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        Messenger.sendMessage(player, messageProvider.get("settlement.settaxes.set"),
-                Map.of("settlement", settlement.getCleanName(), "value", valueString), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.set"),
+                Map.of("settlement", context.settlement().getCleanName(), "value", valueString), messageProvider.get("prefix"));
     }
 
     @Override
