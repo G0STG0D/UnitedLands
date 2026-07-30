@@ -58,10 +58,11 @@ general:
 economy:
   new-settlement-cost: 8000
   settlement-claim-base-cost: 48
+  settlement-base-upkeep-per-plot: 6
+
   # Available vars: base (base costs), claims (total settlement claim count).
   settlement-claim-cost-progression: "base + ((claims - 1)^2 * 0.005)"
   # Available vars: base (base costs), claims (total settlement claim count), residents (total resident count). This value will be multiplied by the number of settlement chunks.
-  settlement-base-upkeep-per-plot: 6
   settlement-upkeep-per-plot-formula: "base * (0.1 * (claims / 25) + 1.0) / (0.4 * (residents / 2.0) + 1.0)"
 
   settlement-tax-min-percent: 0.0
@@ -70,9 +71,20 @@ economy:
   settlement-tax-max-amount: 1500.0
 
   new-country-cost: 80000
+
   region-claim-base-cost: 80000
+  # The time (in seconds) between claiming a region and incorporating it into the country
+  region-claim-time: 20
+  # How many regions a country can claim in parallel
+  region-parallel-claims-max: 1
   # Available vars: base (base costs), regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).
   region-claim-cost-modifier: "base + (base * ((regions + 1) * 0.5) * (distance / 1000) * 0.25)"
+
+
+
+
+
+
 
 protection:
   containers:

@@ -3,7 +3,6 @@ package org.unitedlands.unitedlands.listeners;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -11,11 +10,8 @@ import org.unitedlands.utils.Logger;
 
 public class ServerEventListener implements Listener {
 
-    @SuppressWarnings("unused")
-    private final UnitedLands plugin;
+    public ServerEventListener() {
 
-    public ServerEventListener(UnitedLands plugin) {
-        this.plugin = plugin;
     }
 
     @EventHandler

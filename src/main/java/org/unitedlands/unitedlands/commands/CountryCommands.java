@@ -21,6 +21,7 @@ import org.unitedlands.unitedlands.commands.handlers.country.CountryInfoCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryRankSubcommands;
 import org.unitedlands.unitedlands.commands.handlers.country.CountrySetColorCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountrySetNameCommand;
+import org.unitedlands.unitedlands.commands.handlers.country.CountryUnclaimCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.CountryWithdrawCommand;
 import org.unitedlands.unitedlands.commands.handlers.country.diplomacy.CountryDiplomacySubcommands;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -47,6 +48,7 @@ public class CountryCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("info", infoCommand);
         handlers.put("rank", new CountryRankSubcommands(plugin, messageProvider));
         handlers.put("diplomacy", new CountryDiplomacySubcommands(plugin, messageProvider));
+        handlers.put("unclaim", new CountryUnclaimCommand(plugin, messageProvider));
     }
 
     @Override

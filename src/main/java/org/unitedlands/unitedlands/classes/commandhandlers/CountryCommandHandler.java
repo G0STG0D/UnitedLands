@@ -15,6 +15,10 @@ import org.unitedlands.utils.Messenger;
 
 public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
 
+    public record CountryCommandHandlerContext(Player player, Citizen citizen,
+            Country country) {
+    }
+
     public CountryCommandHandler(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
@@ -27,6 +31,23 @@ public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
     @Override
     public List<String> handleTab(CommandSender arg0, String[] arg1) {
         return null;
+    }
+
+    protected CountryCommandHandlerContext validate(CommandSender sender, String permission) {
+
+        var player = (Player) sender;
+        var citizen = getCitizen(player);
+        if (citizen == null)
+            return null;
+        var country = getCitizenCountry(citizen);
+        if (country == null)
+            return null;
+
+        if (permission != null)
+            if (!hasPermission(permission, citizen))
+                return null;
+
+        return new CountryCommandHandlerContext(player, citizen, country);
     }
 
     protected Citizen getCitizen(Player player) {

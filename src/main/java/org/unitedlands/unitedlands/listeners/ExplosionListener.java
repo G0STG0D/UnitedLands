@@ -7,17 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
 public class ExplosionListener implements Listener {
 
-    @SuppressWarnings("unused")
-    private final UnitedLands plugin;
-
-    public ExplosionListener(UnitedLands plugin) {
-        this.plugin = plugin;
+    public ExplosionListener() {
     }
 
     @EventHandler

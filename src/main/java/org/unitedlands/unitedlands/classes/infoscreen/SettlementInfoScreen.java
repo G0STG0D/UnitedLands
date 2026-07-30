@@ -41,8 +41,10 @@ public class SettlementInfoScreen extends InfoScreen {
                 addComponent("board", board);
 
                 var region = Messenger.getMessage(messageProvider.get("info-screens.settlement.region"),
-                                Map.of("region", settlement.getRegion() != null ? settlement.getRegion().getCleanName()
-                                                : "-"));
+                                Map.of(
+                                        "region", settlement.getRegion() != null ? settlement.getRegion().getCleanName() : "-",
+                                        "country", settlement.getCountry() != null ? settlement.getCountry().getCleanName() : "-"
+                                ));
                 addComponent("region", region);
 
                 var foundingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(settlement.getFoundingTimestamp());

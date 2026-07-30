@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settlement;
@@ -26,11 +25,7 @@ import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
 public class PlayerBukkitListener implements Listener {
 
-    @SuppressWarnings("unused")
-    private final UnitedLands plugin;
-
-    public PlayerBukkitListener(UnitedLands plugin) {
-        this.plugin = plugin;
+    public PlayerBukkitListener() {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -98,17 +93,24 @@ public class PlayerBukkitListener implements Listener {
             SettlementChunk settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(toChunkCoords);
 
             if (settlementChunk != null) {
-                // Entered a valid settlement chunk
-                if (!settlementChunk.equals(playerCache.getCachedSettlementChunk())) {
-                    // New chunk is different from the cached chunk
-                    enteredSettlement = true;
-                    if (playerCache.getCachedSettlement() != null) {
-                        // Entered from a different settlement
+
+                // The new chunk is in a settlement. See if the player was already in this
+                // settlement before, or if he just entered.
+
+                if (playerCache.getCachedSettlement() != null) {
+                    // The player was in a settlement before. See if he entered a new one (if the
+                    // settlements are bordering each other)
+                    if (!settlementChunk.getSettlement().equals(playerCache.getCachedSettlement())) {
+                        // The player left one settlement and entered a new one.
+                        enteredSettlement = true;
                         leftSettlement = true;
                         lastSettlement = playerCache.getCachedSettlement();
                     }
-                    playerCache.updateChunkCache(toChunkCoords, settlementChunk);
+                } else {
+                    // The player entered from the wilderness.
+                    enteredSettlement = true;
                 }
+                playerCache.updateChunkCache(toChunkCoords, settlementChunk);
             } else {
                 // Entered the wilderness
                 if (playerCache.getCachedSettlementChunk() != null) {
@@ -120,7 +122,7 @@ public class PlayerBukkitListener implements Listener {
             }
 
             if (enteredSettlement) {
-                var enterSettlementEvent = new PlayerEnterSettlementEvent(settlementChunk.getSettlement(), player);
+                var enterSettlementEvent = new PlayerEnterSettlementEvent(to, settlementChunk.getSettlement(), player);
                 enterSettlementEvent.callEvent();
                 if (enterSettlementEvent.isCancelled())
                     return false;
@@ -162,7 +164,10 @@ public class PlayerBukkitListener implements Listener {
             }
 
             if (enteredRegion) {
+
                 var enterRegionEvent = new PlayerEnterRegionEvent(region, player);
+                if (region.hasCountry())
+                    enterRegionEvent.addAdditionalDisplay("<green>" + region.getCountry().getCleanName() + "</green>");
                 enterRegionEvent.callEvent();
                 if (enterRegionEvent.isCancelled())
                     return false;
@@ -176,7 +181,7 @@ public class PlayerBukkitListener implements Listener {
 
             // General event
 
-            var chunkChangeEvent = new PlayerChangeChunkEvent(player, from, to);
+            var chunkChangeEvent = new PlayerChangeChunkEvent(player, from, to, fromChunkCoords, toChunkCoords);
             chunkChangeEvent.callEvent();
             if (chunkChangeEvent.isCancelled())
                 return false;
@@ -188,6 +193,5 @@ public class PlayerBukkitListener implements Listener {
 
         return true;
     }
-
 
 }

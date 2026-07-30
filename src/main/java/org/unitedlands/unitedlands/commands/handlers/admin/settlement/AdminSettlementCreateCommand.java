@@ -11,7 +11,6 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -86,7 +85,6 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
         Messenger.sendMessage(player, messageProvider.get("admin.settlement.create"),
                 Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
 
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
     }
 
 }

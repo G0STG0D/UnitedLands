@@ -58,37 +58,31 @@ public class UnitedLandsDataManager {
 
     public void loadDataFromDatabase() {
 
-        CompletableFuture<List<Country>> countryFuture = databaseManager
-                .getCountryService()
-                .getAllAsync();
-        CompletableFuture<List<Region>> regionFuture = databaseManager
-                .getRegionService()
-                .getAllAsync();
-        CompletableFuture<List<Settlement>> settlementFuture = databaseManager
-                .getSettlementService()
-                .getAllAsync();
-        CompletableFuture<List<SettlementChunk>> settlementChunkFuture = databaseManager
-                .getSettlementChunkService()
-                .getAllAsync();
-        CompletableFuture<List<Citizen>> citizenFuture = databaseManager
-                .getCitizenService()
-                .getAllAsync();
+        CompletableFuture<List<Country>> countryFuture = databaseManager.getCountryService().getAllAsync();
+        CompletableFuture<List<Region>> regionFuture = databaseManager.getRegionService().getAllAsync();
+        CompletableFuture<List<Settlement>> settlementFuture = databaseManager.getSettlementService().getAllAsync();
+        CompletableFuture<List<SettlementChunk>> settlementChunkFuture = databaseManager.getSettlementChunkService().getAllAsync();
+        CompletableFuture<List<Citizen>> citizenFuture = databaseManager.getCitizenService().getAllAsync();
 
         try {
-            CompletableFuture
-                    .allOf(countryFuture, settlementFuture, settlementChunkFuture, regionFuture, citizenFuture)
-                    .thenRun(() -> {
+            CompletableFuture.allOf(countryFuture, settlementFuture, settlementChunkFuture, regionFuture, citizenFuture).thenRun(() -> {
 
-                        buildCountries(countryFuture.join());
-                        buildRegions(regionFuture.join());
-                        buildSettlements(settlementFuture.join(), settlementChunkFuture.join());
-                        buildCitizens(citizenFuture.join());
+                try {
+                    buildCountries(countryFuture.get());
+                    buildRegions(regionFuture.get());
+                    buildSettlements(settlementFuture.get(), settlementChunkFuture.get());
+                    buildCitizens(citizenFuture.get());
+                } catch (Exception ex) {
+                    Logger.logError("GeopolObject building failed: " + ex.getMessage(), "UnitedLands");
+                    throw new RuntimeException("App init failed", ex);
+                }
 
-                        Pl3xMapRenderer.instance().renderPolyRegions(getRegions(), false);
-                        Pl3xMapRenderer.instance().renderCountries(getCountries());
-                        Pl3xMapRenderer.instance().renderSettlements(getSettlements());
+            }).get();
 
-                    }).get();
+            Pl3xMapRenderer.instance().setDebugMode(false);
+            Pl3xMapRenderer.instance().addSettlementsToRenderQueue(getSettlements());
+            Pl3xMapRenderer.instance().addRegionsToRenderQueue(getRegions());
+            Pl3xMapRenderer.instance().addCountriesToRenderQueue(getCountries());
 
         } catch (Exception ex) {
             Logger.logError("Initialization failed: " + ex.getMessage(), "UnitedLands");
@@ -130,6 +124,9 @@ public class UnitedLandsDataManager {
             regions.put(region.getUuid(), region);
             if (region.hasCountry()) {
                 region.getCountry().addRegion(region);
+            }
+            if (region.getClaimEndTime() != null) {
+                region.startClaimTask();
             }
         }
 
@@ -228,16 +225,23 @@ public class UnitedLandsDataManager {
         databaseManager.getSettlementChunkService().createAllAsync(settlement.getChunks());
         databaseManager.getSettlementService().createAsync(settlement);
         registerSettlement(settlement);
+
+        Pl3xMapRenderer.instance().addToRenderQueue(settlement);
     }
 
     public void updateSettlementDbData(Settlement settlement) {
         databaseManager.getSettlementService().updateAsync(settlement);
+
+        Pl3xMapRenderer.instance().addToRenderQueue(settlement);
     }
 
     public void removeSettlementDbData(Settlement settlement) {
         databaseManager.getSettlementChunkService().deleteAllAsync(settlement.getChunks());
         databaseManager.getSettlementService().deleteAsync(settlement);
+
         unregisterSettlement(settlement);
+
+        Pl3xMapRenderer.instance().removeSettlement(settlement);
     }
 
     // Cache operations
@@ -298,15 +302,21 @@ public class UnitedLandsDataManager {
     public void createSettlementChunkDbData(SettlementChunk settlementChunk) {
         databaseManager.getSettlementChunkService().createAsync(settlementChunk);
         registerSettlementChunk(settlementChunk);
+
+        Pl3xMapRenderer.instance().addToRenderQueue(settlementChunk.getSettlement());
     }
 
     public void updateSettlementChunkDbData(SettlementChunk settlementChunk) {
         databaseManager.getSettlementChunkService().updateAsync(settlementChunk);
+
+        Pl3xMapRenderer.instance().addToRenderQueue(settlementChunk.getSettlement());
     }
 
     public void removeSettlementChunkDbData(SettlementChunk settlementChunk) {
         databaseManager.getSettlementChunkService().deleteAsync(settlementChunk);
         unregisterSettlementChunk(settlementChunk);
+
+        Pl3xMapRenderer.instance().addToRenderQueue(settlementChunk.getSettlement());
     }
 
     // Cache operations
@@ -330,34 +340,36 @@ public class UnitedLandsDataManager {
     // Database operations
 
     public void createRegionDbData(Region region) {
-        // for (var chunk : region.getChunks())
-        // databaseManager.getRegionChunkService().createAsync(chunk);
         databaseManager.getRegionService().createAsync(region);
         registerRegion(region);
+        queueRegionRender(region);
     }
 
     public void updateRegionDbData(Region region) {
         databaseManager.getRegionService().updateAsync(region);
+        queueRegionRender(region);
     }
 
     public void removeRegionDbData(Region region) {
-        // for (var chunk : region.getChunks())
-        // databaseManager.getRegionChunkService().deleteAsync(chunk);
         databaseManager.getRegionService().deleteAsync(region);
         unregisterRegion(region);
+        Pl3xMapRenderer.instance().removeRegion(region);
+    }
+
+    private void queueRegionRender(Region region) {
+        for (var settlement : region.getSettlements()) {
+            Pl3xMapRenderer.instance().addToRenderQueue(settlement);
+        }
+        Pl3xMapRenderer.instance().addToRenderQueue(region);
     }
 
     // Cache operations
 
     public void registerRegion(Region region) {
-        // for (var chunk : region.getChunks())
-        // registerRegionChunk(chunk);
         regions.put(region.getUuid(), region);
     }
 
     public void unregisterRegion(Region region) {
-        // for (var chunk : region.getChunks())
-        // unregisterRegionChunk(chunk);
         regions.remove(region.getUuid());
     }
 
@@ -389,6 +401,10 @@ public class UnitedLandsDataManager {
         return future.join();
     }
 
+    public Set<Region> getRegionClaimsOngoing(Country country) {
+        return regions.values().stream().filter(r -> country.equals(r.getClaimantCountry())).collect(Collectors.toSet());
+    }
+
     // **************************************************
     // Countries
     // **************************************************
@@ -398,15 +414,31 @@ public class UnitedLandsDataManager {
     public void createCountryDbData(Country country) {
         databaseManager.getCountryService().createAsync(country);
         registerCountry(country);
+        queueCountryRender(country);
     }
 
     public void updateCountryDbData(Country country) {
         databaseManager.getCountryService().updateAsync(country);
+        queueCountryRender(country);
+    }
+
+    private void queueCountryRender(Country country) {
+        for (var region : country.getRegions()) {
+            for (var settlement : region.getSettlements()) {
+                Pl3xMapRenderer.instance().addToRenderQueue(settlement);
+            }
+            Pl3xMapRenderer.instance().addToRenderQueue(region);
+        }
+        Pl3xMapRenderer.instance().addToRenderQueue(country);
+        if (country.getOverlord() != null) {
+            queueCountryRender(country.getOverlord());
+        }
     }
 
     public void removeCountryDbData(Country country) {
         databaseManager.getCountryService().deleteAsync(country);
         unregisterCountry(country);
+        Pl3xMapRenderer.instance().removeCountry(country);
     }
 
     // Cache operations
@@ -421,6 +453,10 @@ public class UnitedLandsDataManager {
 
     public Collection<Country> getCountries() {
         return countries.values();
+    }
+
+    public Collection<Country> getCountryVassals(Country country) {
+        return countries.values().stream().filter(r -> country.equals(r.getOverlord())).collect(Collectors.toList());
     }
 
     public Country getCountry(String name) {
@@ -439,10 +475,8 @@ public class UnitedLandsDataManager {
     }
 
     public Set<Citizen> getCountryCitizens(Country country) {
-        CompletableFuture<Set<Citizen>> future = CompletableFuture.supplyAsync(() -> settlements.values().stream()
-                .filter(s -> country.equals(s.getCountry()))
-                .flatMap(s -> s.getCitizens().stream())
-                .collect(Collectors.toSet()));
+        CompletableFuture<Set<Citizen>> future = CompletableFuture.supplyAsync(() -> settlements.values().stream().filter(s -> country.equals(s.getCountry()))
+                .flatMap(s -> s.getCitizens().stream()).collect(Collectors.toSet()));
         return future.join();
     }
 

@@ -1,6 +1,9 @@
 package org.unitedlands.unitedlands.utils.serializers;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
@@ -9,7 +12,7 @@ import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.MetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
-
+import org.unitedlands.unitedlands.classes.metadata.UuidListMetaDataField;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -46,6 +49,10 @@ public class MetaDataFieldDeserializer implements JsonDeserializer<MetaDataField
         } else if (dataType.equals("LONG")) {
             var value = obj.get("value").getAsLong();
             return new LongMetaDataField(key, value, label, showInScreens);
+        } else if (dataType.equals("UUIDLIST")) {
+            var valueStr = obj.get("value").getAsString();
+            var value = Arrays.stream(valueStr.split(";")).map(c -> UUID.fromString(c)).collect(Collectors.toList());
+            return new UuidListMetaDataField(key, value, label, showInScreens);
         } 
         return null;
     }

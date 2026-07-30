@@ -37,22 +37,25 @@ public class AdminMapCommand extends BaseCommandHandler<UnitedLands> {
 
         switch (args[1]) {
             case "settlements":
-                renderer.renderSettlements(UnitedLandsDataManager.instance().getSettlements());
+                renderer.addSettlementsToRenderQueue(UnitedLandsDataManager.instance().getSettlements());
                 break;
             case "regions":
-                renderer.renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
+                renderer.setDebugMode(false);
+                renderer.addRegionsToRenderQueue(UnitedLandsDataManager.instance().getRegions());
                 break;
             case "regionsdebug":
-                renderer.renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), true);
+                renderer.setDebugMode(true);
+                renderer.addRegionsToRenderQueue(UnitedLandsDataManager.instance().getRegions());
                 break;
             case "countries":
-                renderer.renderCountries(UnitedLandsDataManager.instance().getCountries());
+                renderer.addCountriesToRenderQueue(UnitedLandsDataManager.instance().getCountries());
                 break;
             case "all":
-                renderer.renderSettlements(UnitedLandsDataManager.instance().getSettlements());
-                renderer.renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
-                renderer.renderCountries(UnitedLandsDataManager.instance().getCountries());
-                break;            
+                renderer.setDebugMode(false);
+                renderer.addSettlementsToRenderQueue(UnitedLandsDataManager.instance().getSettlements());
+                renderer.addRegionsToRenderQueue(UnitedLandsDataManager.instance().getRegions());
+                renderer.addCountriesToRenderQueue(UnitedLandsDataManager.instance().getCountries());
+                break;
         }
 
     }

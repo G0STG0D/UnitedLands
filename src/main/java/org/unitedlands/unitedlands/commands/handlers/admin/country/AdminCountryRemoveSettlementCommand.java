@@ -10,7 +10,6 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -53,9 +52,6 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
         country.removeSettlement(settlement);
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
-
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
-        Pl3xMapRenderer.instance().renderCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.removesettlement.success"),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),

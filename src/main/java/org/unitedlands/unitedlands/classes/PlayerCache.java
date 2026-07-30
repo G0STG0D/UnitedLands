@@ -37,7 +37,7 @@ public class PlayerCache {
         return cachedSettlement;
     }
 
-    public PermissionHolder getCachedSettlementChunk() {
+    public SettlementChunk getCachedSettlementChunk() {
         return cachedSettlementChunk;
     }
 

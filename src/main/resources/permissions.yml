@@ -10,7 +10,7 @@ settlement:
     - settlement.manage.toggle
     - settlement.manage.ranks.mayor
     - settlement.manage.ranks.other
-    - settlement.rename
+    - settlement.setname
     - settlement.delete
     - settlement.setboard
     - settlement.setspawn
@@ -59,8 +59,8 @@ country:
     - country.manage.ranks.other
     - country.setname
     - country.setcolor
-    - region.claim
-    - region.unclaim
+    - country.claim
+    - country.unclaim
     - region.manage.toggle
     - region.manage.perms
   assistant:

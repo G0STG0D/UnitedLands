@@ -9,7 +9,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.PermissionType;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.managers.PermissionManager;
@@ -17,11 +16,7 @@ import net.kyori.adventure.text.Component;
 
 public class BlockListener implements Listener {
 
-    @SuppressWarnings("unused")
-    private final UnitedLands plugin;
-
-    public BlockListener(UnitedLands plugin) {
-        this.plugin = plugin;
+    public BlockListener() {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

@@ -31,17 +31,17 @@ public class CountryAdminCommandHandler extends BaseCommandHandler<UnitedLands> 
         return null;
     }
 
-    protected Country getCountry(Player player, String name) {
+    protected Country getCountry(CommandSender sender, String name) {
         var country = UnitedLandsDataManager.instance().getCountry(name);
         if (country == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.country-not-found"),
+            Messenger.sendMessage(sender, messageProvider.get("errors.country-not-found"),
                     Map.of("country", name), messageProvider.get("prefix"));
             return null;
         }
         return country;
     }
 
-    protected Settlement getSettlement(Player player, String name) {
+    protected Settlement getSettlement(CommandSender player, String name) {
         var settlement = UnitedLandsDataManager.instance().getSettlement(name);
         if (settlement == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.settlement-not-found"),
@@ -51,7 +51,7 @@ public class CountryAdminCommandHandler extends BaseCommandHandler<UnitedLands> 
         return settlement;
     }
 
-    protected Citizen getCitizen(Player player, String name) {
+    protected Citizen getCitizen(CommandSender player, String name) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(name);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.citizen-not-found"),

@@ -2,6 +2,7 @@ package org.unitedlands.unitedlands.managers;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
+
 import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBar.Color;
@@ -47,13 +49,20 @@ public class DisplayManager {
         instance = this;
     }
 
-    public void showRegionName(Region region, Player player, String addionalDisplay) {
-        player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>" + region.getCleanName() + "</red>" + addionalDisplay));
+    public void showRegionName(Region region, Player player, List<String> addionalDisplay) {
+        String addition = "";
+        if (addionalDisplay != null && !addionalDisplay.isEmpty()) {
+            addition = " (" + String.join(" | ", addionalDisplay) + ")";
+        }
+        player.sendActionBar(
+                MiniMessage.miniMessage().deserialize("<red>" + region.getCleanName() + "</red>" + addition));
     }
 
     public void showSettlementNameDisplay(Settlement settlement, Player player) {
+
         var display = settlementNameDisplays.computeIfAbsent(settlement,
                 k -> BossBar.bossBar(Component.text(settlement.getCleanName()), 1f, Color.WHITE, Overlay.PROGRESS));
+
         var viewers = settlementNameDisplayViewers.computeIfAbsent(settlement, k -> new HashSet<>());
         if (!viewers.contains(player)) {
             display.addViewer(player);
@@ -62,6 +71,7 @@ public class DisplayManager {
     }
 
     public void hideSettlementNameDisplay(Settlement settlement, Player player) {
+
         var display = settlementNameDisplays.get(settlement);
         var viewers = settlementNameDisplayViewers.get(settlement);
 

@@ -9,12 +9,11 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.Messenger;
 
-public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
+public class AdminCountryNameColorCommand extends CountryAdminCommandHandler {
 
-    public AdminCountrySetColorCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public AdminCountryNameColorCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
@@ -34,14 +33,7 @@ public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
             return;
         }
 
-        if (!(args[1].length() == 7) || !ColorUtils.isValidHexColor(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.setcolor.wrong-format"),
-                    null, messageProvider.get("prefix"));
-            return;
-        }
-
-        country.setFillColor(args[1] + "10");
-        country.setStrokeColor(args[1]);
+        country.setName(args[1] + "10");
 
         UnitedLandsDataManager.instance().updateCountryDbData(country);
 

@@ -8,7 +8,6 @@ import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Region;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -47,8 +46,6 @@ public class RegionSetNameCommand extends BaseCommandHandler<UnitedLands> {
             }
 
             UnitedLandsDataManager.instance().updateRegionDbData(region);
-
-            Pl3xMapRenderer.instance().renderPolyRegion(region);
         }
     }
 

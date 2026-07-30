@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.Messenger;
@@ -37,7 +36,6 @@ public class SettlementSetColorCommand extends SettlementCommandHandler {
         context.settlement().setStrokeColor(args[0]);
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
-        Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
         Messenger.sendMessage(context.player(), messageProvider.get("settlement.setcolor.set"),
                 null, messageProvider.get("prefix"));

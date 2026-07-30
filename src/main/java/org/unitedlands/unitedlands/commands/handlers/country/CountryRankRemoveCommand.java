@@ -56,18 +56,13 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
             return;
         }
 
-        var player = (Player) sender;
-        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
-        if (citizen == null || citizen.getCountry() == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
-                    null, messageProvider.get("prefix"));
+        var context = validate(sender, null);
+        if (context == null)
             return;
-        }
-        var country = citizen.getCountry();
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.player-not-found"),
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -76,20 +71,20 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
         if (targetCitizen == null)
             return;
 
-        if (!country.equals(targetCitizen.getCountry())) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.not-in-country"),
+        if (!context.country().equals(targetCitizen.getCountry())) {
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.not-in-country"),
                     Map.of("name", args[0]), messageProvider.get("prefix"));
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.unknown-rank"),
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.unknown-rank"),
                     Map.of("rank", args[1]), messageProvider.get("prefix"));
             return;
         }
 
         if (!targetCitizen.getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.rank-not-owned"),
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.rank-not-owned"),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
                     messageProvider.get("prefix"));
             return;
@@ -97,16 +92,16 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
 
         if (args[1].equals("leader")) {
 
-            if (!hasPermission("country.manage.ranks.leader", citizen))
+            if (!hasPermission("country.manage.ranks.leader", context.citizen()))
                 return;
 
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.cannot-remove-leader"),
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.cannot-remove-leader"),
                     null, messageProvider.get("prefix"));
             return;
 
         } else {
 
-            if (!hasPermission("country.manage.ranks.other", citizen))
+            if (!hasPermission("country.manage.ranks.other", context.citizen()))
                 return;
 
             targetCitizen.removeCountryRank(args[1]);
@@ -119,7 +114,7 @@ public class CountryRankRemoveCommand extends CountryCommandHandler {
 
         }
 
-        Messenger.sendMessage(player, messageProvider.get("country.ranks.removed"),
+        Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.removed"),
                 Map.of("rank", args[1], "name", targetCitizen.getName()),
                 messageProvider.get("prefix"));
 

@@ -12,7 +12,6 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Region;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.unitedlands.utils.PolygonUtils;
@@ -100,7 +99,7 @@ public class TestImportCommand extends BaseCommandHandler<UnitedLands> {
 
             UnitedLandsDataManager.instance().buildRegionIndex();
 
-            Pl3xMapRenderer.instance().renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
+            // Pl3xMapRenderer.instance().renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
 
         } catch (Exception ex) {
             Logger.logError("Error parsing " + file + ": " + ex.getMessage(), "UnitedLands");

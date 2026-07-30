@@ -16,7 +16,6 @@ import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementCreatedEvent;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -61,7 +60,8 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
             return;
         }
 
-        if (!UnitedLandsEconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.settlementCreateCosts))) {
+        if (!UnitedLandsEconomyManager.instance().has(citizen.getUuid(),
+                new BigDecimal(Settings.settlementCreateCosts))) {
             Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(Settings.settlementCreateCosts)),
                     messageProvider.get("prefix"));
@@ -134,8 +134,6 @@ public class SettlementCreateCommand extends SettlementCommandHandler {
                             "region", regionInfo,
                             "country", countryInfo),
                     messageProvider.get("prefix"));
-
-            Pl3xMapRenderer.instance().renderSettlement(settlement);
 
             (new SettlementCreatedEvent(settlement)).callEvent();
 

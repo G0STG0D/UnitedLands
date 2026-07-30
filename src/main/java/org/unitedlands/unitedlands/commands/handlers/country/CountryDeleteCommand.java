@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
@@ -29,21 +28,14 @@ public class CountryDeleteCommand extends CountryCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        var player = (Player) sender;
-        var citizen = getCitizen(player);
-        if (citizen == null)
-            return;
-        var country = getCitizenCountry(citizen);
-        if (country == null)
-            return;
-
-        if (!hasPermission("country.delete", citizen))
+        var context = validate(sender, "country.delete");
+        if (context == null)
             return;
 
         Confirmation leave = new Confirmation("country-delete");
         leave.setRunnable(() -> {
 
-            for (var region : country.getRegions()) {
+            for (var region : context.country().getRegions()) {
                 for (var settlement : region.getSettlements()) {
                     if (!settlement.hasCountry())
                         continue;
@@ -53,31 +45,27 @@ public class CountryDeleteCommand extends CountryCommandHandler {
                     }
                     settlement.removeCountry();
                     UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
-                    Pl3xMapRenderer.instance().renderSettlement(settlement);
                 }
-
                 region.removeCountry();
                 UnitedLandsDataManager.instance().updateRegionDbData(region);
-                Pl3xMapRenderer.instance().removeRegion(region);
-                Pl3xMapRenderer.instance().renderPolyRegion(region);
             }
 
-            UnitedLandsEconomyManager.instance().deleteAccount(country.getUuid());
+            UnitedLandsEconomyManager.instance().deleteAccount(context.country().getUuid());
 
-            UnitedLandsDataManager.instance().removeCountryDbData(country);
+            UnitedLandsDataManager.instance().removeCountryDbData(context.country());
 
-            Pl3xMapRenderer.instance().removeCountry(country);
+            Pl3xMapRenderer.instance().removeCountry(context.country());
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.delete.deleted-broadcast"),
-                    Map.of("country", country.getCleanName()),
+                    Map.of("country", context.country().getCleanName()),
                     messageProvider.get("prefix"));
 
         })
-                .setTitle("<red>Are you sure you want to delete <green>" + country.getCleanName()
+                .setTitle("<red>Are you sure you want to delete <green>" + context.country().getCleanName()
                         + "</green>? <bold>This cannot be undone!</bold></red>")
-                .setSender(player)
-                .setReceiver(player)
-                .setDiscriminator(country.getName())
+                .setSender(context.player())
+                .setReceiver(context.player())
+                .setDiscriminator(context.country().getName())
                 .setAcceptCommand("/approve country-delete")
                 .setCancelCommand("/cancel country-delete")
                 .setTimeoutSeconds(60)

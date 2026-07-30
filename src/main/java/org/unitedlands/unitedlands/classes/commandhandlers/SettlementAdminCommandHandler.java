@@ -30,7 +30,7 @@ public class SettlementAdminCommandHandler extends BaseCommandHandler<UnitedLand
         return null;
     }
 
-    protected Settlement getSettlement(Player player, String name) {
+    protected Settlement getSettlement(CommandSender player, String name) {
         var settlement = UnitedLandsDataManager.instance().getSettlement(name);
         if (settlement == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.settlement-not-found"),
@@ -40,7 +40,7 @@ public class SettlementAdminCommandHandler extends BaseCommandHandler<UnitedLand
         return settlement;
     }
 
-    protected Citizen getCitizen(Player player, String name) {
+    protected Citizen getCitizen(CommandSender player, String name) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(name);
         if (citizen == null) {
             Messenger.sendMessage(player, messageProvider.get("errors.citizen-not-found"),

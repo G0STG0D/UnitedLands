@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -24,34 +22,16 @@ public class CountrySetNameCommand extends CountryCommandHandler {
         if (args.length != 1)
             return;
 
-        var player = (Player) sender;
-        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
-        if (citizen == null || citizen.getCountry() == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
-                    null, messageProvider.get("prefix"));
-            return;
-        }
-
-        if (!hasPermission("country.setname", citizen))
+        var context = validate(sender, "country.setname");
+        if (context == null)
             return;
 
-        var country = citizen.getCountry();
-        country.setName(args[0]);
+        context.country().setName(args[0]);
 
-        UnitedLandsDataManager.instance().updateCountryDbData(country);
+        UnitedLandsDataManager.instance().updateCountryDbData(context.country());
 
-        for (var region : country.getRegions()) {
-            Pl3xMapRenderer.instance().renderPolyRegion(region);
-        }
-        Pl3xMapRenderer.instance().renderCountry(country);
-        for (var region : country.getRegions()) {
-            for (var settlement : region.getSettlements()) {
-                Pl3xMapRenderer.instance().renderSettlement(settlement);
-            }
-        }
-
-        Messenger.sendMessage(player, messageProvider.get("country.setname.set"),
-                Map.of("country", country.getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get("country.setname.set"),
+                Map.of("country", context.country().getCleanName()), messageProvider.get("prefix"));
     }
 
     @Override

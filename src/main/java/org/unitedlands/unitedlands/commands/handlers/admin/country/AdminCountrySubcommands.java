@@ -19,6 +19,8 @@ public class AdminCountrySubcommands extends BaseSubcommandHandler<UnitedLands> 
         subHandlers.put("addsettlement", new AdminCountryAddSettlementCommand(plugin, messageProvider));
         subHandlers.put("removesettlement", new AdminCountryRemoveSettlementCommand(plugin, messageProvider));
         subHandlers.put("setcapital", new AdminCountrySetCapitalCommand(plugin, messageProvider));
+        subHandlers.put("addrank", new AdminCountryAddRankCommand(plugin, messageProvider));
+        subHandlers.put("removerank", new AdminCountryRemoveRankCommand(plugin, messageProvider));
     }
 
 }

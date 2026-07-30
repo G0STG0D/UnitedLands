@@ -7,7 +7,6 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementUnclaimEvent;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -64,8 +63,6 @@ public class SettlementUnclaimCommand extends SettlementCommandHandler {
 
         UnitedLandsDataManager.instance().removeSettlementChunkDbData(existingChunk);
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
-
-        Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
         Messenger.sendMessage(context.player(), messageProvider.get("settlement.unclaim.success"),
                 Map.of("settlement", context.settlement().getCleanName(),

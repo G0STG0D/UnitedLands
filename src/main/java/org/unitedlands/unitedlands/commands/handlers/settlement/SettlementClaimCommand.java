@@ -11,7 +11,6 @@ import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPreClaimEvent;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -55,10 +54,13 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
             }
 
             if (region.hasCountry()) {
-                if (!region.getCountry().getSettlementClaimWhitelist().contains(context.settlement())) {
-                    Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.has-country"),
-                            Map.of("country", region.getCountry().getCleanName()), messageProvider.get("prefix"));
-                    return;
+                // If trying to claim in another country's region, check the claim whitelist
+                if (!region.getCountry().equals(context.settlement().getCountry())) {
+                    if (!region.getCountry().getSettlementClaimWhitelist().contains(context.settlement())) {
+                        Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.has-country"),
+                                Map.of("country", region.getCountry().getCleanName()), messageProvider.get("prefix"));
+                        return;
+                    }
                 }
             }
         }
@@ -89,8 +91,6 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
 
         UnitedLandsEconomyManager.instance().withdraw(context.settlement().getUuid(), claimCosts);
-
-        Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
         Messenger.sendMessage(context.player(), messageProvider.get("settlement.claim.success"),
                 Map.of("settlement", context.settlement().getCleanName(),

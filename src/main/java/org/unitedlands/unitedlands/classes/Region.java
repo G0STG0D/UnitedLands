@@ -6,7 +6,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitTask;
+import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.events.region.RegionClaimedEvent;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.PolygonUtils;
 import org.unitedlands.unitedlands.utils.SerializationUtils;
@@ -23,6 +27,14 @@ public class Region extends GeopolObject implements PermissionHolder {
     private String polygonSerialized;
     @DatabaseField(canBeNull = true, columnName = "spawn_serialized")
     private String spawnSerialized;
+
+    @DatabaseField(width = 36, columnName = "claimant_country_uuid")
+    private UUID claimantCountryUuid;
+    private transient Country claimantCountry;
+    @DatabaseField(columnName = "claim_start_time", canBeNull = true)
+    private Long claimStartTime;
+    @DatabaseField(columnName = "claim_end_time", canBeNull = true)
+    private Long claimEndTime;
 
     @DatabaseField(width = 36, columnName = "country_uuid")
     private UUID countryUuid;
@@ -64,6 +76,8 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     private transient Set<Settlement> settlements = new HashSet<>();
     // private transient Set<RegionChunk> chunks = new HashSet<>();
+
+    private BukkitTask claimTask;
 
     public Region() {
 
@@ -120,9 +134,7 @@ public class Region extends GeopolObject implements PermissionHolder {
     public double[] getPolygon() {
         if (this.polygonSerialized == null)
             return null;
-        return Arrays.stream(this.polygonSerialized.split(";"))
-                .mapToDouble(Double::parseDouble)
-                .toArray();
+        return Arrays.stream(this.polygonSerialized.split(";")).mapToDouble(Double::parseDouble).toArray();
     }
 
     public void calculateBounds() {
@@ -158,9 +170,44 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     public Coordinates getHomeChunkCoordinates() {
         if (this.homeChunkCoordinates == null)
-            homeChunkCoordinates = new Coordinates(this.homeChunkCoordinatesX, this.homeChunkCoordinatesZ,
-                    this.worldName);
+            homeChunkCoordinates = new Coordinates(this.homeChunkCoordinatesX, this.homeChunkCoordinatesZ, this.worldName);
         return homeChunkCoordinates;
+    }
+
+    public UUID getClaimantCountryId() {
+        return claimantCountryUuid;
+    }
+
+    public void setClaimantCountry(Country country) {
+        this.claimantCountry = country;
+        this.claimantCountryUuid = country.getUuid();
+    }
+
+    public Country getClaimantCountry() {
+        if (this.claimantCountry == null && this.claimantCountryUuid != null)
+            claimantCountry = UnitedLandsDataManager.instance().getCountry(claimantCountryUuid);
+        return claimantCountry;
+    }
+
+    public void removeClaimantCountry() {
+        this.claimantCountry = null;
+        this.claimantCountryUuid = null;
+    }
+
+    public Long getClaimStartTime() {
+        return claimStartTime;
+    }
+
+    public void setClaimStartTime(Long claimStartTime) {
+        this.claimStartTime = claimStartTime;
+    }
+
+    public Long getClaimEndTime() {
+        return claimEndTime;
+    }
+
+    public void setClaimEndTime(Long claimEndTime) {
+        this.claimEndTime = claimEndTime;
     }
 
     public void setCountry(Country country) {
@@ -185,6 +232,10 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     public Set<Settlement> getSettlements() {
         return this.settlements;
+    }
+
+    public Set<Settlement> getSettlements(Country country) {
+        return this.settlements.stream().filter(s -> country.equals(s.getCountry())).collect(Collectors.toSet());
     }
 
     public void addSettlement(Settlement settlement) {
@@ -317,29 +368,38 @@ public class Region extends GeopolObject implements PermissionHolder {
         return PolygonUtils.isPointInPolygon(regionPolygon, px, py);
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-        return result;
+    public void startClaimTask() {
+        cancelClaimTask();
+
+        // Minimum delay of 5 seconds in case claimEndTime would have been during a
+        // server downtime (i.e. give some time to let other things finish loading
+        // before executing the region claim)
+
+        var milliDelay = claimEndTime - System.currentTimeMillis();
+        var delay = Math.max(100, milliDelay / 1000 * 20);
+
+        claimTask = Bukkit.getScheduler().runTaskLater(UnitedLands.getInstance(), () -> {
+
+            setCountry(getClaimantCountry());
+            getClaimantCountry().addRegion(this);
+
+            removeClaimantCountry();
+            setClaimStartTime(null);
+            setClaimEndTime(null);
+
+            UnitedLandsDataManager.instance().updateRegionDbData(this);
+            UnitedLandsDataManager.instance().updateCountryDbData(getCountry());
+
+            RegionClaimedEvent claimedEvent = new RegionClaimedEvent(this, country);
+            claimedEvent.callEvent();
+        }, delay);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Region other = (Region) obj;
-        if (uuid == null) {
-            if (other.uuid != null)
-                return false;
-        } else if (!uuid.equals(other.uuid))
-            return false;
-        return true;
+    public void cancelClaimTask() {
+        if (claimTask != null) {
+            claimTask.cancel();
+            claimTask = null;
+        }
     }
 
 }

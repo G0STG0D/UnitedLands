@@ -19,6 +19,7 @@ import org.unitedlands.unitedlands.listeners.ExplosionListener;
 import org.unitedlands.unitedlands.listeners.MobListener;
 import org.unitedlands.unitedlands.listeners.PlayerBukkitListener;
 import org.unitedlands.unitedlands.listeners.PlayerListener;
+import org.unitedlands.unitedlands.listeners.RegionListener;
 import org.unitedlands.unitedlands.listeners.ServerEventListener;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
@@ -83,6 +84,7 @@ public class UnitedLands extends JavaPlugin {
     @Override
     public void onDisable() {
         webServices.stopWebServices();
+        Pl3xMapRenderer.instance().shutdown();
     }
 
     private void loadManagers() {
@@ -140,12 +142,13 @@ public class UnitedLands extends JavaPlugin {
     }
 
     private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerBukkitListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-        getServer().getPluginManager().registerEvents(new ServerEventListener(this), this);
-        getServer().getPluginManager().registerEvents(new MobListener(this), this);
-        getServer().getPluginManager().registerEvents(new ExplosionListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerBukkitListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new ServerEventListener(), this);
+        getServer().getPluginManager().registerEvents(new MobListener(), this);
+        getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new RegionListener(messageProvider), this);
     }
 
     public static UnitedLands getInstance() {

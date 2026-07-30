@@ -10,9 +10,9 @@ import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHand
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementRenameCommand extends SettlementCommandHandler {
+public class SettlementSetNameCommand extends SettlementCommandHandler {
 
-    public SettlementRenameCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public SettlementSetNameCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
@@ -23,7 +23,7 @@ public class SettlementRenameCommand extends SettlementCommandHandler {
             // TODO: Usage
             return;
 
-        var context = validate(sender, "settlement.rename");
+        var context = validate(sender, "settlement.setname");
         if (context == null)
             return;
         
@@ -31,7 +31,7 @@ public class SettlementRenameCommand extends SettlementCommandHandler {
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlement.rename"),
+        Messenger.sendMessage(context.player(), messageProvider.get("settlement.setname"),
                 Map.of("name", context.settlement().getCleanName()), messageProvider.get("prefix"));
     }
 

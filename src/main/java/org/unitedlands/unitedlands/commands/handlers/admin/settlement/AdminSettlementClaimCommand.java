@@ -10,7 +10,6 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -68,8 +67,6 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
         settlement.addChunk(chunk);
 
         UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
-
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         Messenger.sendMessage(player, messageProvider.get("admin.settlement.claim"),
                 Map.of("settlement", settlement.getCleanName(),

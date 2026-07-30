@@ -31,14 +31,20 @@ admin:
       claim: "/ula settlement claim <settlement_name>"
       unclaim: "/ula settlement unclaim"
       setspawn: "/ula settlement setspawn <settlement_name>"
+      setname: "/ula settlement setspawn <settlement_name> <new_settlement_name>"
       addcitizen: "/ula settlement addcitizen <settlement_name> <player_name>"
       removecitizen: "/ula settlement removecitizen <settlement_name> <player_name>"
+      addrank: "/ula settlement addrank <settlement_name> <citizen_name> <rank>"
+      removerank: "/ula settlement removerank <settlement_name> <citizen_name> <rank>"
     country:
       create:  "/ula country create <country_name> <capital>"
       delete: "/ula country delete <settlement_name>"
       setcolor: "/ula country setcolor <country_name> <#hexcolor>"
+      setname: "/ula country setname <country_name> <new_country_name>"
       claim: "/ula country claim <country_name>"
       addsettlement: "/ula country addsettlement <country_name> <settlement_name>"
+      addrank: "/ula country addrank <country_name> <citizen_name> <rank>"
+      removerank: "/ula country removerank <country_name> <citizen_name> <rank>"
     towny:
       import: "/ula towny import [town_name] (leave out to import all towns)"
   settlement:
@@ -49,16 +55,26 @@ admin:
     claim: "<green>Chunk {chunk} claimed for settlement {settlement}."
     unclaim: "<green>Unclaimed chunk at {chunk} from settlement {settlement}."
     setspawn: "<green>Successfully set spawn for settlement {settlement}."
+    setname: "<green>Successfully set name for settlement to {settlement}."
     addcitizen:
       already-in-settlement: "<red>The citizen is already in another settlement."
       success: "<green>Added {name} to settlement {settlement}."
     removecitizen:
       not-in-settlement: "<red>The citizen is is not a member of the settlement."
       success: "<green>Removed {name} from settlement {settlement}."
+    addrank:
+      citizen-not-in-settlement: "<red>{citizen} is not in the settlement, cannot add rank.</red>"
+      unknown-rank: "<red>Unknown rank: {rank}.</red>"
+      success: "<green>Added {rank} to {citizen} in settlement {settlement}.</green>"
+    removerank:
+      citizen-not-in-settlement: "<red>{citizen} is not in the settlement, cannot remove rank.</red>"
+      unknown-rank: "<red>Unknown rank: {rank}.</red>"
+      success: "<green>Removed {rank} from {citizen} in settlement {settlement}.</green>"
   country:
     create: "<green>Country <bold>{country}</bold> has been created."
     delete: "<green>Country <bold>{country}</bold> has been deleted."
     setcolor: "<green>Color for country <bold>{country}</bold> has been set."
+    setname: "<green>Successfully set name for country to {country}."
     claim: "<green>Claimed the region of {region} for {country}.</green>"
     addsettlement: 
       settlement-has-country: "<red>The settlement is already part of a country."
@@ -66,6 +82,14 @@ admin:
     setcapital: 
       settlement-not-in-country: "<red>The settlement is not part of the country."
       success: "<green>Set settlement {settlement} as capital of country {country}."
+    addrank:
+      citizen-not-in-country: "<red>{citizen} is not in the country, cannot add rank.</red>"
+      unknown-rank: "<red>Unknown rank: {rank}.</red>"
+      success: "<green>Added {rank} to {citizen} in country {country}.</green>"
+    removerank:
+      citizen-not-in-country: "<red>{citizen} is not in the country, cannot remove rank.</red>"
+      unknown-rank: "<red>Unknown rank: {rank}.</red>"
+      success: "<green>Removed {rank} from {citizen} in country {country}.</green>"
   towny:
     import:
       error: "<red>Error while importing: {message}"
@@ -84,7 +108,7 @@ settlement:
     confirm: "<aqua>Are you sure you wish to delete <blue>{settlement}</blue>? <bold>This cannot be undone!</bold></aqua>"
     is-capital: "<red>You cannot delete a country capital. Move the capital or delete the country first.</red>"
     deleted-broadcast: "<aqua>The settlement of <blue>{settlement}</blue> has ceased to exist!</aqua>"
-  rename: "<aqua>You have renamed your settlement to {name}</aqua>"
+  setname: "<aqua>You have renamed your settlement to {name}</aqua>"
   setboard:
     cleared: "<aqua>Your settlement's board has been cleared."
     set: '<aqua>Your settlement''s board has been updated. Use "/settlement setboard EMPTY" to clear it.</aqua>'
@@ -191,20 +215,32 @@ country:
   delete:
     deleted-broadcast: "<aqua>The country of {country} no longer exists!</aqua>"
   claim:
-    success: "<aqua>You claimed the region of <red>{region}</red> for <green>{country}</green>.</aqua>"
-    broadcast: "<aqua>{player} has just claimed the region of <red>{region}</red> for <green>{country}</green>"
+    start-broadcast: "<aqua><green>{country}</green> has just begun claiming region <red>{region}</red>.</aqua>"
+    broadcast: "<aqua><green>{country}</green> has claimed region <red>{region}</red>."
     no-region: "<yellow>There is no region to claim at this location.</yellow>"
+    already-being-claimed: "<yellow>This region is already being claimed by <green>{claimant}</green>.</yellow>"
+    too-many-claiming: "<yellow>You cannot claim more than {max} regions at a time.</yellow>"
     already-claimed: "<yellow>This region is already claimed</yellow>"
+  unclaim:
+    no-region: "<yellow>There is no region to unclaim at this location.</yellow>"
+    last-region: "<yellow>You cannot unclaim your last remaining region.</yellow>"
+    region-not-claimed: "<yellow>This region is not claimed or being claimed by your country.</yellow>"
+    region-not-in-country: "<yellow>This region doesn't belong to your country.</yellow>"
+    other-country-claiming: "<yellow>This region is being claimed by another country.</yellow>"
+    confirm-title: "<yellow>You will lose control of this region. Continue?</yellow>"
+    confirm-warn-settlements: "<red>WARNING: You will lose control of settlements!</red>"
+    confirm-warn-leader: "<red>WARNING: You will lose leadership of the country!</red>"
+    success: "<aqua>You have forfeited your claims to region {region}.</aqua>"
   setcolor:
     wrong-format: "<yellow>You must supply a hexadecimal color (e.g. #FF0000)</yellow>"
-    set: "<aqua>Successfully changed your nation color.</aqua>"
+    set: "<aqua>Successfully changed your country color.</aqua>"
   setname:
-    set: "<aqua>Successfully changed your nation name to {country}.</aqua>"
+    set: "<aqua>Successfully changed your country name to {country}.</aqua>"
   no-funds: "<yellow>The country doesn't have {amount} in its bank.</yellow>"
   deposit: "<aqua>You deposited {amount} into the country bank.</aqua>"
   withdraw: "<aqua>You took {amount} from the country bank.</aqua>"
   ranks:
-    not-in-country: "<yellow>{name}  is not part of the country.</yellow>"
+    not-in-country: "<yellow>{name} is not part of the country.</yellow>"
     unknown-rank: "<yellow>Unknown rank: {rank}</yellow>"
     cannot-remove-leader: "<yellow>You cannot remove the leader rank. You can only pass it to another citizen.</yellow>"
     rank-already-owned: "<yellow>Player {name} already has the rank {rank}</yellow>"
@@ -232,7 +268,7 @@ info-screens:
     title-end: " ]."
   settlement:
     board: "<gray><bold>Board:</bold> {board}"
-    region: "<dark_gray><gray><bold>Region:</bold> {region}</gray> | <gray><bold>Country:</bold> -</gray></dark_gray>"
+    region: "<dark_gray><gray><bold>Region:</bold> {region}</gray> | <gray><bold>Country:</bold> {country}</gray></dark_gray>"
     founded: "<dark_gray><gray><bold>Founded:</bold> {founded}</gray> | <gray><bold>By:</bold> {founder} </gray></dark_gray>"
     mayor: "<gray><bold>Mayor:</bold> {mayor}"
     toggles: "<gray><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>"
@@ -258,6 +294,7 @@ info-screens:
     citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"
     sizeupkeep: "<dark_gray><gray><bold>Size:</bold> [<aqua>{size}</aqua>]</gray> | <gray><bold>Upkeep:</bold> [<aqua>{upkeep}</aqua>]</gray></dark_gray>"
     balance: "<gray><bold>Balance:</bold> {balance}</gray>"
+    claims: "<gray>Claiming (remaining time): {claims}</gray>"
     metadata: "<gray>{metadata}</gray>"
   citizen:
     registered: "<dark_gray><gray><bold>Registered:</bold> {registered}</gray> | <gray><bold>Last log-on:</bold> {lastlogon} </gray></dark_gray>"

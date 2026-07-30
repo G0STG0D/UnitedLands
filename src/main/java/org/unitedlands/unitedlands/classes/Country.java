@@ -2,7 +2,6 @@ package org.unitedlands.unitedlands.classes;
 
 import java.awt.Color;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,8 +16,6 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.unitedlands.utils.SerializationUtils;
-import org.unitedlands.utils.Logger;
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -38,6 +35,9 @@ public class Country extends GeopolObject {
     @DatabaseField(canBeNull = false, width = 36, columnName = "capital_uuid")
     private UUID capitalUuid;
 
+    @DatabaseField(canBeNull = true, width = 36, columnName = "overlord_uuid")
+    private UUID overlordUuid;
+
     @DatabaseField(dataType = DataType.LONG_STRING, columnName = "settlement_claim_whitelist")
     private String settlementClaimWhitelistSerialized;
 
@@ -46,6 +46,7 @@ public class Country extends GeopolObject {
 
     private transient Location spawn;
     private transient Settlement capital;
+    private transient Country overlord;
     private transient Set<Region> regions = new HashSet<>();
     private transient Set<Settlement> settlements = new HashSet<>();
     private transient Set<Settlement> settlementClaimWhitelist = new HashSet<>();
@@ -129,6 +130,27 @@ public class Country extends GeopolObject {
         this.capitalUuid = settlement.getUuid();
     }
 
+    public Country getOverlord() {
+        if (overlord == null && overlordUuid != null) {
+            overlord = UnitedLandsDataManager.instance().getCountry(overlordUuid);
+        }
+        return overlord;
+    }
+
+    public void setOverlord(Country country) {
+        if (country == null) {
+            this.overlord = null;
+            this.overlordUuid = null;
+        }
+        this.overlord = country;
+        this.overlordUuid = country.getUuid();
+    }
+
+    public void removeOverlord() {
+        this.overlord = null;
+        this.overlordUuid = null;
+    }
+
     public Set<Region> getRegions() {
         return this.regions;
     }
@@ -161,12 +183,7 @@ public class Country extends GeopolObject {
     }
 
     public Citizen getLeader() {
-        CompletableFuture<Citizen> future = CompletableFuture.supplyAsync(() -> {
-            var citizens = settlements.stream().map(Settlement::getCitizens).flatMap(Set::stream)
-                    .collect(Collectors.toSet());
-            return citizens.stream().filter(c -> c.hasCountryRank("leader")).findFirst().orElse(null);
-        });
-        return future.join();
+        return getCitizens().stream().filter(c -> c.hasCountryRank("leader")).findFirst().orElse(null);
     }
 
     public int getRegionCount() {
@@ -183,71 +200,27 @@ public class Country extends GeopolObject {
 
     public Set<Settlement> getSettlementClaimWhitelist() {
         if (settlementClaimWhitelist == null) {
-            if (settlementClaimWhitelistSerialized != null) {
-                try {
-                    settlementClaimWhitelist = Arrays.stream(settlementClaimWhitelistSerialized.split("#"))
-                            .map(c -> UnitedLandsDataManager.instance().getSettlement(UUID.fromString(c)))
-                            .collect(Collectors.toSet());
-                } catch (Exception ex) {
-                    Logger.logError(
-                            "Unable to parse settlement_claim_whitelist of " + getName() + ": " + ex.getMessage());
-                    settlementClaimWhitelist = new HashSet<>();
-                }
-            } else {
-                settlementClaimWhitelist = new HashSet<>();
-            }
+            this.settlementClaimWhitelist = SerializationUtils.deserializeUuidListToSet(settlementClaimWhitelistSerialized,
+                    UnitedLandsDataManager.instance()::getSettlement);
         }
         return settlementClaimWhitelist;
     }
 
     public void setSettlementClaimWhitelist(Set<Settlement> settlementClaimWhitelist) {
         this.settlementClaimWhitelist = settlementClaimWhitelist;
-        if (settlementClaimWhitelist != null && !settlementClaimWhitelist.isEmpty()) {
-            try {
-                this.settlementClaimWhitelistSerialized = settlementClaimWhitelist.stream()
-                        .map(c -> c.getUuid().toString())
-                        .collect(Collectors.joining("#"));
-            } catch (Exception ex) {
-                Logger.logError("Unable to parse settlement_claim_whitelist for " + getName() + ": " + ex.getMessage());
-                this.settlementClaimWhitelistSerialized = null;
-            }
-        } else {
-            this.settlementClaimWhitelistSerialized = null;
-        }
+        this.settlementClaimWhitelistSerialized = SerializationUtils.serializeIdentifiableList(settlementClaimWhitelist);
     }
 
     public Set<Country> getAllies() {
         if (allies == null) {
-            if (alliesSerialized != null) {
-                try {
-                    allies = Arrays.stream(alliesSerialized.split("#"))
-                            .map(c -> UnitedLandsDataManager.instance().getCountry(UUID.fromString(c)))
-                            .collect(Collectors.toSet());
-                } catch (Exception ex) {
-                    Logger.logError("Unable to parse allies of " + getName() + ": " + ex.getMessage());
-                    allies = new HashSet<>();
-                }
-            } else {
-                allies = new HashSet<>();
-            }
+            this.allies = SerializationUtils.deserializeUuidListToSet(alliesSerialized, UnitedLandsDataManager.instance()::getCountry);
         }
         return allies;
     }
 
     public void setAllies(Set<Country> allies) {
         this.allies = allies;
-        if (allies != null && !allies.isEmpty()) {
-            try {
-                this.alliesSerialized = allies.stream()
-                        .map(c -> c.getUuid().toString())
-                        .collect(Collectors.joining("#"));
-            } catch (Exception ex) {
-                Logger.logError("Unable to parse allies for " + getName() + ": " + ex.getMessage());
-                this.alliesSerialized = null;
-            }
-        } else {
-            this.alliesSerialized = null;
-        }
+        this.alliesSerialized = SerializationUtils.serializeIdentifiableList(allies);
     }
 
     // TODO: Neutrality

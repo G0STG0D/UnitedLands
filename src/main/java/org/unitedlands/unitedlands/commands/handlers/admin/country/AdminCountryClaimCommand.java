@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -25,7 +24,7 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
 
         var player = (Player) sender;
 
-        if (args.length != 1) {
+        if (args.length < 1) {
             Messenger.sendMessage(player, messageProvider.get("admin.usage.country.claim"),
                     null, messageProvider.get("prefix"));
             return;
@@ -50,13 +49,22 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
             }
         }
 
-        region.setCountry(country);
-        country.addRegion(region);
-        UnitedLandsDataManager.instance().updateRegionDbData(region);
+        long claimDuration = 0;
+        if (args.length > 1) {
+            try {
+                claimDuration = Long.parseLong(args[1]);
+            } catch (Exception ex) {
+                Messenger.sendMessage(player, messageProvider.get("errors.wrong-number-format"),
+                        null, messageProvider.get("prefix"));
+            }
+        }
 
-        Pl3xMapRenderer.instance().removeRegion(region);
-        Pl3xMapRenderer.instance().renderPolyRegion(region);
-        Pl3xMapRenderer.instance().renderCountry(country);
+        region.setClaimantCountry(country);
+        region.setClaimStartTime(System.currentTimeMillis());
+        region.setClaimEndTime(System.currentTimeMillis() + (claimDuration * 1000));
+        region.startClaimTask();
+
+        UnitedLandsDataManager.instance().updateRegionDbData(region);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.claim"),
                 Map.of("country", country.getCleanName(),

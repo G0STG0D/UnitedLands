@@ -1,6 +1,5 @@
 package org.unitedlands.unitedlands.classes;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -328,36 +327,15 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     public Set<Citizen> getCitizens() {
         if (citizens == null) {
-            if (citizensSerialized != null) {
-                try {
-                    citizens = Arrays.stream(citizensSerialized.split("#"))
-                            .map(c -> UnitedLandsDataManager.instance().getCitizen(UUID.fromString(c)))
-                            .collect(Collectors.toSet());
-                } catch (Exception ex) {
-                    Logger.logError("Unable to parse citizens_serialized of " + getName() + ": " + ex.getMessage());
-                    citizens = new HashSet<>();
-                }
-            } else {
-                citizens = new HashSet<>();
-            }
+            citizens = SerializationUtils.deserializeUuidListToSet(citizensSerialized,
+                    UnitedLandsDataManager.instance()::getCitizen);
         }
         return citizens;
     }
 
     public void setCitizens(Set<Citizen> citizens) {
         this.citizens = citizens;
-        if (citizens != null && !citizens.isEmpty()) {
-            try {
-                this.citizensSerialized = citizens.stream()
-                        .map(c -> c.getUuid().toString())
-                        .collect(Collectors.joining("#"));
-            } catch (Exception ex) {
-                Logger.logError("Unable to parse citizens for " + getName() + ": " + ex.getMessage());
-                this.citizensSerialized = null;
-            }
-        } else {
-            this.citizensSerialized = null;
-        }
+        this.citizensSerialized = SerializationUtils.serializeIdentifiableList(citizens);
     }
 
     public Set<Player> getOnlinePlayers() {
@@ -379,36 +357,15 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     public Set<Citizen> getTrustList() {
         if (trustList == null) {
-            if (trustListSerialized != null) {
-                try {
-                    trustList = Arrays.stream(trustListSerialized.split("#"))
-                            .map(c -> UnitedLandsDataManager.instance().getCitizen(UUID.fromString(c)))
-                            .collect(Collectors.toSet());
-                } catch (Exception ex) {
-                    Logger.logError("Unable to parse trustList of " + getName() + ": " + ex.getMessage());
-                    trustList = new HashSet<>();
-                }
-            } else {
-                trustList = new HashSet<>();
-            }
+            trustList = SerializationUtils.deserializeUuidListToSet(trustListSerialized,
+                    UnitedLandsDataManager.instance()::getCitizen);
         }
         return trustList;
     }
 
     public void setTrustList(Set<Citizen> trustList) {
         this.trustList = trustList;
-        if (trustList != null && !trustList.isEmpty()) {
-            try {
-                this.trustListSerialized = trustList.stream()
-                        .map(c -> c.getUuid().toString())
-                        .collect(Collectors.joining("#"));
-            } catch (Exception ex) {
-                Logger.logError("Unable to parse listList for " + getName() + ": " + ex.getMessage());
-                this.trustListSerialized = null;
-            }
-        } else {
-            this.trustListSerialized = null;
-        }
+        this.trustListSerialized = SerializationUtils.serializeIdentifiableList(trustList);
     }
 
     public Citizen getMayor() {

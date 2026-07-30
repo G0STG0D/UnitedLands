@@ -10,7 +10,6 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -76,11 +75,6 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         UnitedLandsDataManager.instance().createCountryDbData(country);
         UnitedLandsDataManager.instance().updateRegionDbData(region);
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
-
-        Pl3xMapRenderer.instance().removeRegion(region);
-        Pl3xMapRenderer.instance().renderPolyRegion(region);
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
-        Pl3xMapRenderer.instance().renderCountry(country);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.create"),
                 Map.of("country", country.getCleanName()), messageProvider.get("prefix"));

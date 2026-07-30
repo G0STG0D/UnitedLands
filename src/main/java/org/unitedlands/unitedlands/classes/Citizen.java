@@ -185,7 +185,7 @@ public class Citizen implements Identifiable, MetadataHolder {
 
     public void removeCountryRank(String rank) {
         var r = new HashSet<>(getCountryRanks());
-        r.add(rank);
+        r.remove(rank);
         setCountryRanks(r);
     }
 
@@ -239,14 +239,17 @@ public class Citizen implements Identifiable, MetadataHolder {
 
     @Override
     public Map<String, MetaDataField<?>> getMetadata() {
-        if (metadata == null && metadataSerialized != null && !metadataSerialized.isEmpty()) {
-            var t = new TypeToken<Collection<MetaDataField<?>>>() {
-            };
-            Collection<MetaDataField<?>> parsedData = JsonUtils.deserialize(metadataSerialized, t);
-            metadata = new HashMap<>();
-            for (var m : parsedData)
-                metadata.put(m.getKey(), m);
-        }
+        if (metadata == null)
+            if (metadataSerialized != null && !metadataSerialized.isEmpty()) {
+                var t = new TypeToken<Collection<MetaDataField<?>>>() {
+                };
+                Collection<MetaDataField<?>> parsedData = JsonUtils.deserialize(metadataSerialized, t);
+                metadata = new HashMap<>();
+                for (var m : parsedData)
+                    metadata.put(m.getKey(), m);
+            } else {
+                metadata = new HashMap<>();
+            }
         return metadata;
     }
 

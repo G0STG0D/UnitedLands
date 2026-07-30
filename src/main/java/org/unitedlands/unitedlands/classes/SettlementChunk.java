@@ -1,18 +1,14 @@
 package org.unitedlands.unitedlands.classes;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
 import org.unitedlands.unitedlands.classes.interfaces.CoordinateHolder;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Logger;
-
+import org.unitedlands.unitedlands.utils.SerializationUtils;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -220,36 +216,15 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
 
     public Set<Citizen> getTrustList() {
         if (trustList == null) {
-            if (trustListSerialized != null) {
-                try {
-                    trustList = Arrays.stream(trustListSerialized.split("#"))
-                            .map(c -> UnitedLandsDataManager.instance().getCitizen(UUID.fromString(c)))
-                            .collect(Collectors.toSet());
-                } catch (Exception ex) {
-                    Logger.logError("Unable to parse trustList of " + getName() + ": " + ex.getMessage());
-                    trustList = new HashSet<>();
-                }
-            } else {
-                trustList = new HashSet<>();
-            }
+            trustList = SerializationUtils.deserializeUuidListToSet(trustListSerialized,
+                    UnitedLandsDataManager.instance()::getCitizen);
         }
         return trustList;
     }
 
     public void setTrustList(Set<Citizen> trustList) {
         this.trustList = trustList;
-        if (trustList != null && !trustList.isEmpty()) {
-            try {
-                this.trustListSerialized = trustList.stream()
-                        .map(c -> c.getUuid().toString())
-                        .collect(Collectors.joining("#"));
-            } catch (Exception ex) {
-                Logger.logError("Unable to parse listList for " + getName() + ": " + ex.getMessage());
-                this.trustListSerialized = null;
-            }
-        } else {
-            this.trustListSerialized = null;
-        }
+        this.trustListSerialized = SerializationUtils.serializeIdentifiableList(trustList);
     }
 
     public int getSize() {
@@ -360,14 +335,6 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         this.interactPermissions = interactPermissions;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-        return result;
-    }
-
     public Boolean allowPvp() {
         if (allowPvp == null) {
             if (settlement != null) {
@@ -441,6 +408,14 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
 
     public void setAllowExplosions(Boolean allowExplosions) {
         this.allowExplosions = allowExplosions;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        return result;
     }
 
     @Override

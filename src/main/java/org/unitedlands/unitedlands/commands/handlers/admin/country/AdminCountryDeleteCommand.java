@@ -43,12 +43,9 @@ public class AdminCountryDeleteCommand extends CountryAdminCommandHandler {
                 }
                 settlement.removeCountry();
                 UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
-                Pl3xMapRenderer.instance().renderSettlement(settlement);
             }
             region.removeCountry();
             UnitedLandsDataManager.instance().updateRegionDbData(region);
-            
-            Pl3xMapRenderer.instance().renderPolyRegion(region);
         }
 
         UnitedLandsEconomyManager.instance().deleteAccount(country.getUuid());

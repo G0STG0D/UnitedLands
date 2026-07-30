@@ -19,6 +19,8 @@ public class AdminSettlementSubcommands extends BaseSubcommandHandler<UnitedLand
         subHandlers.put("removecitizen", new AdminSettlementRemoveCitizenCommand(plugin, messageProvider));
         subHandlers.put("setspawn", new AdminSettlementSetSpawnCommand(plugin, messageProvider));
         subHandlers.put("delete", new AdminSettlementDeleteCommand(plugin, messageProvider));
+        subHandlers.put("addrank", new AdminSettlementRankAddCommand(plugin, messageProvider));
+        subHandlers.put("removerank", new AdminSettlementRankRemoveCommand(plugin, messageProvider));
     }
 
 }

@@ -1,7 +1,10 @@
 package org.unitedlands.unitedlands.classes.infoscreen;
 
 import java.util.LinkedList;
+import java.util.Map;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.utils.Messenger;
@@ -12,12 +15,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public abstract class InfoScreen {
 
-    protected final UnitedLands plugin;
+    protected final Plugin plugin;
     protected final IMessageProvider messageProvider;
 
     protected LinkedList<InfoScreenComponent> components = new LinkedList<>();
 
-    public InfoScreen(UnitedLands plugin, IMessageProvider messageProvider) {
+    public InfoScreen(Plugin plugin, IMessageProvider messageProvider) {
         this.plugin = plugin;
         this.messageProvider = messageProvider;
     }
@@ -30,9 +33,18 @@ public abstract class InfoScreen {
         components.add(new InfoScreenComponent(id, content));
     }
 
+    public void addComponent(String id, String content, Map<String, String> replacements) {
+        components.add(new InfoScreenComponent(id, Messenger.getMessage(content, replacements)));
+    }
+
     public void addComponent(int index, String id, Component content) {
         components.add(index, new InfoScreenComponent(id, content));
     }
+
+    public void addComponent(int index, String id, String content, Map<String, String> replacements) {
+        components.add(index, new InfoScreenComponent(id, Messenger.getMessage(content, replacements)));
+    }
+
 
     public void addComponent(String afterKey, String id, Component content) {
         int index = 0;
@@ -68,10 +80,12 @@ public abstract class InfoScreen {
     }
 
     public Component buildHeader(String name) {
+        return buildHeader(name, UnitedLands.getInstance().getMessageConfig().get());
+    }
+
+    public Component buildHeader(String name, YamlConfiguration messageConfig) {
 
         var header = "";
-
-        var messageConfig = plugin.getMessageConfig().get();
 
         var maxWidth = messageConfig.getInt("info-screens.header.max-chars");
 

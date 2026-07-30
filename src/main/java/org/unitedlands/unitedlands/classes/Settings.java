@@ -12,7 +12,6 @@ import org.bukkit.Tag;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.unitedlands.utils.Logger;
 
-@SuppressWarnings("unused")
 public class Settings {
 
     public static int regionChunkSize = 8;
@@ -57,6 +56,8 @@ public class Settings {
 
     public static int countryCreateCosts;
     public static int regionClaimBaseCosts;
+    public static int regionClaimTime;
+    public static int regionParallelClaimsMax;
     public static String regionClaimCostModifier;
 
     public static List<String> protectedContainers = new ArrayList<>();
@@ -114,6 +115,8 @@ public class Settings {
 
         countryCreateCosts = config.getInt("economy.new-country-cost", 80000);
         regionClaimBaseCosts = config.getInt("economy.region-claim-base-cost", 80000);
+        regionClaimTime = config.getInt("economy.region-claim-time", 3600);
+        regionParallelClaimsMax = config.getInt("economy.region-parallel-claims-max", 1);
         regionClaimCostModifier = config.getString("economy.region-claim-cost-modifier", "base + (((regions + 1) / 2) * (distance / 1000))");
 
         protectedContainers = config.getStringList("protection.containers");

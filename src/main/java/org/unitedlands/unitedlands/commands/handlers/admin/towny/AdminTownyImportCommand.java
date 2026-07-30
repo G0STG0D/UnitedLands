@@ -21,7 +21,6 @@ import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LocationMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -239,9 +238,6 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                     UnitedLandsDataManager.instance().createCountryDbData(country);
                     UnitedLandsDataManager.instance().updateRegionDbData(region);
                     UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
-
-                    Pl3xMapRenderer.instance().renderPolyRegion(region);
-                    Pl3xMapRenderer.instance().renderCountry(country);
 
                     Messenger.sendMessage(player, messageProvider.get("admin.towny.import.success-country"),
                             Map.of("country", country.getName()), messageProvider.get("prefix"));

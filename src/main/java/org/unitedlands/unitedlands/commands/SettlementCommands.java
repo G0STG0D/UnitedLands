@@ -26,7 +26,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementLeaveC
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementMapCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementPermissionCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRankSubcommand;
-import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRenameCommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetNameCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetBoardCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetColorCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetSpawnCommand;
@@ -54,7 +54,7 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("permission", new SettlementPermissionCommand(plugin, messageProvider));
         handlers.put("toggle", new SettlementToggleCommand(plugin, messageProvider));
         handlers.put("info", infoCommand);
-        handlers.put("rename", new SettlementRenameCommand(plugin, messageProvider));
+        handlers.put("setname", new SettlementSetNameCommand(plugin, messageProvider));
         handlers.put("spawn", new SettlementSpawnCommand(plugin, messageProvider));
         handlers.put("claim", new SettlementClaimCommand(plugin, messageProvider));
         handlers.put("unclaim", new SettlementUnclaimCommand(plugin, messageProvider));

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -49,8 +48,6 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         country.addSettlement(settlement);
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
-
-        Pl3xMapRenderer.instance().renderSettlement(settlement);
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.addsettlement.success"),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),

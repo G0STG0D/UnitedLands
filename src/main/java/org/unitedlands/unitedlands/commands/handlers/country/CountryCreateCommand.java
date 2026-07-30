@@ -13,7 +13,6 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
@@ -89,11 +88,6 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
 
             UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
             UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
-
-            Pl3xMapRenderer.instance().removeRegion(region);
-            Pl3xMapRenderer.instance().renderPolyRegion(region);
-            Pl3xMapRenderer.instance().renderSettlement(settlement);
-            Pl3xMapRenderer.instance().renderCountry(country);
 
             Messenger.sendMessage(player, messageProvider.get("country.create.player"),
                     Map.of("country", country.getCleanName()), messageProvider.get("prefix"));

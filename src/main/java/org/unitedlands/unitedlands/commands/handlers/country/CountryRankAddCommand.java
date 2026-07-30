@@ -53,19 +53,13 @@ public class CountryRankAddCommand extends CountryCommandHandler {
             // TODO: Usage
             return;
         }
-
-        var player = (Player) sender;
-        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
-        if (citizen == null || citizen.getCountry() == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.not-in-country"),
-                    null, messageProvider.get("prefix"));
+        var context = validate(sender, null);
+        if (context == null)
             return;
-        }
-        var country = citizen.getCountry();
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.player-not-found"),
+            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -74,20 +68,20 @@ public class CountryRankAddCommand extends CountryCommandHandler {
         if (targetCitizen == null)
             return;
 
-        if (!country.equals(targetCitizen.getCountry())) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.not-in-country"),
+        if (!context.country().equals(targetCitizen.getCountry())) {
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.not-in-country"),
                     Map.of("name", args[0]), messageProvider.get("prefix"));
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.unknown-rank"),
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.unknown-rank"),
                     Map.of("rank", args[1]), messageProvider.get("prefix"));
             return;
         }
 
         if (targetCitizen.getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.ranks.rank-already-owned"),
+            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.rank-already-owned"),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
                     messageProvider.get("prefix"));
             return;
@@ -95,13 +89,13 @@ public class CountryRankAddCommand extends CountryCommandHandler {
 
         if (args[1].equals("leader")) {
 
-            if (!hasPermission("country.manage.ranks.leader", citizen))
+            if (!hasPermission("country.manage.ranks.leader", context.citizen()))
                 return;
 
             var confirmation = new Confirmation("new-leader");
             confirmation.setRunnable(() -> {
 
-                var currentLeader = country.getLeader();
+                var currentLeader = context.country().getLeader();
                 currentLeader.removeCountryRank("leader");
                 targetCitizen.addCountryRank("leader");
 
@@ -121,19 +115,19 @@ public class CountryRankAddCommand extends CountryCommandHandler {
             })
                     .setTitle("<yellow>Are you sure you want to give the leadership to " + args[0]
                             + " permanently?</yellow>")
-                    .setSender(player)
-                    .setReceiver(player)
+                    .setSender(context.player())
+                    .setReceiver(context.player())
                     .setTimeoutSeconds(30)
                     .setAcceptCommand("/approve new-leader")
                     .setCancelCommand("/reject new-leader")
-                    .setDiscriminator(country.getName())
+                    .setDiscriminator(context.country().getName())
                     .send();
 
             ConfirmationManager.instance().queueConfirmation(confirmation);
 
         } else {
 
-            if (!hasPermission("country.manage.ranks.other", citizen))
+            if (!hasPermission("country.manage.ranks.other", context.citizen()))
                 return;
 
             targetCitizen.addCountryRank(args[1]);
@@ -146,7 +140,7 @@ public class CountryRankAddCommand extends CountryCommandHandler {
 
         }
 
-        Messenger.sendMessage(player, messageProvider.get("country.ranks.added"),
+        Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.added"),
                 Map.of("rank", args[1], "name", targetCitizen.getName()),
                 messageProvider.get("prefix"));
 

@@ -9,12 +9,11 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.Messenger;
 
-public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
+public class AdminCountrySetNameCommand extends CountryAdminCommandHandler {
 
-    public AdminCountrySetColorCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public AdminCountrySetNameCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
@@ -24,7 +23,7 @@ public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.setcolor"),
+            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.setname"),
                     null, messageProvider.get("prefix"));
             return;
         }
@@ -34,18 +33,11 @@ public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
             return;
         }
 
-        if (!(args[1].length() == 7) || !ColorUtils.isValidHexColor(args[1])) {
-            Messenger.sendMessage(player, messageProvider.get("country.setcolor.wrong-format"),
-                    null, messageProvider.get("prefix"));
-            return;
-        }
-
-        country.setFillColor(args[1] + "10");
-        country.setStrokeColor(args[1]);
+        country.setName(args[1]);
 
         UnitedLandsDataManager.instance().updateCountryDbData(country);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.country.setcolor"),
+        Messenger.sendMessage(player, messageProvider.get("admin.country.setname"),
                 Map.of("country", country.getName()), messageProvider.get("prefix"));
     }
 

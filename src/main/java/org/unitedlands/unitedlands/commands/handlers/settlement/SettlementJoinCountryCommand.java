@@ -9,7 +9,6 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -62,8 +61,6 @@ public class SettlementJoinCountryCommand extends SettlementCommandHandler {
             country.addSettlement(context.settlement());
 
             UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
-
-            Pl3xMapRenderer.instance().renderSettlement(context.settlement());
 
             Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("settlement.joincountry.broadcast"),
                     Map.of("settlement", context.settlement().getCleanName(), "country", country.getCleanName()),
