@@ -11,6 +11,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -31,8 +32,9 @@ public class SettlementInviteCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        if (args.length == 0) {
-            // TODO: Usage
+        if (args.length != 1) {
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__INVITE__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -42,8 +44,8 @@ public class SettlementInviteCommand extends SettlementCommandHandler {
         
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -60,20 +62,16 @@ public class SettlementInviteCommand extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
-            Messenger.sendMessage(context.settlement().getOnlinePlayers(), messageProvider.get("settlement.invite.player-joined"),
-                    Map.of("name", targetPlayer.getName()), messageProvider.get("prefix"));
-            Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.invite.settlement-joined"),
-                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.settlement().getOnlinePlayers(), messageProvider.get(Message.PLAYER__SETTLEMENT__INVITE__PLAYER_JOINED.path()),
+                    Map.of("name", targetPlayer.getName()), messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__SETTLEMENT__INVITE__PLAYER_MESSAGE.path()),
+                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get(Message.PREFIX.path()));
 
         })
-                .setTitle(messageProvider.get("settlement.invite.player-message"))
+                .setTitle(messageProvider.get(Message.PLAYER__SETTLEMENT__INVITE__INVITE_MESSAGE.path()))
                 .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
                 .setSender(context.player())
                 .setReceiver(targetPlayer)
-                .setDiscriminator(context.settlement().getName())
-                .setAcceptCommand("/approve invite [" + context.settlement().getName() + "]")
-                .setCancelCommand("/reject invite [" + context.settlement().getName() + "]")
-                .setTimeoutSeconds(60)
                 .send();
     }
 

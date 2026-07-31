@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.unitedlands.unitedlands.classes.events.region.RegionClaimStartEvent;
 import org.unitedlands.unitedlands.classes.events.region.RegionClaimedEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
@@ -21,18 +22,18 @@ public class RegionListener implements Listener {
 
     @EventHandler
     public void onRegionStartClaimEvent(RegionClaimStartEvent event) {
-        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.claim.start-broadcast"),
+        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__START_BROADCAST.path()),
                 Map.of("country", event.getCountry().getCleanName(),
                         "region", event.getRegion().getCleanName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
     @EventHandler
     public void onRegionClaimedEvent(RegionClaimedEvent event) {
-        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.claim.broadcast"),
+        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__CLAIMED_BROADCAST.path()),
                 Map.of("country", event.getCountry().getCleanName(),
                         "region", event.getRegion().getCleanName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
 }

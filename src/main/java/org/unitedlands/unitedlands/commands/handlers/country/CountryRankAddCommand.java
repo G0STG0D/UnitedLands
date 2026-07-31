@@ -13,6 +13,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
@@ -50,7 +51,8 @@ public class CountryRankAddCommand extends CountryCommandHandler {
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 2) {
-            // TODO: Usage
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__COUNTRY__ADDRANK__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         var context = validate(sender, null);
@@ -59,8 +61,8 @@ public class CountryRankAddCommand extends CountryCommandHandler {
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -69,21 +71,21 @@ public class CountryRankAddCommand extends CountryCommandHandler {
             return;
 
         if (!context.country().equals(targetCitizen.getCountry())) {
-            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.not-in-country"),
-                    Map.of("name", args[0]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__NOT_IN_COUNTRY.path()),
+                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.unknown-rank"),
-                    Map.of("rank", args[1]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.ADMIN__COUNTRY__UNKNOWN_RANK.path()),
+                    Map.of("rank", args[1]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (targetCitizen.getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.rank-already-owned"),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__ADDRANK__RANK_ALREADY_OWNED.path()),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -91,6 +93,8 @@ public class CountryRankAddCommand extends CountryCommandHandler {
 
             if (!hasPermission("country.manage.ranks.leader", context.citizen()))
                 return;
+
+            // TODO: Move strings to config
 
             var confirmation = new Confirmation("new-leader");
             confirmation.setRunnable(() -> {
@@ -105,11 +109,11 @@ public class CountryRankAddCommand extends CountryCommandHandler {
                 if (currentLeader.getPlayer().isOnline()) {
                     Messenger.sendMessage(currentLeader.getPlayer().getPlayer(),
                             messageProvider.get("country.ranks.lost"),
-                            Map.of("rank", "leader"), messageProvider.get("prefix"));
+                            Map.of("rank", "leader"), messageProvider.get(Message.PREFIX.path()));
                 }
                 if (targetPlayer.isOnline()) {
-                    Messenger.sendMessage(targetPlayer, messageProvider.get("country.ranks.received"),
-                            Map.of("rank", "leader"), messageProvider.get("prefix"));
+                    Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__COUNTRY__ADDRANK__RANK_RECEIVED.path()),
+                            Map.of("rank", "leader"), messageProvider.get(Message.PREFIX.path()));
                 }
 
             })
@@ -117,10 +121,6 @@ public class CountryRankAddCommand extends CountryCommandHandler {
                             + " permanently?</yellow>")
                     .setSender(context.player())
                     .setReceiver(context.player())
-                    .setTimeoutSeconds(30)
-                    .setAcceptCommand("/approve new-leader")
-                    .setCancelCommand("/reject new-leader")
-                    .setDiscriminator(context.country().getName())
                     .send();
 
             ConfirmationManager.instance().queueConfirmation(confirmation);
@@ -134,15 +134,15 @@ public class CountryRankAddCommand extends CountryCommandHandler {
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, messageProvider.get("country.ranks.received"),
-                        Map.of("rank", args[1]), messageProvider.get("prefix"));
+                Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__COUNTRY__ADDRANK__RANK_RECEIVED.path()),
+                        Map.of("rank", args[1]), messageProvider.get(Message.PREFIX.path()));
             }
 
         }
 
-        Messenger.sendMessage(context.player(), messageProvider.get("country.ranks.added"),
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__ADDRANK__SUCCESS.path()),
                 Map.of("rank", args[1], "name", targetCitizen.getName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
 
     }
 

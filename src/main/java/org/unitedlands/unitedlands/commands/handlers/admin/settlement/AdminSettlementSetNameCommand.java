@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -23,8 +24,8 @@ public class AdminSettlementSetNameCommand extends SettlementAdminCommandHandler
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.setname"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETNAME__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         if (!hasPermission(player)) {
@@ -38,8 +39,8 @@ public class AdminSettlementSetNameCommand extends SettlementAdminCommandHandler
 
         settlement.setSpawn(player.getLocation());
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.setname"),
-                Map.of("settlement", args[0]), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETNAME__SUCCESS.path()),
+                Map.of("settlement", args[0]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -53,8 +54,8 @@ public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
     protected Citizen getCitizen(Player player) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.no-citizen-data"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return null;
         }
         return citizen;
@@ -62,8 +63,8 @@ public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
 
     protected Country getCitizenCountry(Citizen citizen) {
         if (citizen.getCountry() == null) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get("errors.not-in-country"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_IN_COUNTRY.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return null;
         }
         return citizen.getCountry();
@@ -71,8 +72,8 @@ public class CountryCommandHandler extends BaseCommandHandler<UnitedLands> {
 
     protected boolean hasPermission(String permission, Citizen citizen) {
         if (!plugin.getPermissionManager().hasRankPermission(permission, citizen)) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get("errors.no-country-permission"),
-                    Map.of("perm", permission), messageProvider.get("prefix"));
+            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get(Message.GENERAL_ERRORS__NO_COUNTRY_PERMISSION.path()),
+                    Map.of("perm", permission), messageProvider.get(Message.PREFIX.path()));
             return false;
         }
         return true;

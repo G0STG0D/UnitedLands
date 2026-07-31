@@ -288,7 +288,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
         this.tax = tax;
     }
 
-    public boolean isUseTaxPercent() {
+    public boolean useTaxPercent() {
         return useTaxPercent;
     }
 

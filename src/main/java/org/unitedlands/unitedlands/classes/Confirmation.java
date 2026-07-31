@@ -1,11 +1,22 @@
 package org.unitedlands.unitedlands.classes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
+import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.integrations.floodgate.FloodgateAPIIntegration;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
-import org.unitedlands.utils.Messenger;
+import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.registry.data.dialog.ActionButton;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class Confirmation {
 
@@ -13,14 +24,8 @@ public class Confirmation {
     private String title;
     private Map<String, String> replacements;
     private String key;
-    private String acceptCommand;
-    private String cancelCommand;
-    private int timeoutSeconds = 30;
     private Player sender;
     private Player receiver;
-    private String discriminator;
-
-    private BukkitTask expirationTask;
 
     public Confirmation(String key) {
         this.key = key;
@@ -57,33 +62,6 @@ public class Confirmation {
         return key;
     }
 
-    public String getAcceptCommand() {
-        return acceptCommand;
-    }
-
-    public Confirmation setAcceptCommand(String acceptCommand) {
-        this.acceptCommand = acceptCommand;
-        return this;
-    }
-
-    public String getCancelCommand() {
-        return cancelCommand;
-    }
-
-    public Confirmation setCancelCommand(String cancelCommand) {
-        this.cancelCommand = cancelCommand;
-        return this;
-    }
-
-    public int getTimeoutSeconds() {
-        return timeoutSeconds;
-    }
-
-    public Confirmation setTimeoutSeconds(int timeoutSeconds) {
-        this.timeoutSeconds = timeoutSeconds;
-        return this;
-    }
-
     public Player getSender() {
         return sender;
     }
@@ -102,41 +80,45 @@ public class Confirmation {
         return this;
     }
 
-    public String getDiscriminator() {
-        return discriminator;
-    }
-
-    public Confirmation setDiscriminator(String discriminator) {
-        this.discriminator = discriminator;
-        return this;
-    }
-
-    public BukkitTask getExpirationTask() {
-        return expirationTask;
-    }
-
-    public void setExpirationTask(BukkitTask expirationTask) {
-        this.expirationTask = expirationTask;
-    }
-
     public void send() {
         if (sender == null || receiver == null)
             return;
 
-        // TODO: move strings to config
-        if (!sender.equals(receiver))
-            Messenger.sendMessage(sender, "Your request has been sent.");
-
-        Messenger.sendMessage(receiver,
-                "<aqua>" + getTitle() + " [<yellow>" + getAcceptCommand() + "</yellow>]</aqua>", replacements);
+        // Messenger.sendMessage(receiver, "<aqua>" + getTitle() + " [<yellow>" +
+        // getAcceptCommand() + "</yellow>]</aqua>", replacements);
 
         ConfirmationManager.instance().queueConfirmation(this);
+
+        // Show different UIs to Java and Bedrock players if floodgate is present
+        if (!UnitedLands.instance().useFloodgate()) {
+            sendJavaDialog(receiver);
+        } else {
+            var floodgate = new FloodgateAPIIntegration();
+            if (!floodgate.isBedrockPlayer(receiver))
+                sendJavaDialog(receiver);
+            else {
+                floodgate.sendConfirmationPanel(receiver, this);
+            }
+        }
+
     }
 
-    public void notifyExpiration() {
-        if (sender == null)
-            return;
-        Messenger.sendMessage(sender, "Confirmation expired");
+    public void sendJavaDialog(Player receiver) {
+
+        List<DialogBody> dialogBody = new ArrayList<>();
+        var miniMessage = MiniMessage.miniMessage();
+
+        dialogBody.add(DialogBody.plainMessage(miniMessage.deserialize(getTitle())));
+
+        Dialog dialog = Dialog.create(builder -> builder.empty().base(DialogBase.builder(Component.text("Confirmation")).body(dialogBody).build())
+                .type(DialogType.confirmation(ActionButton.builder(Component.text("Approve")).action(DialogAction.customClick((view, audience) -> {
+                    ConfirmationManager.instance().executeConfirmation(this);
+                }, ClickCallback.Options.builder().build())).build(),
+                        ActionButton.builder(Component.text("Cancel")).action(DialogAction.customClick((view, audience) -> {
+                            ConfirmationManager.instance().rejectConfirmation(this);
+                        }, ClickCallback.Options.builder().build())).build())));
+
+        receiver.showDialog(dialog);
     }
 
     @Override

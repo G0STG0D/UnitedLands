@@ -17,9 +17,16 @@ mysql:
 
 general:
 
+  # Start a new day at regular intervals instead of a fixed real-world time.
+  use-new-day-interval: true
+  # The length of one day (in seconds). Only used when use-new-day-interval is true
+  interval-seconds: 3600
+  # When use-new-day-interval is false, this will be the server time at which a new day starts. Must be hh:mm in 24-hour-format (e.g. 17:35)
+  new-day-time: "00:00"
+
   # Scale multiplier for the import SVG
   import-scale: 1
-  # Offsets to be subtracted from the imported vertex positions. These will usually be 
+  # Offsets to be subtracted from the imported vertex positions. These will usually be
   # half of the map width / height
   import-offset-x: 0
   import-offset-y: 0
@@ -79,12 +86,6 @@ economy:
   region-parallel-claims-max: 1
   # Available vars: base (base costs), regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).
   region-claim-cost-modifier: "base + (base * ((regions + 1) * 0.5) * (distance / 1000) * 0.25)"
-
-
-
-
-
-
 
 protection:
   containers:

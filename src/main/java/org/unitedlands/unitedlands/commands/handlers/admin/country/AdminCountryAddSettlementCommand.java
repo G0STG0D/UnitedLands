@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -23,8 +24,8 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.addsettlement"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADD_SETTLEMENT__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -39,8 +40,8 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         }
 
         if (settlement.hasCountry()) {
-            Messenger.sendMessage(player, messageProvider.get("admin.country.addsettlement.settlement-has-country"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADD_SETTLEMENT__SETTLEMENT_HAS_COUNTRY.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -49,9 +50,9 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.country.addsettlement.success"),
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADD_SETTLEMENT__SUCCESS.path()),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

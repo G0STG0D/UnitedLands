@@ -11,6 +11,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
@@ -52,7 +53,8 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 2) {
-            // TODO: Usage
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -61,8 +63,8 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -71,21 +73,21 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
             return;
 
         if (!context.settlement().equals(targetCitizen.getSettlement())) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.not-in-settlement"),
-                    Map.of("name", args[0]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__NOT_IN_SETTLEMENT.path()),
+                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
         
         if (!PermissionManager.instance().getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.unknown-rank"),
-                    Map.of("rank", args[1]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()),
+                    Map.of("rank", args[1]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!targetCitizen.getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.rank-not-owned"),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__RANK_NOT_OWNED.path()),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -94,8 +96,8 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
             if (!hasPermission("settlement.manage.ranks.mayor", context.citizen()))
                 return;
 
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.cannot-remove-mayor"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__CANNOT_REMOVE_MAYOR.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
 
         } else {
@@ -107,15 +109,15 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.ranks.lost"),
-                        Map.of("rank", args[1]), messageProvider.get("prefix"));
+                Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__LOST.path()),
+                        Map.of("rank", args[1]), messageProvider.get(Message.PREFIX.path()));
             }
 
         }
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.removed"),
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__SUCCESS.path()),
                 Map.of("rank", args[1], "name", targetCitizen.getName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
 
     }
 

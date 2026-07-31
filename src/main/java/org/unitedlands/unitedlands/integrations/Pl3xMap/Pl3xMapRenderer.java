@@ -101,7 +101,7 @@ public class Pl3xMapRenderer {
     }
 
     public void registerIcon(String key, String filename) {
-        File importFolder = new File(UnitedLands.getInstance().getDataFolder(), "icons");
+        File importFolder = new File(UnitedLands.instance().getDataFolder(), "icons");
         File imageFile = new File(importFolder, filename);
 
         BufferedImage img;
@@ -192,7 +192,7 @@ public class Pl3xMapRenderer {
     private void startQueueMonitor() {
         if (queueCheckTask == null) {
             Logger.log("Started map rendering task.", "UnitedLands");
-            queueCheckTask = Bukkit.getScheduler().runTaskTimer(UnitedLands.getInstance(), () -> {
+            queueCheckTask = Bukkit.getScheduler().runTaskTimer(UnitedLands.instance(), () -> {
                 checkQueue();
             }, FREQUENCY, FREQUENCY);
         }
@@ -817,7 +817,7 @@ public class Pl3xMapRenderer {
 
         CompletableFuture<SimpleLayer> simpleLayerFuture = new CompletableFuture<>();
 
-        Bukkit.getScheduler().runTask(UnitedLands.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(UnitedLands.instance(), () -> {
 
             net.pl3x.map.core.world.World mapworld = Pl3xMap.api().getWorldRegistry().get(world);
             SimpleLayer layer = (SimpleLayer) mapworld.getLayerRegistry().get(key);

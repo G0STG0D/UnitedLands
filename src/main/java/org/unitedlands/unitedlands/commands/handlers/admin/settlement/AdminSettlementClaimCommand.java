@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -33,8 +34,8 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
         var player = (Player) sender;
 
         if (args.length != 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.claim"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CLAIM__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -51,8 +52,8 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
 
         var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.claim.already-claimed"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CLAIM__ALREADY_CLAIMED.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -68,10 +69,10 @@ public class AdminSettlementClaimCommand extends SettlementAdminCommandHandler {
 
         UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.claim"),
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CLAIM__SUCCESS.path()),
                 Map.of("settlement", settlement.getCleanName(),
                         "chunk", chunkCoords.toString()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
 }

@@ -44,7 +44,7 @@ public class TestImportCommand extends BaseCommandHandler<UnitedLands> {
             file = args[1];
         }
 
-        File importFolder = new File(UnitedLands.getInstance().getDataFolder(), "import");
+        File importFolder = new File(UnitedLands.instance().getDataFolder(), "import");
         File imageFile = new File(importFolder, file + ".svg");
         if (!imageFile.exists()) {
             Logger.logError("Image not found: " + file, "UnitedLands");

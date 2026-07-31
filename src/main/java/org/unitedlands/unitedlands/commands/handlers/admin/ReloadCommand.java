@@ -7,6 +7,7 @@ import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.utils.Messenger;
 
 public class ReloadCommand extends BaseCommandHandler<UnitedLands> {
@@ -26,7 +27,7 @@ public class ReloadCommand extends BaseCommandHandler<UnitedLands> {
         
         Settings.loadSettings(plugin.getConfig());
         
-        Messenger.sendMessage(sender, messageProvider.get("reload"), null, messageProvider.get("prefix"));
+        Messenger.sendMessage(sender, messageProvider.get(Message.RELOAD.path()), null, messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

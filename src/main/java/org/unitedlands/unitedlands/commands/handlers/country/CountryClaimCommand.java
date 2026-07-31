@@ -12,12 +12,14 @@ import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.classes.events.region.RegionClaimStartEvent;
 import org.unitedlands.unitedlands.classes.events.region.RegionDoubleClaimEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.utils.Formatter;
 import org.unitedlands.utils.Messenger;
+
 
 public class CountryClaimCommand extends CountryCommandHandler {
 
@@ -35,21 +37,21 @@ public class CountryClaimCommand extends CountryCommandHandler {
         var region = UnitedLandsDataManager.instance()
                 .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(context.player().getLocation()));
         if (region == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get("country.claim.no-region"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         } else {
             if (region.getCountry() != null) {
-                Messenger.sendMessage(context.player(), messageProvider.get("country.claim.already-claimed"),
-                        null, messageProvider.get("prefix"));
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__ALREADY_CLAIMED.path()),
+                        null, messageProvider.get(Message.PREFIX.path()));
                 return;
             }
         }
 
         var currentClaims = UnitedLandsDataManager.instance().getRegionClaimsOngoing(context.country());
         if (currentClaims.size() >= Settings.regionParallelClaimsMax) {
-            Messenger.sendMessage(context.player(), messageProvider.get("country.claim.too-many-claiming"),
-                    Map.of("max", String.valueOf(Settings.regionParallelClaimsMax)), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__TOO_MANY_CLAIMING.path()),
+                    Map.of("max", String.valueOf(Settings.regionParallelClaimsMax)), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -62,7 +64,7 @@ public class CountryClaimCommand extends CountryCommandHandler {
         // if (preStartClaimEvent.isCancelled())
         // return;
 
-
+        // TODO: Move to config
         var confirmationMessage = "Claiming this region will take " + Formatter.formatDuration(Settings.regionClaimTime * 1000)
                                 + " and cost " + UnitedLandsEconomyManager.instance().format(claimCost) + ". Continue?";
         var doubleClaim = false;
@@ -82,8 +84,8 @@ public class CountryClaimCommand extends CountryCommandHandler {
             doubleClaimEvent.callEvent();
 
             if (doubleClaimEvent.isCancelled()) {
-                Messenger.sendMessage(context.player(), messageProvider.get("country.claim.already-being-claimed"),
-                        Map.of("claimant", region.getClaimantCountry().getCleanName()), messageProvider.get("prefix"));
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__ALREADY_BEING_CLAIMED.path()),
+                        Map.of("claimant", region.getClaimantCountry().getCleanName()), messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 
@@ -118,9 +120,6 @@ public class CountryClaimCommand extends CountryCommandHandler {
                 .setTitle(confirmationMessage)
                 .setSender(context.player())
                 .setReceiver(context.player())
-                .setAcceptCommand("/approve region-claim")
-                .setDiscriminator(region.getName())
-                .setTimeoutSeconds(30)
                 .send();
 
     }

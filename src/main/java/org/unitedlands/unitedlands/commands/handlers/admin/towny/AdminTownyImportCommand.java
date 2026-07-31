@@ -15,6 +15,7 @@ import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
@@ -55,8 +56,8 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
         var player = (Player) sender;
 
         if (args.length > 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.towny.import"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
         }
 
         if (args.length == 1) {
@@ -80,8 +81,8 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                 importTown(player, town);
             }
 
-            Messenger.sendMessage(player, messageProvider.get("admin.towny.import.finished"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__FINISHED.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
         }
 
     }
@@ -207,9 +208,9 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                 }
             }
 
-            Messenger.sendMessage(player, messageProvider.get("admin.towny.import.success-settlement"),
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_SETTLEMENT.path()),
                     Map.of("settlement", settlement.getName(), "plots", plots.size() + ""),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
 
             if (town.hasNation() && town.isCapital() && region != null && !region.hasCountry()) {
                 var nation = town.getNation();
@@ -239,14 +240,14 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                     UnitedLandsDataManager.instance().updateRegionDbData(region);
                     UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-                    Messenger.sendMessage(player, messageProvider.get("admin.towny.import.success-country"),
-                            Map.of("country", country.getName()), messageProvider.get("prefix"));
+                    Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_COUNTRY.path()),
+                            Map.of("country", country.getName()), messageProvider.get(Message.PREFIX.path()));
                 }
             }
 
         } catch (Exception ex) {
-            Messenger.sendMessage(player, messageProvider.get("admin.towny.import.error"),
-                    Map.of("message", ex.getMessage()), messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__ERROR.path()),
+                    Map.of("message", ex.getMessage()), messageProvider.get(Message.PREFIX.path()));
         }
     }
 

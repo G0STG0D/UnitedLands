@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -26,8 +27,8 @@ public class AdminSettlementDeleteCommand extends SettlementAdminCommandHandler 
         var player = (Player) sender;
 
         if (args.length != 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.delete"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__DELETE__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         if (!hasPermission(player)) {
@@ -49,8 +50,8 @@ public class AdminSettlementDeleteCommand extends SettlementAdminCommandHandler 
             var country = settlement.getCountry();
 
             if (country.getCapital().equals(settlement)) {
-                Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("admin.settlement.delete.is-capital"),
-                        null, messageProvider.get("prefix"));
+                Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.ADMIN__SETTLEMENT__DELETE__IS_CAPITAL.path()),
+                        null, messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 
@@ -70,9 +71,9 @@ public class AdminSettlementDeleteCommand extends SettlementAdminCommandHandler 
 
         Pl3xMapRenderer.instance().removeSettlement(settlement);
 
-        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("admin.settlement.delete.success"),
+        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.ADMIN__SETTLEMENT__DELETE__SUCCESS.path()),
                 Map.of("settlement", settlement.getCleanName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

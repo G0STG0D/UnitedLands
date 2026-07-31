@@ -9,6 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -32,6 +33,7 @@ public class CountryDeleteCommand extends CountryCommandHandler {
         if (context == null)
             return;
 
+        // TODO: move string to config
         Confirmation leave = new Confirmation("country-delete");
         leave.setRunnable(() -> {
 
@@ -56,19 +58,15 @@ public class CountryDeleteCommand extends CountryCommandHandler {
 
             Pl3xMapRenderer.instance().removeCountry(context.country());
 
-            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.delete.deleted-broadcast"),
+            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__DELETE__BROADCAST_MESSAGE.path()),
                     Map.of("country", context.country().getCleanName()),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
 
         })
                 .setTitle("<red>Are you sure you want to delete <green>" + context.country().getCleanName()
                         + "</green>? <bold>This cannot be undone!</bold></red>")
                 .setSender(context.player())
                 .setReceiver(context.player())
-                .setDiscriminator(context.country().getName())
-                .setAcceptCommand("/approve country-delete")
-                .setCancelCommand("/cancel country-delete")
-                .setTimeoutSeconds(60)
                 .send();
     }
 

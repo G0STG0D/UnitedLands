@@ -10,6 +10,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -28,8 +29,8 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.create"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CREATE__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -45,14 +46,14 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         var region = settlement.getRegion();
 
         if (region == null) {
-            Messenger.sendMessage(player, messageProvider.get("country.create.no-region"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CREATE__NO_REGION.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (region.getCountry() != null) {
-            Messenger.sendMessage(player, messageProvider.get("country.create.region-occupied"),
-                    Map.of("country", region.getCountry().getCleanName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CREATE__REGION_OCCUPIED.path()),
+                    Map.of("country", region.getCountry().getCleanName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -76,8 +77,8 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         UnitedLandsDataManager.instance().updateRegionDbData(region);
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.country.create"),
-                Map.of("country", country.getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CREATE__SUCCESS.path()),
+                Map.of("country", country.getCleanName()), messageProvider.get(Message.PREFIX.path()));
 
     }
 

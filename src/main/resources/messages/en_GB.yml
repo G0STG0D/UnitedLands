@@ -23,6 +23,15 @@ errors:
   wrong-number-format: "<red>{input} is not a number.</red>"
   no-funds: "<yellow>You don't have enough money to do this, you need at least {amount}.</yellow>"
 
+newday:
+  start: "<aqua><bold>A new day is starting.</bold> Collecting taxes from settlements and countries...</aqua>"
+  citizen-taxes-notice: "<aqua>You paid {amount} of taxes to your settlement.</aqua>"
+  citizen-bankrupt: "<yellow>{citizen} was not able to pay their taxes.</yellow>"
+  settlement-taxes-notice: "<aqua>Your town has collected {amount} of taxes from its residents.</aqua>"
+  settlement-upkeep-notice: "<aqua>Your town has paid {amount} of upkeep.</aqua>"
+  country-taxes-notice: "<aqua>Your country has collected {amount} of taxes from its settlements.</aqua>"
+  country-upkeep-notice: "<aqua>Your country has paid {amount} of upkeep.</aqua>"
+
 admin:
   usage:
     settlement:

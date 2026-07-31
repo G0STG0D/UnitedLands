@@ -11,6 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
@@ -33,8 +34,8 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
         var player = (Player) sender;
 
         if (args.length != 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.create"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CREATE__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         
@@ -45,8 +46,8 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
         var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
         var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.create.claimed"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CREATE__ALREADY_CLAIMED.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -82,8 +83,8 @@ public class AdminSettlementCreateCommand extends SettlementAdminCommandHandler 
 
         UnitedLandsEconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.create"),
-                Map.of("settlement", settlement.getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CREATE__SUCCESS.path()),
+                Map.of("settlement", settlement.getCleanName()), messageProvider.get(Message.PREFIX.path()));
 
     }
 

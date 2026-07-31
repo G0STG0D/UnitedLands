@@ -1,11 +1,15 @@
 package org.unitedlands.unitedlands;
 
 import java.util.Objects;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.classes.ConfigFile;
 import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.classes.message.Message;
+import org.unitedlands.unitedlands.classes.message.MessageRegistry;
 import org.unitedlands.unitedlands.commands.AdminCommands;
-import org.unitedlands.unitedlands.commands.ApprovalCommand;
 import org.unitedlands.unitedlands.commands.CitizenCommands;
 import org.unitedlands.unitedlands.commands.CountryCommands;
 import org.unitedlands.unitedlands.commands.RegionCommands;
@@ -24,6 +28,7 @@ import org.unitedlands.unitedlands.listeners.ServerEventListener;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.schedulers.NewDayScheduler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
@@ -42,6 +47,7 @@ public class UnitedLands extends JavaPlugin {
     private ConfigFile permissionConfig;
 
     private MessageProvider messageProvider;
+    private MessageRegistry messageRegistry;
 
     UnitedLandsDataManager globalDataManager;
     UnitedLandsEconomyManager economyManager;
@@ -55,6 +61,10 @@ public class UnitedLands extends JavaPlugin {
 
     private UnitedLandsWebServices webServices;
 
+    private NewDayScheduler newDayScheduler;
+
+    private boolean useFloodgate;
+
     @Override
     public void onEnable() {
 
@@ -64,7 +74,10 @@ public class UnitedLands extends JavaPlugin {
 
         saveDefaultConfig();
 
-        messageConfig = new ConfigFile(this, "messages/en_GB.yml");
+        messageRegistry = new MessageRegistry(this, "messages/en.yml");
+        messageRegistry.sync(Message.class);
+
+        messageConfig = new ConfigFile(this, messageRegistry.getFilePath());
         permissionConfig = new ConfigFile(this, "permissions.yml");
 
         messageProvider = new MessageProvider(messageConfig.get());
@@ -96,6 +109,8 @@ public class UnitedLands extends JavaPlugin {
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
         economyManager = new UnitedLandsEconomyManager(this);
+
+        newDayScheduler = new NewDayScheduler();
     }
 
     private void loadIntegrations() {
@@ -103,6 +118,11 @@ public class UnitedLands extends JavaPlugin {
         if (towny != null && towny.isEnabled()) {
             townyProvider = new TownyProvider(this);
             Logger.log("Found Towny, enabling integration...", "UnitedLands");
+        }
+        Plugin floodgate = Bukkit.getPluginManager().getPlugin("floodgate");
+        if (floodgate != null && floodgate.isEnabled()) {
+            Logger.log("Enabling floodgate integrations.", "UnitedLands");
+            useFloodgate = true;
         }
     }
 
@@ -128,9 +148,9 @@ public class UnitedLands extends JavaPlugin {
         Objects.requireNonNull(getCommand("uladmin")).setExecutor(adminCommands);
         Objects.requireNonNull(getCommand("uladmin")).setTabCompleter(adminCommands);
 
-        var approvalCommand = new ApprovalCommand(this, messageProvider);
-        Objects.requireNonNull(getCommand("approve")).setExecutor(approvalCommand);
-        Objects.requireNonNull(getCommand("approve")).setTabCompleter(approvalCommand);
+        // var approvalCommand = new ApprovalCommand(this, messageProvider);
+        // Objects.requireNonNull(getCommand("approve")).setExecutor(approvalCommand);
+        // Objects.requireNonNull(getCommand("approve")).setTabCompleter(approvalCommand);
 
         var citizenCommand = new CitizenCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("citizen")).setExecutor(citizenCommand);
@@ -151,7 +171,7 @@ public class UnitedLands extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegionListener(messageProvider), this);
     }
 
-    public static UnitedLands getInstance() {
+    public static UnitedLands instance() {
         return instance;
     }
 
@@ -181,6 +201,14 @@ public class UnitedLands extends JavaPlugin {
 
     public UnitedLandsWebServices getWebServices() {
         return webServices;
+    }
+
+    public boolean useFloodgate() {
+        return useFloodgate;
+    }
+
+    public NewDayScheduler getNewDayScheduler() {
+        return newDayScheduler;
     }
 
 }

@@ -12,6 +12,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
@@ -46,14 +47,14 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
         } else {
             var settlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
             if (settlement == null) {
-                Messenger.sendMessage(player, messageProvider.get("errors.settlement-not-found"),
-                        Map.of("settlement", args[0]), messageProvider.get("prefix"));
+                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__SETTLEMENT_NOT_FOUND.path()),
+                        Map.of("settlement", args[0]), messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 
             if (!settlement.isPublic() && !PermissionManager.instance().hasGlobalOverrides(player)) {
-                Messenger.sendMessage(sender, messageProvider.get("teleport.not-public"), null,
-                        messageProvider.get("prefix"));
+                Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__SPAWN__NOT_PUBLIC.path()), null,
+                        messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 
@@ -61,11 +62,10 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
         }
 
         if (targetSettlement.getSpawn() == null) {
-            Messenger.sendMessage(sender, messageProvider.get("teleport.no-spawn"), null,
-                    messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__SPAWN__NO_SPAWN.path()), null,
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
-
 
         final Settlement finalSettlement = targetSettlement;
 
@@ -73,8 +73,9 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
             player.teleport(finalSettlement.getSpawn());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         } else {
-            
-            Messenger.sendMessage(sender, messageProvider.get("teleport.start"), null, messageProvider.get("prefix"));
+
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__SPAWN__TP_START.path()), null,
+                    messageProvider.get(Message.PREFIX.path()));
 
             new BukkitRunnable() {
                 int counter = 0;
@@ -88,12 +89,12 @@ public class SettlementSpawnCommand extends SettlementCommandHandler {
 
                     if (counter <= maxExecutions) {
                         Messenger.sendMessage(sender, (maxExecutions - counter + 1) + "...", null,
-                                messageProvider.get("prefix"));
+                                messageProvider.get(Message.PREFIX.path()));
                     }
 
                     if (!player.getLocation().getBlock().getLocation().equals(startBlock)) {
-                        Messenger.sendMessage(sender, messageProvider.get("teleport.cancel"), null,
-                                messageProvider.get("prefix"));
+                        Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__SPAWN__TP_CANCEL.path()), null,
+                                messageProvider.get(Message.PREFIX.path()));
                         this.cancel();
                     }
 

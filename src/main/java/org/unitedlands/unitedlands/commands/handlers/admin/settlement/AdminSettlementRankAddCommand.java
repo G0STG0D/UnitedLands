@@ -9,6 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
@@ -40,7 +41,8 @@ public class AdminSettlementRankAddCommand extends SettlementAdminCommandHandler
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 3) {
-            Messenger.sendMessage(sender, messageProvider.get("admin.usage.settlement.addrank"), null, messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDRANK__USAGE.path()), 
+            null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -55,21 +57,21 @@ public class AdminSettlementRankAddCommand extends SettlementAdminCommandHandler
         }
 
         if (!citizen.hasSettlement() || !settlement.equals(citizen.getSettlement())) {
-            Messenger.sendMessage(sender, messageProvider.get("admin.settlement.addrank.citizen-not-in-settlement"), Map.of("citizen", citizen.getName()),
-                    messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__CITIZEN_NOT_IN_SETTLEMENT.path()), Map.of("citizen", citizen.getName()),
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!PermissionManager.instance().getSettlementRanks().contains(args[2])) {
-            Messenger.sendMessage(sender, messageProvider.get("admin.settlement.addrank.unknown-rank"), Map.of("rank", args[2]), messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()), Map.of("rank", args[2]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         citizen.addSettlementRank(args[2]);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(sender, messageProvider.get("admin.settlement.addrank.success"),
-                Map.of("rank", args[2], "citizen", citizen.getName(), "settlement", settlement.getName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDRANK__SUCCESS.path()),
+                Map.of("rank", args[2], "citizen", citizen.getName(), "settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
 
     }
 

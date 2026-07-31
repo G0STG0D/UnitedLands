@@ -10,6 +10,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPrePurchaseEvent;
 import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPurchaseEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
@@ -33,8 +34,8 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
             return;
         
         if (!context.settlementChunk().isForSale()) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlementchunk.buy.not-for-sale"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__BUY__NOT_FOR_SALE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -42,9 +43,9 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
 
         if (!UnitedLandsEconomyManager.instance().has(context.citizen().getUuid(),
                 new BigDecimal(context.settlementChunk().getSalePrice()))) {
-            Messenger.sendMessage(context.player(), messageProvider.get("errors.no-funds"),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice())),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -57,9 +58,9 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
         UnitedLandsEconomyManager.instance().deposit(context.settlementChunk().getSettlement().getUuid(),
                 context.settlementChunk().getSalePrice());
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlementchunk.buy.success"),
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__BUY__SUCCESS.path()),
                 Map.of("price", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice())),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
 
         context.settlementChunk().setSalePrice(null);
         context.settlementChunk().setOwner(context.citizen());

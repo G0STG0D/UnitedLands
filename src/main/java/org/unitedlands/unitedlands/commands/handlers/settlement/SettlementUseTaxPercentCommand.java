@@ -8,6 +8,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
@@ -21,9 +22,11 @@ public class SettlementUseTaxPercentCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        if (args.length != 1)
-            // TODO: Usage
+        if (args.length != 1) {
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__USETAXPERCENT__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
+        }
 
         var context = validate(sender, "settlement.usetaxpercent");
         if (context == null)
@@ -34,38 +37,40 @@ public class SettlementUseTaxPercentCommand extends SettlementCommandHandler {
         context.settlement().setUseTaxPercent(value);
 
         var currTax = context.settlement().getTax();
-        if (context.settlement().isUseTaxPercent()) {
+        if (context.settlement().useTaxPercent()) {
             if (currTax < Settings.settlementMinTaxPercent) {
-                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.below-min"),
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__SETTAX__BELOW_MIN.path()),
                         Map.of("min", String.format("%.2f%%", Settings.settlementMinTaxPercent * 100)),
-                        messageProvider.get("prefix"));
+                        messageProvider.get(Message.PREFIX.path()));
                 context.settlement().setTax(Settings.settlementMinTaxPercent);
             } else if (currTax > Settings.settlementMaxTaxPercent) {
-                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.above-max"),
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__SETTAX__ABOVE_MAX.path()),
                         Map.of("max", String.format("%.2f%%", Settings.settlementMaxTaxPercent * 100)),
-                        messageProvider.get("prefix"));
+                        messageProvider.get(Message.PREFIX.path()));
                 context.settlement().setTax(Settings.settlementMaxTaxPercent);
 
             }
         } else {
             if (currTax < Settings.settlementMinTaxAmount) {
-                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.below-min"),
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__SETTAX__BELOW_MIN.path()),
                         Map.of("min", UnitedLandsEconomyManager.instance().format(Settings.settlementMinTaxAmount)),
-                        messageProvider.get("prefix"));
+                        messageProvider.get(Message.PREFIX.path()));
                 context.settlement().setTax((float) Settings.settlementMinTaxAmount);
 
             } else if (currTax > Settings.settlementMaxTaxAmount) {
-                Messenger.sendMessage(context.player(), messageProvider.get("settlement.settaxes.above-max"),
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__SETTAX__ABOVE_MAX.path()),
                         Map.of("max", UnitedLandsEconomyManager.instance().format(Settings.settlementMaxTaxAmount)),
-                        messageProvider.get("prefix"));
+                        messageProvider.get(Message.PREFIX.path()));
                 context.settlement().setTax((float) Settings.settlementMaxTaxAmount);
             }
         }
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlement.usetaxpercent-" + value),
-                Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__USETAXPERCENT__SUCCESS.path()),
+                Map.of("settlement", context.settlement().getCleanName(),
+                        "state", value == true ? "<green>on</green>" : "<red>off</red>"),
+                messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

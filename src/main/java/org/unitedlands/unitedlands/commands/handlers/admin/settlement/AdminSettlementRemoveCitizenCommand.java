@@ -11,6 +11,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -26,8 +27,8 @@ public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandH
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.removecitizen"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__REMOVECITIZEN__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         if (!hasPermission(player)) {
@@ -45,8 +46,8 @@ public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandH
         }
 
         if (citizen.getSettlement() == null || !citizen.getSettlement().equals(settlement)) {
-            Messenger.sendMessage(player, messageProvider.get("admin.settlement.removecitizen.not-in-settlement"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__CITIZEN_NOT_IN_SETTLEMENT.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -61,8 +62,8 @@ public class AdminSettlementRemoveCitizenCommand extends SettlementAdminCommandH
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.removecitizen.success"),
-                Map.of("settlement", args[0], "name", args[1]), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__REMOVECITIZEN__SUCCESS.path()),
+                Map.of("settlement", args[0], "name", args[1]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -24,8 +25,8 @@ public class AdminSettlementSetSpawnCommand extends SettlementAdminCommandHandle
         var player = (Player) sender;
 
         if (args.length != 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.setspawn"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETSPAWN__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         if (!hasPermission(player)) {
@@ -39,15 +40,15 @@ public class AdminSettlementSetSpawnCommand extends SettlementAdminCommandHandle
 
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
         if (!settlement.hasChunkAtCoordinates(chunkCoordinates)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.setspawn.not-in-claims"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETSPAWN__NOT_IN_CLAIMS.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         settlement.setSpawn(player.getLocation());
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.setspawn"),
-                Map.of("settlement", args[0]), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETSPAWN__SUCCESS.path()),
+                Map.of("settlement", args[0]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

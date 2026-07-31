@@ -13,6 +13,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
@@ -50,7 +51,8 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 2) {
-            // TODO: Usage
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__ADDRANK__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -61,8 +63,8 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
         
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -71,24 +73,25 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
             return;
 
         if (!context.settlement().equals(targetCitizen.getSettlement())) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.not-in-settlement"),
-                    Map.of("name", args[0]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__NOT_IN_SETTLEMENT.path()),
+                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!PermissionManager.instance().getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.unknown-rank"),
-                    Map.of("rank", args[1]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()),
+                    Map.of("rank", args[1]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (targetCitizen.getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.rank-already-owned"),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_ALREADY_OWNED.path()),
                     Map.of("rank", args[1], "name", targetCitizen.getName()),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
+        // TODO: Move strings to config
         if (args[1].equals("mayor")) {
 
             if (!hasPermission("settlement.manage.ranks.mayor", context.citizen()))
@@ -106,12 +109,12 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
 
                 if (currentMayor.getPlayer().isOnline()) {
                     Messenger.sendMessage(currentMayor.getPlayer().getPlayer(),
-                            messageProvider.get("settlement.ranks.lost"),
-                            Map.of("rank", "mayor"), messageProvider.get("prefix"));
+                            messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__LOST.path()),
+                            Map.of("rank", "mayor"), messageProvider.get(Message.PREFIX.path()));
                 }
                 if (targetPlayer.isOnline()) {
-                    Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.ranks.received"),
-                            Map.of("rank", "mayor"), messageProvider.get("prefix"));
+                    Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_RECEIVED.path()),
+                            Map.of("rank", "mayor"), messageProvider.get(Message.PREFIX.path()));
                 }
 
             })
@@ -119,10 +122,6 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
                             + " permanently?</yellow>")
                     .setSender(context.player())
                     .setReceiver(context.player())
-                    .setTimeoutSeconds(30)
-                    .setAcceptCommand("/approve new-mayor")
-                    .setCancelCommand("/reject new-mayor")
-                    .setDiscriminator(context.settlement().getName())
                     .send();
 
             ConfirmationManager.instance().queueConfirmation(confirmation);
@@ -136,15 +135,15 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.ranks.received"),
-                        Map.of("rank", args[1]), messageProvider.get("prefix"));
+                Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_RECEIVED.path()),
+                        Map.of("rank", args[1]), messageProvider.get(Message.PREFIX.path()));
             }
 
         }
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlement.ranks.added"),
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__ADDRANK__SUCCESS.path()),
                 Map.of("rank", args[1], "name", targetCitizen.getName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
 
     }
 

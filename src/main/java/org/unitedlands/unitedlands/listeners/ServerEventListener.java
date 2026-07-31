@@ -5,6 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.schedulers.NewDayScheduler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Logger;
 
@@ -19,6 +20,7 @@ public class ServerEventListener implements Listener {
 
         Pl3xMapRenderer.instance().initialize();
         UnitedLandsDataManager.instance().loadDataFromDatabase();
+        NewDayScheduler.instance().scheduleNewDay();
 
         UnitedLandsEconomyManager.instance().loadEconomy();
         if (!UnitedLandsEconomyManager.instance().hasEconomy()) {

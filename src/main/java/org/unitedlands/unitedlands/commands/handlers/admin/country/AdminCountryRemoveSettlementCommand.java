@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -26,7 +27,7 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
 
         if (args.length != 2) {
             Messenger.sendMessage(player, messageProvider.get("admin.usage.country.removesettlement"),
-                    null, messageProvider.get("prefix"));
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -43,7 +44,7 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
         if (!settlement.hasCountry() || !country.equals(settlement.getCountry())) {
             Messenger.sendMessage(player,
                     messageProvider.get("admin.country.removesettlement.settlement-not-in-country"),
-                    null, messageProvider.get("prefix"));
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -55,7 +56,7 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
 
         Messenger.sendMessage(player, messageProvider.get("admin.country.removesettlement.success"),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

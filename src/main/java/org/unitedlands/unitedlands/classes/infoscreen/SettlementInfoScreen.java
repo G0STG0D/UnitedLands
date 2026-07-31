@@ -95,7 +95,7 @@ public class SettlementInfoScreen extends InfoScreen {
                                                 .format(UnitedLandsEconomyManager.instance().getBalance(settlement.getUuid()))));
                 addComponent("balance", balance);
 
-                var taxString = settlement.isUseTaxPercent() ? String.format("%.2f%%", settlement.getTax() * 100) : UnitedLandsEconomyManager.instance().format((double)settlement.getTax());
+                var taxString = settlement.useTaxPercent() ? String.format("%.2f%%", settlement.getTax() * 100) : UnitedLandsEconomyManager.instance().format((double)settlement.getTax());
                 var taxes = Messenger.getMessage(messageProvider.get("info-screens.settlement.taxes"),
                                 Map.of("taxes", taxString));
                 addComponent("taxes", taxes);

@@ -80,7 +80,7 @@ public abstract class InfoScreen {
     }
 
     public Component buildHeader(String name) {
-        return buildHeader(name, UnitedLands.getInstance().getMessageConfig().get());
+        return buildHeader(name, UnitedLands.instance().getMessageConfig().get());
     }
 
     public Component buildHeader(String name, YamlConfiguration messageConfig) {

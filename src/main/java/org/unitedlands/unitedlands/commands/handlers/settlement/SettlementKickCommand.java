@@ -12,6 +12,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -39,20 +40,26 @@ public class SettlementKickCommand extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
+        if (args.length != 1) {
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
+            return;
+        }
+
         var context = validate(sender, "settlement.kick");
         if (context == null)
             return;
-        
+
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get("errors.player-not-found"),
-                    Map.of("name", args[0]), messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
+                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (context.player().equals(targetPlayer)) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.cannot-kick-yourself"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__CANNOT_KICK_YOURSELF.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -61,14 +68,14 @@ public class SettlementKickCommand extends SettlementCommandHandler {
             return;
 
         if (!context.settlement().getCitizens().contains(targetCitizen)) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.not-in-settlement"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__NOT_IN_SETTLEMENT.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (targetCitizen.hasCountryRank("leader")) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.is-leader"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__IS_LEADER.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -81,12 +88,12 @@ public class SettlementKickCommand extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
         if (targetPlayer.isOnline()) {
-            Messenger.sendMessage(targetPlayer, messageProvider.get("settlement.kick.kicked"),
-                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(targetPlayer, messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__KICKED.path()),
+                    Map.of("settlement", context.settlement().getCleanName()), messageProvider.get(Message.PREFIX.path()));
         }
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlement.kick.success"),
-                Map.of("name", targetPlayer.getName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__SUCCESS.path()),
+                Map.of("name", targetPlayer.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
 }

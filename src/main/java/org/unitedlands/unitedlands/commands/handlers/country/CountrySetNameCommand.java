@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -19,8 +20,11 @@ public class CountrySetNameCommand extends CountryCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        if (args.length != 1)
+        if (args.length != 1) {
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__COUNTRY__SETNAME__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
+        }
 
         var context = validate(sender, "country.setname");
         if (context == null)
@@ -30,8 +34,8 @@ public class CountrySetNameCommand extends CountryCommandHandler {
 
         UnitedLandsDataManager.instance().updateCountryDbData(context.country());
 
-        Messenger.sendMessage(context.player(), messageProvider.get("country.setname.set"),
-                Map.of("country", context.country().getCleanName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__SETNAME__SUCCESS.path()),
+                Map.of("country", context.country().getCleanName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

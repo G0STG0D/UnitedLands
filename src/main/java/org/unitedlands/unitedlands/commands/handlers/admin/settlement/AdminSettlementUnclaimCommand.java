@@ -9,6 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementUnclaimEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -30,8 +31,8 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
         var player = (Player) sender;
 
         if (args.length != 0) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.unclaim"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__UNCLAIM__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -43,8 +44,8 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
 
         var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk == null) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.not-claimed"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__UNCLAIM__NOT_CLAIMED.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -52,14 +53,14 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
 
         var spawnChunkCoords = CoordinateUtils.locationToChunkCoordinates(settlement.getSpawn());
         if (spawnChunkCoords.equals(chunkCoords)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.has-spawn"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__UNCLAIM__HAS_SPAWN.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (settlement.getHomeChunkCoordinates().equals(chunkCoords)) {
-            Messenger.sendMessage(player, messageProvider.get("settlement.unclaim.is-home-chunk"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__UNCLAIM__IS_HOME_CHUNK.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -70,10 +71,10 @@ public class AdminSettlementUnclaimCommand extends SettlementAdminCommandHandler
         UnitedLandsDataManager.instance().removeSettlementChunkDbData(existingChunk);
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.unclaim"),
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__UNCLAIM__SUCCESS.path()),
                 Map.of("settlement", settlement.getCleanName(),
                         "chunk", chunkCoords.toString()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
 }

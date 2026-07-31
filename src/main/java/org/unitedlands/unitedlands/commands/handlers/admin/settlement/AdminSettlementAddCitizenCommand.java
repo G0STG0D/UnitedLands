@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -25,8 +26,8 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.settlement.addcitizen"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
         if (!hasPermission(player)) {
@@ -44,8 +45,8 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
         }
 
         if (citizen.getSettlement() != null) {
-            Messenger.sendMessage(player, messageProvider.get("admin.settlement.addcitizen.already-in-settlement"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__ALREADY_IN_SETTLEMENT.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -55,8 +56,8 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.settlement.addcitizen.success"),
-                Map.of("settlement", args[0], "name", args[1]), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__SUCCESS.path()),
+                Map.of("settlement", args[0], "name", args[1]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -33,8 +34,8 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
             return;
         
         if (context.settlement().hasCountry() && context.settlement().getCountry().getCapital().equals(context.settlement())) {
-            Messenger.sendMessage(context.player(), messageProvider.get("settlement.delete.is-capital"), null,
-                    messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__DELETE__IS_CAPITAL.path()), null,
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -64,18 +65,14 @@ public class SettlementDeleteCommand extends SettlementCommandHandler {
 
             Pl3xMapRenderer.instance().removeSettlement(context.settlement());
 
-            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("settlement.delete.deleted-broadcast"),
+            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__SETTLEMENT__DELETE__BROADCAST_MESSAGE.path()),
                     Map.of("settlement", context.settlement().getCleanName()),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
         })
-                .setTitle(messageProvider.get("settlement.delete.confirm"))
+                .setTitle(messageProvider.get(Message.PLAYER__SETTLEMENT__DELETE__CONFIRM.path()))
                 .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
                 .setSender(context.player())
                 .setReceiver(context.player())
-                .setDiscriminator(context.settlement().getName())
-                .setAcceptCommand("/approve settlement-delete")
-                .setCancelCommand("/cancel settlement-delete")
-                .setTimeoutSeconds(60)
                 .send();
     }
 

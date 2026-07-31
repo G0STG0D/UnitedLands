@@ -7,6 +7,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -26,25 +27,27 @@ public class CountryUnclaimCommand extends CountryCommandHandler {
 
         var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(context.player().getLocation()));
         if (region == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.no-region"), null, messageProvider.get("prefix"));
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__NO_REGION.path()), null, messageProvider.get(Message.PREFIX.path()));
             return;
         } else {
 
             if (context.country().getRegionCount() == 1) {
-                Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.last-region"), null, messageProvider.get("prefix"));
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__LAST_REGION.path()), null, messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 
             // Not claied and not being claimed
             if (region.getCountry() == null && region.getClaimantCountry() == null) {
-                Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.region-not-claimed"), null, messageProvider.get("prefix"));
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__REGION_NOT_CLAIMED.path()), null,
+                        messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 
             if (region.getCountry() != null) {
                 if (!context.country().equals(region.getCountry())) {
                     // Claimed, but by someone else
-                    Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.region-not-in-country"), null, messageProvider.get("prefix"));
+                    Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__REGION_NOT_OWNED.path()), null,
+                            messageProvider.get(Message.PREFIX.path()));
                     return;
                 } else {
                     // Claimed by country
@@ -54,10 +57,10 @@ public class CountryUnclaimCommand extends CountryCommandHandler {
                     var confirmTitle = messageProvider.get("country.unclaim.confirm-title");
                     var countrySettlements = region.getSettlements(context.country());
                     if (countrySettlements.size() > 0) {
-                        confirmTitle += " " + messageProvider.get("country.unclaim.confirm-warn-settlements");
+                        confirmTitle += " " + messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__CONFIRM_WARN_SETTLEMENTS.path());
                         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
                         if (citizen != null && countrySettlements.stream().anyMatch(s -> s.getCitizens().contains(citizen))) {
-                            confirmTitle += " " + messageProvider.get("country.unclaim.confirm-warn-leader");
+                            confirmTitle += " " + messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__CONFIRM_WARN_LEADER.path());
                         }
                     }
 
@@ -79,16 +82,21 @@ public class CountryUnclaimCommand extends CountryCommandHandler {
                         UnitedLandsDataManager.instance().updateRegionDbData(region);
                         UnitedLandsDataManager.instance().updateCountryDbData(context.country());
 
-                        Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.success"), null, messageProvider.get("prefix"));
-                    }).setTitle(confirmTitle).setAcceptCommand("/approve region-unclaim").setTimeoutSeconds(20).setSender(player).setReceiver(player).send();
+                        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__SUCCESS.path()), null,
+                                messageProvider.get(Message.PREFIX.path()));
+                    })
+                            .setTitle(confirmTitle)
+                            .setSender(player)
+                            .setReceiver(player)
+                            .send();
 
                 }
             } else {
                 if (region.getClaimantCountry() != null) {
                     if (!context.country().equals(region.getClaimantCountry())) {
                         // Being claimed, but by someone else
-                        Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.other-country-claiming"), null,
-                                messageProvider.get("prefix"));
+                        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__OTHER_COUNTRY_CLAIMING.path()), null,
+                                messageProvider.get(Message.PREFIX.path()));
                         return;
                     } else {
                         // Being claimed by country
@@ -96,7 +104,8 @@ public class CountryUnclaimCommand extends CountryCommandHandler {
                         region.setClaimStartTime(null);
                         region.setClaimEndTime(null);
                         UnitedLandsDataManager.instance().updateRegionDbData(region);
-                        Messenger.sendMessage(context.player(), messageProvider.get("country.unclaim.success"), null, messageProvider.get("prefix"));
+                        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__SUCCESS.path()), null,
+                                messageProvider.get(Message.PREFIX.path()));
                     }
                 }
             }

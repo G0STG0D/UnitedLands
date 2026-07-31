@@ -9,6 +9,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
@@ -40,7 +41,7 @@ public class AdminCountryRemoveRankCommand extends CountryAdminCommandHandler {
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 3) {
-            Messenger.sendMessage(sender, messageProvider.get("admin.usage.country.removerank"), null, messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__COUNTRY__REMOVERANK__USAGE.path()), null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -55,21 +56,21 @@ public class AdminCountryRemoveRankCommand extends CountryAdminCommandHandler {
         }
 
         if (!citizen.hasCountry() || !country.equals(citizen.getCountry())) {
-            Messenger.sendMessage(sender, messageProvider.get("admin.country.removerank.citizen-not-in-country"), Map.of("citizen", citizen.getName()),
-                    messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__COUNTRY__CITZEN_NOT_IN_COUNTRY.path()), Map.of("citizen", citizen.getName()),
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[2])) {
-            Messenger.sendMessage(sender, messageProvider.get("admin.country.removerank.unknown-rank"), Map.of("rank", args[2]), messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__COUNTRY__UNKNOWN_RANK.path()), Map.of("rank", args[2]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         citizen.removeCountryRank(args[2]);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(sender, messageProvider.get("admin.country.removerank.success"),
-                Map.of("rank", args[2], "citizen", citizen.getName(), "country", country.getName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__COUNTRY__REMOVERANK__SUCCESS.path()),
+                Map.of("rank", args[2], "citizen", citizen.getName(), "country", country.getName()), messageProvider.get(Message.PREFIX.path()));
 
     }
 

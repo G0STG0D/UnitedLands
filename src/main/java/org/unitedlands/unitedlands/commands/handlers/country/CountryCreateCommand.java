@@ -13,6 +13,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
@@ -32,8 +33,8 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
         var player = (Player) sender;
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getSettlement() == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.not-in-settlement"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NOT_IN_SETTLEMENT.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -41,21 +42,21 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
         var region = settlement.getRegion();
 
         if (region == null) {
-            Messenger.sendMessage(player, messageProvider.get("country.create.no-region"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CREATE__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (region.getCountry() != null) {
-            Messenger.sendMessage(player, messageProvider.get("country.create.region-occupied"),
-                    Map.of("country", region.getCountry().getCleanName()), messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__REGION_OCCUPIED.path()),
+                    Map.of("country", region.getCountry().getCleanName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!UnitedLandsEconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.countryCreateCosts))) {
-            Messenger.sendMessage(player, messageProvider.get("errors.no-funds"),
+            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(Settings.countryCreateCosts)),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -89,21 +90,18 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
             UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
 
-            Messenger.sendMessage(player, messageProvider.get("country.create.player"),
-                    Map.of("country", country.getCleanName()), messageProvider.get("prefix"));
-            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("country.create.broadcast"),
+            // TODO: Move string to config
+            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__PLAYER_MESSAGE.path()),
+                    Map.of("country", country.getCleanName()), messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__BROADCAST_MESSAGE.path()),
                     Map.of("player", player.getName(),
                             "country", country.getCleanName(),
                             "region", region.getCleanName()),
-                    messageProvider.get("prefix"));
+                    messageProvider.get(Message.PREFIX.path()));
         })
-                .setAcceptCommand("/approve country")
-                .setCancelCommand("/cancel country")
+                .setTitle("Create country with name " + args[0] + "?")
                 .setSender(player)
                 .setReceiver(player)
-                .setDiscriminator(args[0])
-                .setTimeoutSeconds(30)
-                .setTitle("Create country with name " + args[0] + "?")
                 .send();
     }
 

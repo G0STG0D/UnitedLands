@@ -8,6 +8,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -39,8 +40,8 @@ public class SettlementChunkPermissionCommand extends SettlementChunkCommandHand
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 3) {
-            Messenger.sendMessage(sender, messageProvider.get("settlementchunk.permission.usage"), null,
-                    messageProvider.get("prefix"));
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__PERMISSION__USAGE.path()), null,
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -63,8 +64,8 @@ public class SettlementChunkPermissionCommand extends SettlementChunkCommandHand
                 membership = LocationMembership.FOREIGNER;
                 break;
             default:
-                Messenger.sendMessage(context.player(), messageProvider.get("settlement.permission.unknown-membership"),
-                        Map.of("membership", args[1]), messageProvider.get("prefix"));
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__PERMISSION__UNKNOWN_MEMBERSHIP.path()),
+                        Map.of("membership", args[1]), messageProvider.get(Message.PREFIX.path()));
                 return;
         }
 
@@ -122,16 +123,16 @@ public class SettlementChunkPermissionCommand extends SettlementChunkCommandHand
                 break;
             default:
                 Messenger.sendMessage(context.player(),
-                        messageProvider.get("settlementchunk.permission.unknown-permission"),
-                        Map.of("permission", args[0]), messageProvider.get("prefix"));
+                        messageProvider.get(Message.PLAYER__SETTLEMENT__PERMISSION__UNKNOWN_PERMISSION.path()),
+                        Map.of("permission", args[0]), messageProvider.get(Message.PREFIX.path()));
                 return;
         }
 
-        Messenger.sendMessage(context.player(), messageProvider.get("settlementchunk.permission.set"), Map.of(
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__PERMISSION__SUCCESS.path()), Map.of(
                 "permission", args[0],
                 "membership", args[1],
                 "state", add ? "<green>on</green>" : "<red>off</red>"),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
 
         UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
     }

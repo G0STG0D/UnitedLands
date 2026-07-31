@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Messenger;
@@ -25,8 +26,8 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
         var player = (Player) sender;
 
         if (args.length < 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.claim"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CLAIM__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -38,13 +39,13 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
         var region = UnitedLandsDataManager.instance()
                 .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(player.getLocation()));
         if (region == null) {
-            Messenger.sendMessage(player, messageProvider.get("country.claim.no-region"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CLAIM__NO_REGION.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         } else {
             if (region.getCountry() != null) {
-                Messenger.sendMessage(player, messageProvider.get("country.claim.already-claimed"),
-                        null, messageProvider.get("prefix"));
+                Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CLAIM__ALREADY_CLAIMED.path()),
+                        null, messageProvider.get(Message.PREFIX.path()));
                 return;
             }
         }
@@ -54,8 +55,8 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
             try {
                 claimDuration = Long.parseLong(args[1]);
             } catch (Exception ex) {
-                Messenger.sendMessage(player, messageProvider.get("errors.wrong-number-format"),
-                        null, messageProvider.get("prefix"));
+                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__WRONG_NUMBER_FORMAT.path()),
+                        null, messageProvider.get(Message.PREFIX.path()));
             }
         }
 
@@ -66,10 +67,10 @@ public class AdminCountryClaimCommand extends CountryAdminCommandHandler {
 
         UnitedLandsDataManager.instance().updateRegionDbData(region);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.country.claim"),
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CLAIM__SUCCESS.path()),
                 Map.of("country", country.getCleanName(),
                         "region", region.getCleanName()),
-                messageProvider.get("prefix"));
+                messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

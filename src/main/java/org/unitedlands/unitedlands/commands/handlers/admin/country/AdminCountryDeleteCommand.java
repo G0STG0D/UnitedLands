@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -25,8 +26,8 @@ public class AdminCountryDeleteCommand extends CountryAdminCommandHandler {
         var player = (Player) sender;
 
         if (args.length != 1) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.delete"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__DELETE__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -54,8 +55,8 @@ public class AdminCountryDeleteCommand extends CountryAdminCommandHandler {
 
         Pl3xMapRenderer.instance().removeCountry(country);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.country.delete"),
-                Map.of("country", country.getName()), messageProvider.get("prefix"));
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__DELETE__SUCCESS.path()),
+                Map.of("country", country.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
@@ -53,8 +54,8 @@ public class SettlementCommandHandler extends BaseCommandHandler<UnitedLands> {
     protected Citizen getCitizen(Player player) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Messenger.sendMessage(player, messageProvider.get("errors.no-citizen-data"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return null;
         }
         return citizen;
@@ -62,8 +63,8 @@ public class SettlementCommandHandler extends BaseCommandHandler<UnitedLands> {
 
     protected Settlement getCitizenSettlement(Citizen citizen) {
         if (citizen.getSettlement() == null) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get("errors.not-in-settlement"),
-                    null, messageProvider.get("prefix"));
+            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get(Message.GENERAL_ERRORS__NOT_IN_SETTLEMENT.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return null;
         }
         return citizen.getSettlement();
@@ -71,8 +72,8 @@ public class SettlementCommandHandler extends BaseCommandHandler<UnitedLands> {
 
     protected boolean hasPermission(String permission, Citizen citizen) {
         if (!plugin.getPermissionManager().hasRankPermission(permission, citizen)) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get("errors.no-settlement-permission"),
-                    Map.of("perm", permission), messageProvider.get("prefix"));
+            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get(Message.GENERAL_ERRORS__NO_SETTLEMENT_PERMISSION.path()),
+                    Map.of("perm", permission), messageProvider.get(Message.PREFIX.path()));
             return false;
         }
         return true;

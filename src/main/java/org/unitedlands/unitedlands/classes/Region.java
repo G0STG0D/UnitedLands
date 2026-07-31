@@ -378,7 +378,7 @@ public class Region extends GeopolObject implements PermissionHolder {
         var milliDelay = claimEndTime - System.currentTimeMillis();
         var delay = Math.max(100, milliDelay / 1000 * 20);
 
-        claimTask = Bukkit.getScheduler().runTaskLater(UnitedLands.getInstance(), () -> {
+        claimTask = Bukkit.getScheduler().runTaskLater(UnitedLands.instance(), () -> {
 
             setCountry(getClaimantCountry());
             getClaimantCountry().addRegion(this);
