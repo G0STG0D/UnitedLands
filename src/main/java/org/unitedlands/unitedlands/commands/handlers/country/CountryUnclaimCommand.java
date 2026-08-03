@@ -54,7 +54,7 @@ public class CountryUnclaimCommand extends CountryCommandHandler {
 
                     Player player = (Player) sender;
 
-                    var confirmTitle = messageProvider.get("country.unclaim.confirm-title");
+                    var confirmTitle = messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__CONFIRM.path());
                     var countrySettlements = region.getSettlements(context.country());
                     if (countrySettlements.size() > 0) {
                         confirmTitle += " " + messageProvider.get(Message.PLAYER__COUNTRY__UNCLAIM__CONFIRM_WARN_SETTLEMENTS.path());

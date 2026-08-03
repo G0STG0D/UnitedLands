@@ -34,12 +34,14 @@ public class AdminCountrySetNameCommand extends CountryAdminCommandHandler {
             return;
         }
 
+        var oldname = country.getName();
+
         country.setName(args[1]);
 
         UnitedLandsDataManager.instance().updateCountryDbData(country);
 
         Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__SETNAME__SUCCESS.path()),
-                Map.of("country", country.getName()), messageProvider.get(Message.PREFIX.path()));
+                Map.of("oldname", oldname, "newname", country.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

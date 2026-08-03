@@ -12,8 +12,8 @@ public class CountryRankSubcommands extends BaseSubcommandHandler<UnitedLands> {
 
     @Override
     protected void registerSubHandlers() {
-        subHandlers.put("add",new CountryRankAddCommand(plugin, messageProvider));
-        subHandlers.put("remove",new CountryRankRemoveCommand(plugin, messageProvider));
+        subHandlers.put("add",new CountryAddRankCommand(plugin, messageProvider));
+        subHandlers.put("remove",new CountryRemoveRankCommand(plugin, messageProvider));
     }
 
 }

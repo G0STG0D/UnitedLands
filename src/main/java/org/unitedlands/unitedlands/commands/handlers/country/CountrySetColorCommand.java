@@ -1,6 +1,7 @@
 package org.unitedlands.unitedlands.commands.handlers.country;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.interfaces.IMessageProvider;
@@ -42,7 +43,7 @@ public class CountrySetColorCommand extends CountryCommandHandler {
         UnitedLandsDataManager.instance().updateCountryDbData(context.country());
 
         Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__SETCOLOR__SUCCESS.path()),
-                null, messageProvider.get(Message.PREFIX.path()));
+                Map.of("color", args[0]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

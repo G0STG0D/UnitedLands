@@ -48,7 +48,7 @@ public class PermissionManager {
     // *************************************************************
 
     public boolean hasGlobalOverrides(Player player) {
-        if (player.hasPermission("united.regions.admin"))
+        if (player.hasPermission("united.lands.admin"))
             return true;
         return false;
     }
@@ -125,16 +125,25 @@ public class PermissionManager {
             event.setCancelled(!hasSettlementChunkPermission);
             event.callEvent();
 
-            return event.isCancelled();
+            return !event.isCancelled();
         } else {
-            //var regionCoords = CoordinateUtils.locationToRegionCoordinates(eventLocation);
+            // var regionCoords =
+            // CoordinateUtils.locationToRegionCoordinates(eventLocation);
             var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(eventLocation));
+
+            Logger.debug("Checking region...");
+
             if (region != null) {
+
+                Logger.debug("Region");
+
                 var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
                 if (region.equals(playerCache.getCachedRegion())) {
+                    Logger.debug("playerCache.getRegionMembership(): " + playerCache.getRegionMembership());
                     return hasLocationPermissions(region, playerCache.getRegionMembership(), type);
                 } else {
                     var eventLocationMembership = calculateRegionMembership(region, player);
+                    Logger.debug("eventLocationMembership: " + eventLocationMembership);
                     return hasLocationPermissions(region, eventLocationMembership, type);
                 }
             }
@@ -148,20 +157,20 @@ public class PermissionManager {
 
     public int getLocationPermissions(PermissionHolder holder, PermissionType type) {
         switch (type) {
-            case BREAK:
-                return holder.getBreakPermissions();
-            case PLACE:
-                return holder.getPlacePermissions();
-            case CONTAINER:
-                return holder.getContainerPermissions();
-            case SWITCH:
-                return holder.getSwitchPermissions();
-            case BLOCK_USE:
-                return holder.getBlockUsePermissions();
-            case INTERACT:
-                return holder.getInteractPermissions();
-            default:
-                return 0;
+        case BREAK:
+            return holder.getBreakPermissions();
+        case PLACE:
+            return holder.getPlacePermissions();
+        case CONTAINER:
+            return holder.getContainerPermissions();
+        case SWITCH:
+            return holder.getSwitchPermissions();
+        case BLOCK_USE:
+            return holder.getBlockUsePermissions();
+        case INTERACT:
+            return holder.getInteractPermissions();
+        default:
+            return 0;
         }
     }
 
@@ -177,7 +186,9 @@ public class PermissionManager {
             return LocationMembership.OWNER;
         }
 
-        // TODO: Chunk trusted
+        if (settlementChunk.getTrustList().contains(citizen)) {
+            return LocationMembership.TRUSTED;
+        }
 
         var settlement = settlementChunk.getSettlement();
 
@@ -186,7 +197,10 @@ public class PermissionManager {
             return LocationMembership.OWNER;
         }
 
-        // TODO: Settlement Trusted
+        // Settlement Trusted
+        if (settlement.getTrustList().contains(citizen)) {
+            return LocationMembership.TRUSTED;
+        }
 
         // Settlement Resident
         if (settlement.getCitizens().contains(citizen)) {
@@ -219,7 +233,10 @@ public class PermissionManager {
             return 0;
         }
 
-        // TODO: Owner?
+        if (citizen.equals(region.getAdministrator())) {
+            return LocationMembership.OWNER;
+        }
+
         // TODO: Trusted
 
         if (citizen.hasSettlement() && citizen.getSettlement().hasRegion()) {

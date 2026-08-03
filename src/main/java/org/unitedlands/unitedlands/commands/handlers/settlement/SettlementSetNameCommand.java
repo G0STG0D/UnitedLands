@@ -30,12 +30,14 @@ public class SettlementSetNameCommand extends SettlementCommandHandler {
         if (context == null)
             return;
 
+        var oldname = context.settlement().getName();
+        
         context.settlement().setName(args[0]);
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
         Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__SETNAME__SUCCESS.path()),
-                Map.of("name", context.settlement().getCleanName()), messageProvider.get(Message.PREFIX.path()));
+                Map.of("oldname", oldname, "newname", context.settlement().getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.schedulers.NewDayScheduler;
@@ -27,7 +28,7 @@ public class NewDayTask implements Runnable {
     @Override
     public void run() {
 
-        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get("newday.start"));
+        Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.NEW_DAY__START.path()));
 
         var settlements = UnitedLandsDataManager.instance().getSettlements();
 
@@ -43,24 +44,24 @@ public class NewDayTask implements Runnable {
                     var tax = citizenBalance * settlement.getTax();
                     UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax);
                     totalTax += tax;
-                    notifyPlayer(citizen.getPlayer().getPlayer(), "newday.citizen-taxes-notice", tax);
+                    notifyPlayer(citizen.getPlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
                 } else {
                     // Flat tax
-                    var tax = citizenBalance * settlement.getTax();
+                    var tax = settlement.getTax();
                     if (citizenBalance >= tax) {
                         UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax);
                         totalTax += tax;
-                        notifyPlayer(citizen.getPlayer().getPlayer(), "newday.citizen-taxes-notice", tax);
+                        notifyPlayer(citizen.getPlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
                     } else {
                         // TODO: kick citizen?
-                        notifyPlayer(settlement.getMayor().getPlayer().getPlayer(), "newday.citizen-bankrupt", tax);
+                        notifyPlayer(settlement.getMayor().getPlayer().getPlayer(), Message.NEW_DAY__CITIZEN_BANKRUPT.path(), tax);
                     }
                 }
             }
 
             Logger.log("Settlement " + settlement.getName() + " collected " + UnitedLandsEconomyManager.instance().format(totalTax) + " taxes.", "UnitedLands");
             UnitedLandsEconomyManager.instance().deposit(settlement.getUuid(), totalTax);
-            notifyPlayers(settlement.getOnlinePlayers(), "newday.settlement-taxes-notice", totalTax);
+            notifyPlayers(settlement.getOnlinePlayers(), Message.NEW_DAY__SETTLEMENT_TAX_NOTICE.path(), totalTax);
 
             var balance = UnitedLandsEconomyManager.instance().getBalance(settlement.getUuid()).doubleValue();
             var upkeep = CostUtils.getSettlementUpkeep(settlement);
@@ -68,7 +69,7 @@ public class NewDayTask implements Runnable {
             if (balance >= upkeep) {
                 UnitedLandsEconomyManager.instance().withdraw(settlement.getUuid(), upkeep);
                 Logger.log("Settlement " + settlement.getName() + " paid " + UnitedLandsEconomyManager.instance().format(upkeep) + " upkeep.", "UnitedLands");
-                notifyPlayers(settlement.getOnlinePlayers(), "newday.settlement-upkeep-notice", upkeep);
+                notifyPlayers(settlement.getOnlinePlayers(), Message.NEW_DAY__SETTLEMENT_UPKEEP_NOTICE.path(), upkeep);
             } else {
                 // Do town fall
             }

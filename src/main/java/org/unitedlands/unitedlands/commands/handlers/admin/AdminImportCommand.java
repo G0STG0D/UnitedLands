@@ -18,9 +18,9 @@ import org.unitedlands.unitedlands.utils.PolygonUtils;
 import org.unitedlands.unitedlands.utils.SvgUtils;
 import org.unitedlands.utils.Logger;
 
-public class TestImportCommand extends BaseCommandHandler<UnitedLands> {
+public class AdminImportCommand extends BaseCommandHandler<UnitedLands> {
 
-    public TestImportCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public AdminImportCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
@@ -68,8 +68,10 @@ public class TestImportCommand extends BaseCommandHandler<UnitedLands> {
                     region = new Region();
                     region.setUuid(UUID.randomUUID());
                     region.setName(entry.getKey());
+                    region.setDefaultName(entry.getKey());
                 } else {
-                    Logger.log("Region " + entry.getKey() + " found, updating polygon...");
+                    Logger.log("Region " + entry.getKey() + " found, updating default name and polygon...");
+                    region.setDefaultName(entry.getKey());
                 }
 
                 var val = entry.getValue();

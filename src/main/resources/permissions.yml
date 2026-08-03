@@ -61,6 +61,8 @@ country:
     - country.setcolor
     - country.claim
     - country.unclaim
+    - region.setname
+    - region.setadministrator
     - region.manage.toggle
     - region.manage.perms
   assistant:

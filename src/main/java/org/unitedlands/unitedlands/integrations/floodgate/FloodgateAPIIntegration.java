@@ -25,8 +25,7 @@ public class FloodgateAPIIntegration {
 
     public void sendConfirmationPanel(Player player, Confirmation confirmation) {
         
-        var content = confirmation.getTitle();
-
+        var content = confirmation.getFilledTitle();
 
         FloodgatePlayer floodgateplayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
         floodgateplayer.sendForm(

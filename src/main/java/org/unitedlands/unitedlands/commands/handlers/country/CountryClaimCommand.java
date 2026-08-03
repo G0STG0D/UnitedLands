@@ -37,13 +37,13 @@ public class CountryClaimCommand extends CountryCommandHandler {
         var region = UnitedLandsDataManager.instance()
                 .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(context.player().getLocation()));
         if (region == null) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__USAGE.path()),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__NO_REGION.path()),
                     null, messageProvider.get(Message.PREFIX.path()));
             return;
         } else {
             if (region.getCountry() != null) {
                 Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__ALREADY_CLAIMED.path()),
-                        null, messageProvider.get(Message.PREFIX.path()));
+                        Map.of("country", region.getCountry().getName()), messageProvider.get(Message.PREFIX.path()));
                 return;
             }
         }
@@ -85,7 +85,7 @@ public class CountryClaimCommand extends CountryCommandHandler {
 
             if (doubleClaimEvent.isCancelled()) {
                 Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__ALREADY_BEING_CLAIMED.path()),
-                        Map.of("claimant", region.getClaimantCountry().getCleanName()), messageProvider.get(Message.PREFIX.path()));
+                        Map.of("country", region.getClaimantCountry().getCleanName()), messageProvider.get(Message.PREFIX.path()));
                 return;
             }
 

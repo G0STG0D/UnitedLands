@@ -46,9 +46,8 @@ public class DatabaseManager {
 
     public void initialize() {
 
+        // instance = this;
 
-        //instance = this;
-        
         var fileConfig = plugin.getConfig();
 
         String host = fileConfig.getString("mysql.host");
@@ -121,15 +120,19 @@ public class DatabaseManager {
     private void applyMigrations(Dao<SchemaVersion, Integer> versionDao, SchemaVersion version) throws SQLException {
         // Example for future migrations on production server
 
-        // if (version.getVersion() < 2) {
-        // // Migration 1 → 2: Add new field to `PlayerData`
+        if (plugin.getConfig().getBoolean("developer-mode"))
+            return;
 
-        // versionDao.executeRaw("ALTER TABLE test_data ADD COLUMN new_field
-        // VARCHAR(255) DEFAULT NULL;");
-
-        // version.setVersion(2);
-        // versionDao.update(version);
-        // }
+        if (version.getVersion() < 2) {
+            versionDao.executeRaw("ALTER TABLE settlement ADD COLUMN ruined TINYINT(1) NOT NULL;");
+            versionDao.executeRaw("ALTER TABLE settlement ADD COLUMN ruin_time BIGINT NULL;");
+            versionDao.executeRaw("ALTER TABLE region ADD COLUMN administrator_uuid VARCHAR(36) NULL;");
+            versionDao.executeRaw("ALTER TABLE region ADD COLUMN claimed_time BIGINT NULL;");
+            versionDao.executeRaw("ALTER TABLE region ADD COLUMN default_name VARCHAR(255) NULL;");
+            version.setVersion(2);
+            versionDao.update(version);
+        }
+        
     }
 
     public <T, ID> Dao<T, ID> getDao(Class<T> clazz) throws SQLException {
@@ -180,7 +183,6 @@ public class DatabaseManager {
     public LoginChallengeService getLoginChallengeService() {
         return loginChallengeService;
     }
-
 
     public ConnectionSource getConnectionSource() {
         return connectionSource;

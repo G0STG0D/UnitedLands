@@ -48,7 +48,7 @@ public class AdminSettlementSetSpawnCommand extends SettlementAdminCommandHandle
         settlement.setSpawn(player.getLocation());
 
         Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETSPAWN__SUCCESS.path()),
-                Map.of("settlement", args[0]), messageProvider.get(Message.PREFIX.path()));
+                Map.of("settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

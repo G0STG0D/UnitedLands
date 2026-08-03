@@ -46,7 +46,7 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
 
         if (citizen.getSettlement() != null) {
             Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__ALREADY_IN_SETTLEMENT.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+                    Map.of("citizen", citizen.getName(), "settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -57,16 +57,16 @@ public class AdminSettlementAddCitizenCommand extends SettlementAdminCommandHand
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
         Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__SUCCESS.path()),
-                Map.of("settlement", args[0], "name", args[1]), messageProvider.get(Message.PREFIX.path()));
+                Map.of("citizen", citizen.getName(), "settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         switch (args.length) {
-            case 1:
-                return UnitedLandsDataManager.instance().getSettlementNames();
-            case 2:
-                return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        case 1:
+            return UnitedLandsDataManager.instance().getSettlementNames();
+        case 2:
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         }
         return null;
     }

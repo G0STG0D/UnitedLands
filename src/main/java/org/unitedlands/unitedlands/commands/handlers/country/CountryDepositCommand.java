@@ -54,7 +54,7 @@ public class CountryDepositCommand extends CountryCommandHandler {
         }
 
         if (!UnitedLandsEconomyManager.instance().has(player.getUniqueId(), amount)) {
-            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get(Message.PREFIX.path()));
             return;
         }

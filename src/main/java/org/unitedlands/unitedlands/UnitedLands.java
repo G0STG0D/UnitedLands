@@ -10,6 +10,7 @@ import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.message.MessageRegistry;
 import org.unitedlands.unitedlands.commands.AdminCommands;
+import org.unitedlands.unitedlands.commands.ChannelCommand;
 import org.unitedlands.unitedlands.commands.CitizenCommands;
 import org.unitedlands.unitedlands.commands.CountryCommands;
 import org.unitedlands.unitedlands.commands.RegionCommands;
@@ -19,12 +20,14 @@ import org.unitedlands.unitedlands.commands.WebCommands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
 import org.unitedlands.unitedlands.listeners.BlockListener;
+import org.unitedlands.unitedlands.listeners.ChatListener;
 import org.unitedlands.unitedlands.listeners.ExplosionListener;
 import org.unitedlands.unitedlands.listeners.MobListener;
 import org.unitedlands.unitedlands.listeners.PlayerBukkitListener;
 import org.unitedlands.unitedlands.listeners.PlayerListener;
 import org.unitedlands.unitedlands.listeners.RegionListener;
 import org.unitedlands.unitedlands.listeners.ServerEventListener;
+import org.unitedlands.unitedlands.managers.ChatChannelManager;
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
@@ -55,6 +58,7 @@ public class UnitedLands extends JavaPlugin {
     ConfirmationManager confirmationManager;
     PermissionManager permissionManager;
     PlayerCacheManager playerCacheManager;
+    ChatChannelManager chatChannelManager;
 
     private Pl3xMapRenderer mapRenderer;
     private TownyProvider townyProvider;
@@ -109,6 +113,7 @@ public class UnitedLands extends JavaPlugin {
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
         economyManager = new UnitedLandsEconomyManager(this);
+        chatChannelManager = new ChatChannelManager(this, messageProvider);
 
         newDayScheduler = new NewDayScheduler();
     }
@@ -159,6 +164,10 @@ public class UnitedLands extends JavaPlugin {
         var webCommand = new WebCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("ulweb")).setExecutor(webCommand);
         Objects.requireNonNull(getCommand("ulweb")).setTabCompleter(webCommand);
+
+        var channelCommand = new ChannelCommand(this, messageProvider);
+        Objects.requireNonNull(getCommand("channel")).setExecutor(channelCommand);
+        Objects.requireNonNull(getCommand("channel")).setTabCompleter(channelCommand);
     }
 
     private void registerListeners() {
@@ -169,6 +178,7 @@ public class UnitedLands extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MobListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new RegionListener(messageProvider), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
 
     public static UnitedLands instance() {

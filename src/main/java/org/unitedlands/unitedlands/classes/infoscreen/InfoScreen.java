@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.utils.Messenger;
 
 import net.kyori.adventure.audience.Audience;
@@ -87,15 +88,15 @@ public abstract class InfoScreen {
 
         var header = "";
 
-        var maxWidth = messageConfig.getInt("info-screens.header.max-chars");
+        var maxWidth = messageConfig.getInt(Message.INFO_SCREENS__HEADER__MAX_CHARS.path());
 
-        var fillerStart = messageConfig.getString("info-screens.header.filler-start");
-        var filler = messageConfig.getString("info-screens.header.filler");
-        var fillerEnd = messageConfig.getString("info-screens.header.filler-end");
-        var fillerColor = messageConfig.getString("info-screens.header.filler-color");
-        var titleColor = messageConfig.getString("info-screens.header.title-color");
-        var titleStart = messageConfig.getString("info-screens.header.title-start");
-        var titleEnd = messageConfig.getString("info-screens.header.title-end");
+        var fillerStart = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER_START.path());
+        var filler = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER.path());
+        var fillerEnd = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER_END.path());
+        var fillerColor = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER_COLOR.path());
+        var titleColor = messageConfig.getString(Message.INFO_SCREENS__HEADER__TITLE_COLOR.path());
+        var titleStart = messageConfig.getString(Message.INFO_SCREENS__HEADER__TITLE_START.path());
+        var titleEnd = messageConfig.getString(Message.INFO_SCREENS__HEADER__TITLE_END.path());
 
         var nameLength = name.length();
         var fillerStartLength = fillerStart.length();

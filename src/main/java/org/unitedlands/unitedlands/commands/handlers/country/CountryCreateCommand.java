@@ -48,13 +48,13 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
         }
 
         if (region.getCountry() != null) {
-            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__REGION_OCCUPIED.path()),
+            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CREATE__REGION_OCCUPIED.path()),
                     Map.of("country", region.getCountry().getCleanName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!UnitedLandsEconomyManager.instance().has(citizen.getUuid(), new BigDecimal(Settings.countryCreateCosts))) {
-            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(Settings.countryCreateCosts)),
                     messageProvider.get(Message.PREFIX.path()));
             return;
@@ -78,6 +78,7 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             country.addRegion(region);
 
             region.setCountry(country);
+            region.setAdministrator(citizen);
             settlement.setCountry(country);
 
             citizen.addCountryRank("leader");
@@ -91,9 +92,9 @@ public class CountryCreateCommand extends BaseCommandHandler<UnitedLands> {
             UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
 
             // TODO: Move string to config
-            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__PLAYER_MESSAGE.path()),
+            Messenger.sendMessage(player, messageProvider.get(Message.PLAYER__COUNTRY__CREATE__PLAYER_MESSAGE.path()),
                     Map.of("country", country.getCleanName()), messageProvider.get(Message.PREFIX.path()));
-            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__BROADCAST_MESSAGE.path()),
+            Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__CREATE__BROADCAST_MESSAGE.path()),
                     Map.of("player", player.getName(),
                             "country", country.getCleanName(),
                             "region", region.getCleanName()),

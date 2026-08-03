@@ -19,9 +19,9 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementRankAddCommand extends SettlementCommandHandler {
+public class SettlementAddRankCommand extends SettlementCommandHandler {
 
-    public SettlementRankAddCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public SettlementAddRankCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
 
     }
@@ -74,7 +74,7 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
 
         if (!context.settlement().equals(targetCitizen.getSettlement())) {
             Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__NOT_IN_SETTLEMENT.path()),
-                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
+                    Map.of("citizen", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -86,7 +86,7 @@ public class SettlementRankAddCommand extends SettlementCommandHandler {
 
         if (targetCitizen.getSettlementRanks().contains(args[1])) {
             Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_ALREADY_OWNED.path()),
-                    Map.of("rank", args[1], "name", targetCitizen.getName()),
+                    Map.of("citizen", context.citizen().getName(), "rank", args[1], "name", targetCitizen.getName()),
                     messageProvider.get(Message.PREFIX.path()));
             return;
         }

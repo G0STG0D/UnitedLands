@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationMembership {
-    public static final int UNSET = 0;
-    public static final int FOREIGNER = 1 << 0;
-    public static final int OWNER = 1 << 1;
-    public static final int SETTLEMENT_RESIDENT = 1 << 2;
-    public static final int REGION_RESIDENT = 1 << 3;
-    public static final int COUNTRY_RESIDENT = 1 << 4;
-    public static final int TRUSTED = 1 << 5;
-    public static final int ALLY = 1 << 6;
-    public static final int ENEMY = 1 << 7;
-    public static final int OUTLAW = 1 << 8;
+    public static final int UNSET = 0;                      // 0
+    public static final int FOREIGNER = 1 << 0;             // 1
+    public static final int OWNER = 1 << 1;                 // 2
+    public static final int SETTLEMENT_RESIDENT = 1 << 2;   // 4
+    public static final int REGION_RESIDENT = 1 << 3;       // 8
+    public static final int COUNTRY_RESIDENT = 1 << 4;      // 16
+    public static final int TRUSTED = 1 << 5;               // 32
+    public static final int ALLY = 1 << 6;                  // 64
+    public static final int ENEMY = 1 << 7;                 // 128
+    public static final int OUTLAW = 1 << 8;                // 256
 
     public static String toString(int membership) {
         if (membership == UNSET)

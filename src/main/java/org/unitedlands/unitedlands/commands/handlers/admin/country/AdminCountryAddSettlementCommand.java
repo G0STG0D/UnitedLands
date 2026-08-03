@@ -24,7 +24,7 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADD_SETTLEMENT__USAGE.path()),
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADDSETTLEMENT__USAGE.path()),
                     null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
@@ -40,8 +40,8 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
         }
 
         if (settlement.hasCountry()) {
-            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADD_SETTLEMENT__SETTLEMENT_HAS_COUNTRY.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADDSETTLEMENT__SETTLEMENT_HAS_COUNTRY.path()),
+                    Map.of("settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -50,7 +50,7 @@ public class AdminCountryAddSettlementCommand extends CountryAdminCommandHandler
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADD_SETTLEMENT__SUCCESS.path()),
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__ADDSETTLEMENT__SUCCESS.path()),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),
                 messageProvider.get(Message.PREFIX.path()));
     }

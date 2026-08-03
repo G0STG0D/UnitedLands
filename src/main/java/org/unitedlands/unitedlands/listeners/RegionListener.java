@@ -9,6 +9,7 @@ import org.unitedlands.unitedlands.classes.events.region.RegionClaimStartEvent;
 import org.unitedlands.unitedlands.classes.events.region.RegionClaimedEvent;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.utils.MessageProvider;
+import org.unitedlands.utils.Formatter;
 import org.unitedlands.utils.Messenger;
 
 public class RegionListener implements Listener {
@@ -22,9 +23,11 @@ public class RegionListener implements Listener {
 
     @EventHandler
     public void onRegionStartClaimEvent(RegionClaimStartEvent event) {
+        var region = event.getRegion();
         Messenger.sendMessage(Bukkit.getServer(), messageProvider.get(Message.PLAYER__COUNTRY__CLAIM__START_BROADCAST.path()),
                 Map.of("country", event.getCountry().getCleanName(),
-                        "region", event.getRegion().getCleanName()),
+                        "region", region.getCleanName(),
+                        "time", Formatter.formatDuration(region.getClaimEndTime() - region.getClaimStartTime())),
                 messageProvider.get(Message.PREFIX.path()));
     }
 

@@ -14,9 +14,9 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
-public class AdminSettlementRankRemoveCommand extends SettlementAdminCommandHandler {
+public class AdminSettlementRemoveRankCommand extends SettlementAdminCommandHandler {
 
-    public AdminSettlementRankRemoveCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public AdminSettlementRemoveRankCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
 
     }

@@ -53,7 +53,7 @@ public class SettlementKickCommand extends SettlementCommandHandler {
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null) {
             Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
+                    Map.of("citizen", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -93,7 +93,7 @@ public class SettlementKickCommand extends SettlementCommandHandler {
         }
 
         Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__KICK__SUCCESS.path()),
-                Map.of("name", targetPlayer.getName()), messageProvider.get(Message.PREFIX.path()));
+                Map.of("citizen", targetPlayer.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
 }

@@ -43,7 +43,7 @@ public class SettlementChunkBuyCommand extends SettlementChunkCommandHandler {
 
         if (!UnitedLandsEconomyManager.instance().has(context.citizen().getUuid(),
                 new BigDecimal(context.settlementChunk().getSalePrice()))) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice())),
                     messageProvider.get(Message.PREFIX.path()));
             return;

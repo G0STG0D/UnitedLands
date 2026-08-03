@@ -1,6 +1,8 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement;
 
 import java.util.List;
+import java.util.Map;
+
 import org.bukkit.command.CommandSender;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
@@ -41,7 +43,7 @@ public class SettlementSetColorCommand extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
 
         Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__SETCOLOR__SUCCESS.path()),
-                null, messageProvider.get(Message.PREFIX.path()));
+                Map.of("color", args[1]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

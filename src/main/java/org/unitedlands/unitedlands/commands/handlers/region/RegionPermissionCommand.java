@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
+package org.unitedlands.unitedlands.commands.handlers.region;
 
 import java.util.List;
 import java.util.Map;
@@ -7,19 +7,20 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
-import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
+import org.unitedlands.unitedlands.classes.commandhandlers.RegionCommandHandler;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementChunkPermissionCommand extends SettlementChunkCommandHandler {
+public class RegionPermissionCommand extends RegionCommandHandler {
 
-    public SettlementChunkPermissionCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+
+    public RegionPermissionCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
     List<String> permissions = List.of("break", "place", "containers", "switch", "block_use", "interact");
-    List<String> memberships = List.of("settlement_residents", "region_residents", "country_residents", "foreigners");
+    List<String> memberships = List.of("region_residents", "country_residents", "foreigners");
     List<String> switches = List.of("on", "off");
 
     @Override
@@ -40,20 +41,16 @@ public class SettlementChunkPermissionCommand extends SettlementChunkCommandHand
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 3) {
-            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__PERMISSION__USAGE.path()), null,
-                    messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__REGION__PERMISSION__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
-
-        var context = validate(sender, "settlement.plot.permissions");
+        var context = validate(sender, "region.manage.perms");
         if (context == null)
             return;
-
+        
         int membership = 0;
         switch (args[1]) {
-            case "settlement_residents":
-                membership = LocationMembership.SETTLEMENT_RESIDENT;
-                break;
             case "region_residents":
                 membership = LocationMembership.REGION_RESIDENT;
                 break;
@@ -64,7 +61,7 @@ public class SettlementChunkPermissionCommand extends SettlementChunkCommandHand
                 membership = LocationMembership.FOREIGNER;
                 break;
             default:
-                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__PERMISSION__UNKNOWN_MEMBERSHIP.path()),
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__REGION__PERMISSION__UNKNOWN_MEMBERSHIP.path()),
                         Map.of("membership", args[1]), messageProvider.get(Message.PREFIX.path()));
                 return;
         }
@@ -74,67 +71,66 @@ public class SettlementChunkPermissionCommand extends SettlementChunkCommandHand
         int p = 0;
         switch (args[0]) {
             case "break":
-                p = context.settlementChunk().getBreakPermissions();
+                p = context.region().getBreakPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                context.settlementChunk().setBreakPermissions(p);
+                context.region().setBreakPermissions(p);
                 break;
             case "place":
-                p = context.settlementChunk().getPlacePermissions();
+                p = context.region().getPlacePermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                context.settlementChunk().setPlacePermissions(p);
+                context.region().setPlacePermissions(p);
                 break;
             case "containers":
-                p = context.settlementChunk().getContainerPermissions();
+                p = context.region().getContainerPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                context.settlementChunk().setContainerPermissions(p);
+                context.region().setContainerPermissions(p);
                 break;
             case "switch":
-                p = context.settlementChunk().getSwitchPermissions();
+                p = context.region().getSwitchPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                context.settlementChunk().setSwitchPermissions(p);
+                context.region().setSwitchPermissions(p);
                 break;
             case "block_use":
-                p = context.settlementChunk().getBlockUsePermissions();
+                p = context.region().getBlockUsePermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                context.settlementChunk().setBlockUsePermissions(p);
+                context.region().setBlockUsePermissions(p);
                 break;
             case "interact":
-                p = context.settlementChunk().getInteractPermissions();
+                p = context.region().getInteractPermissions();
                 if (add)
                     p |= membership;
                 else
                     p &= ~membership;
-                context.settlementChunk().setInteractPermissions(p);
+                context.region().setInteractPermissions(p);
                 break;
             default:
-                Messenger.sendMessage(context.player(),
-                        messageProvider.get(Message.PLAYER__SETTLEMENT__PERMISSION__UNKNOWN_PERMISSION.path()),
+                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__REGION__PERMISSION__UNKNOWN_PERMISSION.path()),
                         Map.of("permission", args[0]), messageProvider.get(Message.PREFIX.path()));
                 return;
         }
 
-        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__PERMISSION__SUCCESS.path()), Map.of(
+        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__REGION__PERMISSION__SUCCESS.path()), Map.of(
                 "permission", args[0],
-                "membership", args[1],
+                "membership", args[0],
                 "state", add ? "<green>on</green>" : "<red>off</red>"),
                 messageProvider.get(Message.PREFIX.path()));
 
-        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+        UnitedLandsDataManager.instance().updateRegionDbData(context.region());
     }
 
 }

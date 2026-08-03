@@ -46,7 +46,7 @@ public class SettlementDepositCommand extends SettlementCommandHandler {
         }
 
         if (!UnitedLandsEconomyManager.instance().has(context.player().getUniqueId(), amount)) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get(Message.PREFIX.path()));
             return;
         }

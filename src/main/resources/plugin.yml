@@ -10,7 +10,10 @@ commands:
    uladmin:
       description: UnitedLands admin commands.
       permission: united.lands.admin
+      default: op
       aliases: [ula]
+   channel:
+      description: UnitedLands chat channel commands
    country:
       description: UnitedLands country commands.
       aliases: [c]

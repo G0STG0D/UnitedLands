@@ -19,6 +19,9 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class Region extends GeopolObject implements PermissionHolder {
 
+    @DatabaseField(columnName = "default_name")
+    private String defaultName;
+
     @DatabaseField(canBeNull = true, columnName = "home_chunk_x")
     private int homeChunkCoordinatesX;
     @DatabaseField(canBeNull = true, columnName = "home_chunk_z")
@@ -35,9 +38,14 @@ public class Region extends GeopolObject implements PermissionHolder {
     private Long claimStartTime;
     @DatabaseField(columnName = "claim_end_time", canBeNull = true)
     private Long claimEndTime;
+    @DatabaseField(columnName = "claimed_time", canBeNull = true)
+    private Long claimedTime;
 
     @DatabaseField(width = 36, columnName = "country_uuid")
     private UUID countryUuid;
+
+    @DatabaseField(width = 36, columnName = "administrator_uuid")
+    private UUID administratorUuid;
 
     @DatabaseField(canBeNull = false, columnName = "break_permissions")
     private int breakPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
@@ -71,6 +79,7 @@ public class Region extends GeopolObject implements PermissionHolder {
     private transient Coordinates homeChunkCoordinates;
     private transient Location spawn;
     private transient Country country;
+    private transient Citizen administrator;
 
     private transient double minX, minZ, maxX, maxZ;
 
@@ -81,6 +90,14 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     public Region() {
 
+    }
+
+    public String getDefaultName() {
+        return defaultName;
+    }
+
+    public void setDefaultName(String defaultName) {
+        this.defaultName = defaultName;
     }
 
     public int getHomeChunkCoordinatesX() {
@@ -210,9 +227,18 @@ public class Region extends GeopolObject implements PermissionHolder {
         this.claimEndTime = claimEndTime;
     }
 
+    public Long getClaimedTime() {
+        return claimedTime;
+    }
+
+    public void setClaimedTime(Long claimedTime) {
+        this.claimedTime = claimedTime;
+    }
+
     public void setCountry(Country country) {
         this.country = country;
         this.countryUuid = country.getUuid();
+        this.claimedTime = System.currentTimeMillis();
     }
 
     public Country getCountry() {
@@ -224,6 +250,25 @@ public class Region extends GeopolObject implements PermissionHolder {
     public void removeCountry() {
         this.country = null;
         this.countryUuid = null;
+        this.claimedTime = null;
+        this.name = this.defaultName;
+        removeAdministrator();
+    }
+
+    public void setAdministrator(Citizen citizen) {
+        this.administrator = citizen;
+        this.administratorUuid = citizen.getUuid();
+    }
+
+    public Citizen getAdministrator() {
+        if (this.administrator == null && this.administratorUuid != null)
+            administrator = UnitedLandsDataManager.instance().getCitizen(administratorUuid);
+        return administrator;
+    }
+
+    public void removeAdministrator() {
+        this.administrator = null;
+        this.administratorUuid = null;
     }
 
     public boolean hasCountry() {
@@ -274,6 +319,30 @@ public class Region extends GeopolObject implements PermissionHolder {
     @Override
     public int getInteractPermissions() {
         return interactPermissions;
+    }
+
+    public void setBreakPermissions(int breakPermissions) {
+        this.breakPermissions = breakPermissions;
+    }
+
+    public void setPlacePermissions(int placePermissions) {
+        this.placePermissions = placePermissions;
+    }
+
+    public void setContainerPermissions(int containerPermissions) {
+        this.containerPermissions = containerPermissions;
+    }
+
+    public void setSwitchPermissions(int switchPermissions) {
+        this.switchPermissions = switchPermissions;
+    }
+
+    public void setBlockUsePermissions(int blockUsePermissions) {
+        this.blockUsePermissions = blockUsePermissions;
+    }
+
+    public void setInteractPermissions(int interactPermissions) {
+        this.interactPermissions = interactPermissions;
     }
 
     public boolean allowPvp() {
@@ -381,6 +450,7 @@ public class Region extends GeopolObject implements PermissionHolder {
         claimTask = Bukkit.getScheduler().runTaskLater(UnitedLands.instance(), () -> {
 
             setCountry(getClaimantCountry());
+            setAdministrator(getClaimantCountry().getLeader());
             getClaimantCountry().addRegion(this);
 
             removeClaimantCountry();

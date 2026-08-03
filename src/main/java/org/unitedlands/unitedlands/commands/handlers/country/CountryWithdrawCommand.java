@@ -46,7 +46,7 @@ public class CountryWithdrawCommand extends CountryCommandHandler {
         }
 
         if (!UnitedLandsEconomyManager.instance().has(context.country().getUuid(), amount)) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_COUNTRY.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get(Message.PREFIX.path()));
             return;
         }

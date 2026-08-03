@@ -14,6 +14,7 @@ import org.unitedlands.interfaces.ICommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementAddTrustCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementClaimCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementCreateCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementDeleteCommand;
@@ -26,6 +27,7 @@ import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementLeaveC
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementMapCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementPermissionCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRankSubcommand;
+import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementRemoveTrustCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetNameCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetBoardCommand;
 import org.unitedlands.unitedlands.commands.handlers.settlement.SettlementSetColorCommand;
@@ -72,6 +74,8 @@ public class SettlementCommands extends BaseCommandExecutor<UnitedLands> {
         handlers.put("joincountry", new SettlementJoinCountryCommand(plugin, messageProvider));
         handlers.put("settaxes", new SettlementSetTaxesCommand(plugin, messageProvider));
         handlers.put("usetaxpercent", new SettlementUseTaxPercentCommand(plugin, messageProvider));
+        handlers.put("addtrust", new SettlementAddTrustCommand(plugin, messageProvider));
+        handlers.put("removetrust", new SettlementRemoveTrustCommand(plugin, messageProvider));
     }
 
     @Override

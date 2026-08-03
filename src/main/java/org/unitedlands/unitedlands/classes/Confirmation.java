@@ -44,6 +44,17 @@ public class Confirmation {
         return title;
     }
 
+    public String getFilledTitle() {
+        if (title != null && replacements != null) {
+            var filled = title;
+            for (var entry : replacements.entrySet()) {
+                filled = filled.replace("{" + entry.getKey() + "}", entry.getValue());
+            }
+            return filled;
+        }
+        return title;
+    }
+
     public Confirmation setTitle(String title) {
         this.title = title;
         return this;
@@ -108,7 +119,7 @@ public class Confirmation {
         List<DialogBody> dialogBody = new ArrayList<>();
         var miniMessage = MiniMessage.miniMessage();
 
-        dialogBody.add(DialogBody.plainMessage(miniMessage.deserialize(getTitle())));
+        dialogBody.add(DialogBody.plainMessage(miniMessage.deserialize(getFilledTitle())));
 
         Dialog dialog = Dialog.create(builder -> builder.empty().base(DialogBase.builder(Component.text("Confirmation")).body(dialogBody).build())
                 .type(DialogType.confirmation(ActionButton.builder(Component.text("Approve")).action(DialogAction.customClick((view, audience) -> {

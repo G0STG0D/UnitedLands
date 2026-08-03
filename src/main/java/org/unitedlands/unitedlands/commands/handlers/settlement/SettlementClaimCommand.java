@@ -68,7 +68,7 @@ public class SettlementClaimCommand extends SettlementCommandHandler {
 
         var claimCosts = CostUtils.getSettlementClaimCosts(context.settlement());
         if (!UnitedLandsEconomyManager.instance().has(context.settlement().getUuid(), claimCosts)) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_SETTLEMENT.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(claimCosts)),
                     messageProvider.get(Message.PREFIX.path()));
             return;

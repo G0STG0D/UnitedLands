@@ -12,8 +12,8 @@ public class SettlementRankSubcommand extends BaseSubcommandHandler<UnitedLands>
 
     @Override
     protected void registerSubHandlers() {
-        subHandlers.put("add", new SettlementRankAddCommand(plugin, messageProvider));
-        subHandlers.put("remove", new SettlementRankRemoveCommand(plugin, messageProvider));
+        subHandlers.put("add", new SettlementAddRankCommand(plugin, messageProvider));
+        subHandlers.put("remove", new SettlementRemoveRankCommand(plugin, messageProvider));
     }
 
 }

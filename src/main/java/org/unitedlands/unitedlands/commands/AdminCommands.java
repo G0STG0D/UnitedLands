@@ -5,7 +5,7 @@ import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.commands.handlers.admin.AdminMapCommand;
 import org.unitedlands.unitedlands.commands.handlers.admin.ReloadCommand;
-import org.unitedlands.unitedlands.commands.handlers.admin.TestImportCommand;
+import org.unitedlands.unitedlands.commands.handlers.admin.AdminImportCommand;
 import org.unitedlands.unitedlands.commands.handlers.admin.country.AdminCountrySubcommands;
 import org.unitedlands.unitedlands.commands.handlers.admin.settlement.AdminSettlementSubcommands;
 import org.unitedlands.unitedlands.commands.handlers.admin.towny.AdminTownySubcommands;
@@ -19,7 +19,7 @@ public class AdminCommands extends BaseCommandExecutor<UnitedLands> {
     @Override
     protected void registerHandlers() {
 
-        handlers.put("testimport", new TestImportCommand(plugin, messageProvider));
+        handlers.put("testimport", new AdminImportCommand(plugin, messageProvider));
 
         var settlementSubCommands = new AdminSettlementSubcommands(plugin, messageProvider);
         handlers.put("s", settlementSubCommands);

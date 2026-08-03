@@ -37,10 +37,12 @@ public class AdminSettlementSetNameCommand extends SettlementAdminCommandHandler
             return;
         }
 
-        settlement.setSpawn(player.getLocation());
+        var oldname = settlement.getName();
+
+        settlement.setName(args[1]);
 
         Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__SETTLEMENT__SETNAME__SUCCESS.path()),
-                Map.of("settlement", args[0]), messageProvider.get(Message.PREFIX.path()));
+                Map.of("oldname", oldname, "newname", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

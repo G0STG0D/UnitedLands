@@ -16,9 +16,9 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementRankRemoveCommand extends SettlementCommandHandler {
+public class SettlementRemoveRankCommand extends SettlementCommandHandler {
 
-    public SettlementRankRemoveCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public SettlementRemoveRankCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
     }
 
@@ -74,7 +74,7 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
 
         if (!context.settlement().equals(targetCitizen.getSettlement())) {
             Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__NOT_IN_SETTLEMENT.path()),
-                    Map.of("name", args[0]), messageProvider.get(Message.PREFIX.path()));
+                    Map.of("citizen", args[0]), messageProvider.get(Message.PREFIX.path()));
             return;
         }
         
@@ -86,7 +86,7 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
 
         if (!targetCitizen.getSettlementRanks().contains(args[1])) {
             Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__RANK_NOT_OWNED.path()),
-                    Map.of("rank", args[1], "name", targetCitizen.getName()),
+                    Map.of("rank", args[1], "citizen", targetCitizen.getName()),
                     messageProvider.get(Message.PREFIX.path()));
             return;
         }
@@ -116,7 +116,7 @@ public class SettlementRankRemoveCommand extends SettlementCommandHandler {
         }
 
         Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENT__REMOVERANK__SUCCESS.path()),
-                Map.of("rank", args[1], "name", targetCitizen.getName()),
+                Map.of("rank", args[1], "citizen", targetCitizen.getName()),
                 messageProvider.get(Message.PREFIX.path()));
 
     }

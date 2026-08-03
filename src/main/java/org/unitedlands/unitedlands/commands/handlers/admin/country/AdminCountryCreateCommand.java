@@ -78,7 +78,8 @@ public class AdminCountryCreateCommand extends CountryAdminCommandHandler {
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
         Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__CREATE__SUCCESS.path()),
-                Map.of("country", country.getCleanName()), messageProvider.get(Message.PREFIX.path()));
+                Map.of("country", country.getCleanName(), "settlement", settlement.getName(), "region", region.getName()),
+                messageProvider.get(Message.PREFIX.path()));
 
     }
 

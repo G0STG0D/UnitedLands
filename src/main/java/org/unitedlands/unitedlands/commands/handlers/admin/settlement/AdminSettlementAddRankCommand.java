@@ -14,9 +14,9 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
-public class AdminSettlementRankAddCommand extends SettlementAdminCommandHandler {
+public class AdminSettlementAddRankCommand extends SettlementAdminCommandHandler {
 
-    public AdminSettlementRankAddCommand(UnitedLands plugin, IMessageProvider messageProvider) {
+    public AdminSettlementAddRankCommand(UnitedLands plugin, IMessageProvider messageProvider) {
         super(plugin, messageProvider);
 
     }
@@ -41,8 +41,8 @@ public class AdminSettlementRankAddCommand extends SettlementAdminCommandHandler
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 3) {
-            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDRANK__USAGE.path()), 
-            null, messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__ADDRANK__USAGE.path()),
+                    null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -57,13 +57,15 @@ public class AdminSettlementRankAddCommand extends SettlementAdminCommandHandler
         }
 
         if (!citizen.hasSettlement() || !settlement.equals(citizen.getSettlement())) {
-            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__CITIZEN_NOT_IN_SETTLEMENT.path()), Map.of("citizen", citizen.getName()),
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__CITIZEN_NOT_IN_SETTLEMENT.path()),
+                    Map.of("citizen", citizen.getName(), "settlement", settlement.getName()),
                     messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
         if (!PermissionManager.instance().getSettlementRanks().contains(args[2])) {
-            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()), Map.of("rank", args[2]), messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(sender, messageProvider.get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()), Map.of("rank", args[2]),
+                    messageProvider.get(Message.PREFIX.path()));
             return;
         }
 

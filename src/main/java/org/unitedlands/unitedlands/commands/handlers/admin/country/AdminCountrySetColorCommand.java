@@ -47,7 +47,7 @@ public class AdminCountrySetColorCommand extends CountryAdminCommandHandler {
         UnitedLandsDataManager.instance().updateCountryDbData(country);
 
         Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__SETCOLOR__SUCCESS.path()),
-                Map.of("country", country.getName()), messageProvider.get(Message.PREFIX.path()));
+                Map.of("country", country.getName(), "color", args[1]), messageProvider.get(Message.PREFIX.path()));
     }
 
     @Override

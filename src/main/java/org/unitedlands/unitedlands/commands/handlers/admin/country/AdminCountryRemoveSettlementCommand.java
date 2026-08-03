@@ -26,7 +26,7 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
         var player = (Player) sender;
 
         if (args.length != 2) {
-            Messenger.sendMessage(player, messageProvider.get("admin.usage.country.removesettlement"),
+            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__REMOVESETTLEMENT__USAGE.path()),
                     null, messageProvider.get(Message.PREFIX.path()));
             return;
         }
@@ -43,8 +43,8 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
 
         if (!settlement.hasCountry() || !country.equals(settlement.getCountry())) {
             Messenger.sendMessage(player,
-                    messageProvider.get("admin.country.removesettlement.settlement-not-in-country"),
-                    null, messageProvider.get(Message.PREFIX.path()));
+                    messageProvider.get(Message.ADMIN__COUNTRY__REMOVESETTLEMENT__NOT_IN_COUNTRY.path()),
+                    Map.of("settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 
@@ -54,7 +54,7 @@ public class AdminCountryRemoveSettlementCommand extends CountryAdminCommandHand
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-        Messenger.sendMessage(player, messageProvider.get("admin.country.removesettlement.success"),
+        Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__COUNTRY__REMOVESETTLEMENT__SUCCESS.path()),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),
                 messageProvider.get(Message.PREFIX.path()));
     }

@@ -46,7 +46,7 @@ public class SettlementWithdrawCommand extends SettlementCommandHandler {
         }
 
         if (!UnitedLandsEconomyManager.instance().has(context.settlement().getUuid(), amount)) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS.path()),
+            Messenger.sendMessage(context.player(), messageProvider.get(Message.GENERAL_ERRORS__NO_FUNDS_SETTLEMENT.path()),
                     Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), messageProvider.get(Message.PREFIX.path()));
             return;
         }

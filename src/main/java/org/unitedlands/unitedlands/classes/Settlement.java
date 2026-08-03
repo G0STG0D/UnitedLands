@@ -55,6 +55,11 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     @DatabaseField(canBeNull = false, columnName = "public")
     private boolean isPublic = true;
 
+    @DatabaseField(canBeNull = false, columnName = "ruined")
+    private boolean ruined = true;
+    @DatabaseField(canBeNull = true, columnName = "ruin_time")
+    private Long ruinedTime;
+
     @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "citizens_serialized")
     private String citizensSerialized;
     private transient Set<Citizen> citizens;

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
+import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.FloatMetaDataField;
@@ -19,81 +20,72 @@ import org.unitedlands.utils.Messenger;
 
 public class CitizenInfoScreen extends InfoScreen {
 
-        public CitizenInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, Citizen citizen) {
-                super(plugin, messageProvider);
+    public CitizenInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, Citizen citizen) {
+        super(plugin, messageProvider);
 
-                var configSection = plugin.getMessageConfig().get().getConfigurationSection("info-screens.citizen");
-                if (configSection == null)
-                        return;
+        var header = buildHeader(citizen.getName());
+        addComponent("header", header);
 
-                var header = buildHeader(citizen.getName());
-                addComponent("header", header);
+        var joinDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(citizen.getJoined());
+        var logonDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(citizen.getLastLogon());
 
-                var joinDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(citizen.getJoined());
-                var logonDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(citizen.getLastLogon());
-                var registered = Messenger.getMessage(messageProvider.get("info-screens.citizen.registered"),
-                                Map.of("registered", joinDate, "lastlogon", logonDate));
-                addComponent("registered", registered);
+        addComponent("registered",
+                messageProvider.get(Message.INFO_SCREENS__CITIZEN__REGISTERED.path()),
+                Map.of("registered", joinDate, "lastlogon", logonDate));
 
-                var settlement = Messenger.getMessage(messageProvider.get("info-screens.citizen.settlement-country"),
-                                Map.of("settlement",
-                                                citizen.getSettlement() != null ? citizen.getSettlement().getCleanName()
-                                                                : "-",
-                                                "country",
-                                                citizen.getCountry() != null ? citizen.getCountry().getCleanName()
-                                                                : "-"));
-                addComponent("settlement-country", settlement);
+        addComponent("settlement-country",
+                messageProvider.get(Message.INFO_SCREENS__CITIZEN__COUNTRY.path()),
+                Map.of("settlement", citizen.getSettlement() != null ? citizen.getSettlement().getCleanName() : "-",
+                        "country", citizen.getCountry() != null ? citizen.getCountry().getCleanName() : "-"));
 
-                var settlementranks = Messenger.getMessage(messageProvider.get("info-screens.citizen.settlement-ranks"),
-                                Map.of("settlementranks", String.join(", ", citizen.getSettlementRanks())));
-                addComponent("settlement-ranks", settlementranks);
+        addComponent("settlement-ranks",
+                messageProvider.get(Message.INFO_SCREENS__CITIZEN__SETTLEMENT_RANKS.path()),
+                Map.of("settlementranks", String.join(", ", citizen.getSettlementRanks())));
 
-                var countryranks = Messenger.getMessage(messageProvider.get("info-screens.citizen.country-ranks"),
-                                Map.of("countryranks", String.join(", ", citizen.getCountryRanks())));
-                addComponent("country-ranks", countryranks);
+        addComponent("country-ranks",
+                Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__CITIZEN__COUNTRY_RANKS.path()),
+                        Map.of("countryranks", String.join(", ", citizen.getCountryRanks()))));
 
-                var balance = Messenger.getMessage(messageProvider.get("info-screens.citizen.balance"),
-                                Map.of("balance",
-                                                UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance()
-                                                                .getBalance(citizen.getUuid()))));
-                addComponent("balance", balance);
+        addComponent("balance",
+                Message.INFO_SCREENS__CITIZEN__BALANCE.path(),
+                Map.of("balance", UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance().getBalance(citizen.getUuid()))));
 
-                var metadata = citizen.getMetadata();
+        var metadata = citizen.getMetadata();
 
-                if (metadata != null && !metadata.isEmpty()) {
+        if (metadata != null && !metadata.isEmpty()) {
 
-                        var metaDataWrapper = messageProvider.get("info-screens.citizen.metadata");
+            var metaDataWrapper = messageProvider.get(Message.INFO_SCREENS__CITIZEN__METADATA.path());
 
-                        List<String> fields = new ArrayList<>();
-                        for (var m : metadata.values()) {
-                                if (!m.showInScreens())
-                                        continue;
-                                if (m.getValue() == null)
-                                        continue;
-                                var field = "<bold>" + m.getLabel() + "</bold>: ";
-                                if (m instanceof StringMetaDataField typedData) {
-                                        field += typedData.getValue();
-                                } else if (m instanceof IntegerMetaDataField typedData) {
-                                        field += typedData.getValue();
-                                } else if (m instanceof LongMetaDataField typedData) {
-                                        field += typedData.getValue();
-                                } else if (m instanceof FloatMetaDataField typedData) {
-                                        field += String.format("%.2f", typedData.getValue());
-                                } else if (m instanceof DoubleMetaDataField typedData) {
-                                        field += String.format("%.2f", typedData.getValue());
-                                } else if (m instanceof BooleanMetaDataField typedData) {
-                                        field += typedData.getValue() ? "Yes" : "No";
-                                }
-                                fields.add(field);
-                        }
-
-                        if (!fields.isEmpty()) {
-                                var finalMetaDataString = metaDataWrapper.replace("{metadata}",
-                                                String.join("<dark_gray> | </dark_gray>", fields));
-                                var metadataComponent = Messenger.getMessage(finalMetaDataString);
-                                addComponent("metadata", metadataComponent);
-                        }
+            List<String> fields = new ArrayList<>();
+            for (var m : metadata.values()) {
+                if (!m.showInScreens())
+                    continue;
+                if (m.getValue() == null)
+                    continue;
+                var field = "<bold>" + m.getLabel() + "</bold>: ";
+                if (m instanceof StringMetaDataField typedData) {
+                    field += typedData.getValue();
+                } else if (m instanceof IntegerMetaDataField typedData) {
+                    field += typedData.getValue();
+                } else if (m instanceof LongMetaDataField typedData) {
+                    field += typedData.getValue();
+                } else if (m instanceof FloatMetaDataField typedData) {
+                    field += String.format("%.2f", typedData.getValue());
+                } else if (m instanceof DoubleMetaDataField typedData) {
+                    field += String.format("%.2f", typedData.getValue());
+                } else if (m instanceof BooleanMetaDataField typedData) {
+                    field += typedData.getValue() ? "Yes" : "No";
                 }
+                fields.add(field);
+            }
+
+            if (!fields.isEmpty()) {
+                var finalMetaDataString = metaDataWrapper.replace("{metadata}",
+                        String.join("<dark_gray> | </dark_gray>", fields));
+                var metadataComponent = Messenger.getMessage(finalMetaDataString);
+                addComponent("metadata", metadataComponent);
+            }
         }
+    }
 
 }

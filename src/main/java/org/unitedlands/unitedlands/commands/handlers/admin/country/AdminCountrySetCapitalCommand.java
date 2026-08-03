@@ -57,7 +57,7 @@ public class AdminCountrySetCapitalCommand extends CountryAdminCommandHandler {
         if (!settlement.hasCountry() || !country.equals(settlement.getCountry())) {
             Messenger.sendMessage(player,
                     messageProvider.get(Message.ADMIN__COUNTRY__SETCAPITAL__SETTLEMENT_NOT_IN_COUNTRY.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+                    Map.of("settlement", settlement.getName()), messageProvider.get(Message.PREFIX.path()));
             return;
         }
 

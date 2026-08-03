@@ -44,6 +44,7 @@ public class BlockListener implements Listener {
 
         if (!PermissionManager.instance().checkLocationPermissions(player, event.getBlock().getLocation(),
                 PermissionType.PLACE)) {
+
             event.setCancelled(true);
             player.sendMessage(Component.text("§cYou cannot place blocks here."));
             return;

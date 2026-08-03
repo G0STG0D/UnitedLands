@@ -20,6 +20,7 @@ import org.unitedlands.unitedlands.classes.events.player.PlayerEnterSettlementEv
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitRegionEvent;
 import org.unitedlands.unitedlands.classes.events.player.PlayerExitSettlementEvent;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
+import org.unitedlands.unitedlands.managers.ChatChannelManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
@@ -33,12 +34,14 @@ public class PlayerBukkitListener implements Listener {
         Player player = event.getPlayer();
         updateCitizenRecord(player);
         updatePlayerLocation(player, new Location(player.getLocation().getWorld(), 0, 0, 0), player.getLocation());
+        ChatChannelManager.instance().registerPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         updatePlayerLocation(player, player.getLocation(), new Location(player.getLocation().getWorld(), 0, 0, 0));
+        ChatChannelManager.instance().unregisterPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

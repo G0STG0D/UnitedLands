@@ -20,7 +20,7 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
     }
 
     List<String> permissions = List.of("break", "place", "containers", "switch", "block_use", "interact");
-    List<String> memberships = List.of("town_residents", "region_residents", "country_residents", "foreigners");
+    List<String> memberships = List.of("settlement_residents", "region_residents", "country_residents", "foreigners");
     List<String> switches = List.of("on", "off");
 
     @Override
@@ -51,7 +51,7 @@ public class SettlementPermissionCommand extends SettlementCommandHandler {
         
         int membership = 0;
         switch (args[1]) {
-            case "town_residents":
+            case "settlement_residents":
                 membership = LocationMembership.SETTLEMENT_RESIDENT;
                 break;
             case "region_residents":
