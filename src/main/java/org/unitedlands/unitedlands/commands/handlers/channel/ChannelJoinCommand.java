@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.unitedlands.classes.BaseCommandHandler;
 import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.unitedlands.classes.chat.ChatChannelType;
+import org.unitedlands.unitedlands.classes.ChatChannel;
 import org.unitedlands.unitedlands.managers.ChatChannelManager;
 
 public class ChannelJoinCommand extends BaseCommandHandler<UnitedLands> {
@@ -20,7 +20,7 @@ public class ChannelJoinCommand extends BaseCommandHandler<UnitedLands> {
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1) {
-            return Arrays.stream(ChatChannelType.values()).map(Enum::toString).toList();
+            return Arrays.stream(ChatChannel.values()).map(Enum::toString).toList();
         }
         return null;
     }
@@ -31,7 +31,7 @@ public class ChannelJoinCommand extends BaseCommandHandler<UnitedLands> {
         if (args.length < 1)
             return;
 
-        ChatChannelManager.instance().switchChannel((Player) sender, ChatChannelType.valueOf(args[0]));
+        ChatChannelManager.instance().switchChannel((Player) sender, ChatChannel.valueOf(args[0]));
     }
 
 }

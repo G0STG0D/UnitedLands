@@ -1,6 +1,8 @@
 package org.unitedlands.unitedlands.utils;
 
 import org.bukkit.Location;
+import org.unitedlands.unitedlands.classes.GeopolAttribute;
+import org.unitedlands.unitedlands.classes.GeopolAttributeModifier;
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.FloatMetaDataField;
@@ -9,6 +11,10 @@ import org.unitedlands.unitedlands.classes.metadata.LocationMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.MetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
+import org.unitedlands.unitedlands.utils.serializers.GeopolAttributeDeserializer;
+import org.unitedlands.unitedlands.utils.serializers.GeopolAttributeModifierDeserializer;
+import org.unitedlands.unitedlands.utils.serializers.GeopolAttributeModifierSerializer;
+import org.unitedlands.unitedlands.utils.serializers.GeopolAttributeSerializer;
 import org.unitedlands.unitedlands.utils.serializers.LocationDeserializer;
 import org.unitedlands.unitedlands.utils.serializers.LocationSerializer;
 import org.unitedlands.unitedlands.utils.serializers.MetaDataFieldDeserializer;
@@ -24,6 +30,11 @@ public class JsonUtils {
             .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapter(Location.class, new LocationSerializer())
             .registerTypeAdapter(Location.class, new LocationDeserializer())
+
+            .registerTypeAdapter(GeopolAttribute.class, new GeopolAttributeSerializer())
+            .registerTypeAdapter(GeopolAttribute.class, new GeopolAttributeDeserializer())
+            .registerTypeAdapter(GeopolAttributeModifier.class, new GeopolAttributeModifierSerializer())
+            .registerTypeAdapter(GeopolAttributeModifier.class, new GeopolAttributeModifierDeserializer())
 
             .registerTypeAdapter(MetaDataField.class, new MetaDataFieldSerializer())
             .registerTypeAdapter(MetaDataField.class, new MetaDataFieldDeserializer())
@@ -43,7 +54,7 @@ public class JsonUtils {
             .registerTypeAdapter(FloatMetaDataField.class, new MetaDataFieldDeserializer())
             .registerTypeAdapter(LocationMetaDataField.class, new MetaDataFieldDeserializer())
             .registerTypeAdapter(LongMetaDataField.class, new MetaDataFieldDeserializer())
-            
+
             .create();
 
     public static <T> T deserialize(String jsonString, Class<T> clazz) {

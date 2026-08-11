@@ -28,6 +28,8 @@ public class Region extends GeopolObject implements PermissionHolder {
     private int homeChunkCoordinatesZ;
     @DatabaseField(canBeNull = true, columnName = "polygon_serialized", dataType = DataType.LONG_STRING)
     private String polygonSerialized;
+    @DatabaseField(canBeNull = false, columnName = "area")
+    private double area;
     @DatabaseField(canBeNull = true, columnName = "spawn_serialized")
     private String spawnSerialized;
 
@@ -154,6 +156,14 @@ public class Region extends GeopolObject implements PermissionHolder {
         return Arrays.stream(this.polygonSerialized.split(";")).mapToDouble(Double::parseDouble).toArray();
     }
 
+    public double getArea() {
+        return area;
+    }
+
+    public void setArea(double area) {
+        this.area = area;
+    }
+
     public void calculateBounds() {
         calculateBounds(getPolygon());
     }
@@ -256,6 +266,8 @@ public class Region extends GeopolObject implements PermissionHolder {
     }
 
     public void setAdministrator(Citizen citizen) {
+        if (citizen == null)
+            return;
         this.administrator = citizen;
         this.administratorUuid = citizen.getUuid();
     }
@@ -435,6 +447,21 @@ public class Region extends GeopolObject implements PermissionHolder {
             return false;
 
         return PolygonUtils.isPointInPolygon(regionPolygon, px, py);
+    }
+
+    @Override
+    public void saveMetadata() {
+        UnitedLandsDataManager.instance().updateRegionDbData(this);
+    }
+
+    @Override
+    public void saveAttributes() {
+        UnitedLandsDataManager.instance().updateRegionDbData(this);
+    }
+
+    @Override
+    public void saveAttributeModifiers() {
+        UnitedLandsDataManager.instance().updateRegionDbData(this);
     }
 
     public void startClaimTask() {

@@ -9,7 +9,7 @@ public class SchemaVersion {
     private int id = 1;
 
     @DatabaseField
-    private int version;
+    private int version = 4;
 
     public SchemaVersion() {
     }

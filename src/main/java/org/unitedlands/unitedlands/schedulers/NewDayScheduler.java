@@ -4,10 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.Calendar;
-import java.util.TimeZone;
-
-import org.apache.commons.lang3.text.StrTokenizer;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.unitedlands.unitedlands.UnitedLands;
@@ -70,6 +66,14 @@ public class NewDayScheduler {
         Bukkit.getScheduler().runTaskLater(UnitedLands.instance(), () -> {
             scheduleNewDay();
         }, 200L);
+    }
+
+    public void stopScheduler() {
+        if (scheduleTask != null)
+            scheduleTask.cancel();
+        if (newDayTask != null)
+            newDayTask.cancel();
+        Logger.log("New day scheduler stoped", "UnitedLands");
     }
 
     public long getSecondsUntilTime(String time) {

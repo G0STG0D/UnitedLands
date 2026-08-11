@@ -16,6 +16,8 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Country;
+import org.unitedlands.unitedlands.classes.GeopolAttribute;
+import org.unitedlands.unitedlands.classes.GeopolAttributeType;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.RegionIndex;
 import org.unitedlands.unitedlands.classes.Settings;
@@ -78,6 +80,8 @@ public class UnitedLandsDataManager {
                 }
 
             }).get();
+
+            validateGeopolAttributes();
 
             Pl3xMapRenderer.instance().setDebugMode(false);
             Pl3xMapRenderer.instance().addSettlementsToRenderQueue(getSettlements());
@@ -154,6 +158,30 @@ public class UnitedLandsDataManager {
             countries.put(country.getUuid(), country);
         }
         Logger.log("Loaded " + countries.size() + " countries to memory.", "UnitedLands");
+    }
+
+    private void validateGeopolAttributes() {
+
+        // Make sure all geopol objects have the correct attributes
+
+        for (var country : countries.values()) {
+            boolean changed = false;
+            if (country.getAttribute(GeopolAttributeType.MOBILISATION) == null) {
+                changed = true;
+                country.addAttribute(GeopolAttributeType.MOBILISATION, new GeopolAttribute(0, 0, 100, 1));
+            }
+            if (country.getAttribute(GeopolAttributeType.DIPLOMACY) == null) {
+                changed = true;
+                country.addAttribute(GeopolAttributeType.DIPLOMACY, new GeopolAttribute(100, 0, 100, 0));
+            }
+            if (country.getAttribute(GeopolAttributeType.MAX_CLAIM) == null) {
+                changed = true;
+                country.addAttribute(GeopolAttributeType.MAX_CLAIM, new GeopolAttribute(1, 0, 1, 0));
+            }
+
+            if (changed)
+                country.saveAttributes();
+        }
     }
 
     public void clearData() {

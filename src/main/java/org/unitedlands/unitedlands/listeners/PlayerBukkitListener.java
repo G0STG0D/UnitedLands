@@ -66,6 +66,7 @@ public class PlayerBukkitListener implements Listener {
             citizen = new Citizen(player);
             citizen.setJoined(System.currentTimeMillis());
             citizen.setName(player.getName());
+            citizen.setPlayer(player);
             citizen.setLastLogon(System.currentTimeMillis());
 
             (new CitizenCreatedEvent(citizen)).callEvent();
@@ -73,6 +74,7 @@ public class PlayerBukkitListener implements Listener {
             UnitedLandsDataManager.instance().createCitizenDbData(citizen);
         } else {
             citizen.setName(player.getName());
+            citizen.setPlayer(player);
             citizen.setLastLogon(System.currentTimeMillis());
             UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
         }

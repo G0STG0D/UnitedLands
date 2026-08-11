@@ -17,8 +17,6 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.unitedlands.utils.SerializationUtils;
-import org.unitedlands.utils.Logger;
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -526,7 +524,16 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     @Override
     public void saveMetadata() {
-        Logger.log("Saving settlement...");
+        UnitedLandsDataManager.instance().updateSettlementDbData(this);
+    }
+
+    @Override
+    public void saveAttributes() {
+        UnitedLandsDataManager.instance().updateSettlementDbData(this);
+    }
+
+    @Override
+    public void saveAttributeModifiers() {
         UnitedLandsDataManager.instance().updateSettlementDbData(this);
     }
 

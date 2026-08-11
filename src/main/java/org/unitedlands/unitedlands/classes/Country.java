@@ -92,6 +92,10 @@ public class Country extends GeopolObject {
         this.bonusRegions = bonusRegions;
     }
 
+    public double getArea() {
+        return getRegions().stream().mapToDouble(Region::getArea).sum();
+    }
+
     public String getSpawnSerialized() {
         return spawnSerialized;
     }
@@ -238,6 +242,16 @@ public class Country extends GeopolObject {
 
     @Override
     public void saveMetadata() {
+        UnitedLandsDataManager.instance().updateCountryDbData(this);
+    }
+
+    @Override
+    public void saveAttributes() {
+        UnitedLandsDataManager.instance().updateCountryDbData(this);
+    }
+
+    @Override
+    public void saveAttributeModifiers() {
         UnitedLandsDataManager.instance().updateCountryDbData(this);
     }
 

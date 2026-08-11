@@ -132,7 +132,23 @@ public class DatabaseManager {
             version.setVersion(2);
             versionDao.update(version);
         }
-        
+
+        if (version.getVersion() < 3) {
+            versionDao.executeRaw("ALTER TABLE region ADD COLUMN area DOUBLE NOT NULL;");
+            version.setVersion(3);
+            versionDao.update(version);
+        }
+
+        if (version.getVersion() < 4) {
+            versionDao.executeRaw("ALTER TABLE settlement ADD COLUMN attributes_serialized MEDIUMTEXT NULL;");
+            versionDao.executeRaw("ALTER TABLE region ADD COLUMN attributes_serialized MEDIUMTEXT NULL;");
+            versionDao.executeRaw("ALTER TABLE country ADD COLUMN attributes_serialized MEDIUMTEXT NULL;");
+            versionDao.executeRaw("ALTER TABLE settlement ADD COLUMN attribute_modifiers_serialized MEDIUMTEXT NULL;");
+            versionDao.executeRaw("ALTER TABLE region ADD COLUMN attribute_modifiers_serialized MEDIUMTEXT NULL;");
+            versionDao.executeRaw("ALTER TABLE country ADD COLUMN attribute_modifiers_serialized MEDIUMTEXT NULL;");
+            version.setVersion(4);
+            versionDao.update(version);
+        }
     }
 
     public <T, ID> Dao<T, ID> getDao(Class<T> clazz) throws SQLException {

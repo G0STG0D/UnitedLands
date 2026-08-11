@@ -5,33 +5,16 @@ api-version: 1.18
 description: UnitedLands Core claiming and geopol plugin
 author: Theriel_
 depend: [ UnitedLib ]
-softdepend: [ Vault, Pl3xmap, Towny ]
+softdepend: [ Vault, Pl3xmap, Towny, PlaceholderAPI ]
 commands:
-   uladmin:
-      description: UnitedLands admin commands.
-      permission: united.lands.admin
-      default: op
-      aliases: [ula]
    channel:
       description: UnitedLands chat channel commands
-   country:
-      description: UnitedLands country commands.
-      aliases: [c]
    citizen:
       description: UnitedLands citizen commands.
       aliases: [cit]
-   region:
-      description: UnitedLands region commands.
-      aliases: [r]
    regionchunk:
       description: UnitedLands region chunk commands.
       aliases: [rc]
-   settlement:
-      description: UnitedLands settlement commands.
-      aliases: [s]
-   approve:
-      description: General confirmation command.
-      aliases: [confirm]   
    settlementchunk:
       description: UnitedLands region chunk commands.
       aliases: [plot]

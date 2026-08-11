@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
 import org.unitedlands.unitedlands.classes.interfaces.MetadataHolder;
 import org.unitedlands.unitedlands.classes.metadata.MetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.JsonUtils;
-
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -46,7 +46,8 @@ public class Citizen implements Identifiable, MetadataHolder {
     @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized", columnDefinition = "MEDIUMTEXT")
     private String metadataSerialized;
 
-    private OfflinePlayer player;
+    private OfflinePlayer offlinePlayer;
+    private Player player;
     private Settlement settlement;
     private transient Set<String> settlementRanks;
     private transient Set<String> countryRanks;
@@ -95,15 +96,24 @@ public class Citizen implements Identifiable, MetadataHolder {
         this.lastLogon = lastLogon;
     }
 
-    public OfflinePlayer getPlayer() {
-        if (player == null)
-            player = Bukkit.getOfflinePlayer(uuid);
-        return player;
+    public OfflinePlayer getOfflinePlayer() {
+        if (this.offlinePlayer == null)
+            this.offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        return this.offlinePlayer;
     }
 
-    public void setPlayer(OfflinePlayer player) {
+    public void setOfflinePlayer(OfflinePlayer player) {
+        this.offlinePlayer = player;
+    }
+
+    public Player getPlayer() {
+        if (this.player == null)
+            this.player = Bukkit.getPlayer(uuid);
+        return this.player;
+    }
+
+    public void setPlayer(Player player) {
         this.player = player;
-        this.uuid = player.getUniqueId();
     }
 
     public Settlement getSettlement() {

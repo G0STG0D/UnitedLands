@@ -1,0 +1,19 @@
+package org.unitedlands.unitedlands.commands.handlers.country;
+
+import org.bukkit.command.CommandSender;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
+
+@UnitedSubCommand(
+    parent          = CmdCountry.class,
+    name            = "set",
+    description     = "Country set commands",
+    usage           = "/country set <option> <argument>",
+    playerOnly      = true
+)
+public class CmdCountrySet implements UnitedCommandExecutor {
+
+    @Override
+    public void handleCommand(CommandSender sender, String[] args) { }
+
+}

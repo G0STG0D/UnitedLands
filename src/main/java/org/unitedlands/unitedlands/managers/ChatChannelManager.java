@@ -1,17 +1,20 @@
 package org.unitedlands.unitedlands.managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.ChatChannel;
 import org.unitedlands.unitedlands.classes.Citizen;
-import org.unitedlands.unitedlands.classes.chat.ChatChannel;
-import org.unitedlands.unitedlands.classes.chat.ChatChannelType;
+import org.unitedlands.unitedlands.classes.message.Message;
+import org.unitedlands.unitedlands.integrations.papi.PlaceholderAPIIntegration;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Logger;
 import org.unitedlands.utils.Messenger;
@@ -40,11 +43,10 @@ public class ChatChannelManager {
     }
 
     private final UnitedLands plugin;
-    @SuppressWarnings("unused")
     private final MessageProvider messageProvider;
 
-    private Map<String, ChatChannel> channels = new HashMap<>();
-    private Map<Player, ChatChannel> playerChannels = new HashMap<>();
+    private Set<Citizen> viewers = new HashSet<>();
+    private Map<UUID, ChatChannel> playerChannels = new HashMap<>();
 
     public ChatChannelManager(UnitedLands plugin, MessageProvider messageProvider) {
         instance = this;
@@ -68,67 +70,51 @@ public class ChatChannelManager {
 
                         switch (usedAlias) {
                         case "lc", "local", "localchat":
-                            sendMessage(sender, ChatChannelType.LOCAL, message);
+                            sendMessage(sender, ChatChannel.LOCAL, message);
                             break;
                         case "gc", "global", "globalchat":
-                            sendMessage(sender, ChatChannelType.GLOBAL, message);
+                            sendMessage(sender, ChatChannel.GLOBAL, message);
                             break;
                         case "stc", "staff", "staffchat":
-                            sendMessage(sender, ChatChannelType.STAFF, message);
+                            sendMessage(sender, ChatChannel.STAFF, message);
                             break;
                         case "sc", "settlementchat":
-                            sendMessage(sender, ChatChannelType.SETTLEMENT, message);
+                            sendMessage(sender, ChatChannel.SETTLEMENT, message);
                             break;
                         case "cc", "countrychat":
-                            sendMessage(sender, ChatChannelType.COUNTRY, message);
+                            sendMessage(sender, ChatChannel.COUNTRY, message);
                             break;
                         default:
                             break;
                         }
 
                         return Command.SINGLE_SUCCESS;
-                    })
-                    .build();
+                    }).build();
 
-            LiteralCommandNode<CommandSourceStack> localChatCommand = Commands.literal("localchat")
-                    .then(messageArgument)
-                    .executes(context -> {
-                        ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannelType.LOCAL);
-                        return 0;
-                    })
-                    .build();
+            LiteralCommandNode<CommandSourceStack> localChatCommand = Commands.literal("localchat").then(messageArgument).executes(context -> {
+                ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannel.LOCAL);
+                return 0;
+            }).build();
 
-            LiteralCommandNode<CommandSourceStack> globalChatCommand = Commands.literal("globachat")
-                    .then(messageArgument)
-                    .executes(context -> {
-                        ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannelType.GLOBAL);
-                        return 0;
-                    })
-                    .build();
+            LiteralCommandNode<CommandSourceStack> globalChatCommand = Commands.literal("globachat").then(messageArgument).executes(context -> {
+                ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannel.GLOBAL);
+                return 0;
+            }).build();
 
-            LiteralCommandNode<CommandSourceStack> staffChatCommand = Commands.literal("staffchat")
-                    .then(messageArgument)
-                    .executes(context -> {
-                        ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannelType.STAFF);
-                        return 0;
-                    })
-                    .build();
+            LiteralCommandNode<CommandSourceStack> staffChatCommand = Commands.literal("staffchat").then(messageArgument).executes(context -> {
+                ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannel.STAFF);
+                return 0;
+            }).build();
 
-            LiteralCommandNode<CommandSourceStack> settlementChatCommand = Commands.literal("settlementchat")
-                    .then(messageArgument)
-                    .executes(context -> {
-                        ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannelType.SETTLEMENT);
-                        return 0;
-                    })
-                    .build();
+            LiteralCommandNode<CommandSourceStack> settlementChatCommand = Commands.literal("settlementchat").then(messageArgument).executes(context -> {
+                ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannel.SETTLEMENT);
+                return 0;
+            }).build();
 
-            LiteralCommandNode<CommandSourceStack> countryChatCommand = Commands.literal("countrychat")
-                    .then(messageArgument)
-                    .executes(context -> {
-                        ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannelType.COUNTRY);
-                        return 0;
-                    })
-                    .build();
+            LiteralCommandNode<CommandSourceStack> countryChatCommand = Commands.literal("countrychat").then(messageArgument).executes(context -> {
+                ChatChannelManager.instance().switchChannel((Player) context.getSource().getSender(), ChatChannel.COUNTRY);
+                return 0;
+            }).build();
 
             commands.register(localChatCommand, "Local chat", List.of("lc", "local"));
             commands.register(globalChatCommand, "Global chat", List.of("gc", "global"));
@@ -140,52 +126,44 @@ public class ChatChannelManager {
 
     }
 
-    public void switchChannel(Player player, ChatChannelType type) {
+    public void switchChannel(Player player, ChatChannel channel) {
 
-        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
-        if (citizen == null) {
-            Logger.logError("Couldn't find citizen data for chat channel switch", "UnitedLands");
+        var senderViewer = viewers.stream().filter(c -> c.getUuid().equals(player.getUniqueId())).findFirst().orElse(null);
+        if (senderViewer == null) {
             return;
         }
 
-        var channel = getOrCreateChannel(citizen, type);
-        if (channel == null) {
-            Messenger.sendMessage(player, "<yellow>You don't have access to that channel.");
-            return;
-        }
-
-        playerChannels.put(player, channel);
-        Messenger.sendMessage(player, "Now talking in <" + channel.getType().getColor() + ">" + channel.getType() + "</" + channel.getType().getColor() + ">");
-    }
-
-    public ChatChannel getPlayerChannel(Player player) {
-        return playerChannels.get(player);
-    }
-
-    public ChatChannel getOrCreateChannel(Citizen citizen, ChatChannelType type) {
-
-        switch (type) {
-        case GLOBAL:
-            return channels.computeIfAbsent("global", v -> new ChatChannel("global", ChatChannelType.GLOBAL));
-        case LOCAL:
-            return channels.computeIfAbsent("local", v -> new ChatChannel("local", ChatChannelType.LOCAL));
-        case STAFF:
-            // TODO: Permission check
-            return channels.computeIfAbsent("staff", v -> new ChatChannel("staff", ChatChannelType.STAFF));
+        switch (channel) {
         case COUNTRY:
-            if (citizen.hasSettlement()) {
-                return channels.computeIfAbsent(citizen.getSettlement().getUuid().toString(),
-                        v -> new ChatChannel(citizen.getSettlement().getUuid().toString(), ChatChannelType.SETTLEMENT));
+            if (!senderViewer.hasCountry()) {
+                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NOT_IN_COUNTRY.path()), null,
+                        messageProvider.get(Message.PREFIX.path()));
+                return;
             }
             break;
         case SETTLEMENT:
-            if (citizen.hasCountry()) {
-                return channels.computeIfAbsent(citizen.getCountry().getUuid().toString(),
-                        v -> new ChatChannel(citizen.getCountry().getUuid().toString(), ChatChannelType.COUNTRY));
+            if (!senderViewer.hasSettlement()) {
+                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NOT_IN_SETTLEMENT.path()), null,
+                        messageProvider.get(Message.PREFIX.path()));
+                return;
             }
+        case STAFF:
+            if (!player.hasPermission("united.lands.admin")) {
+                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_PERMISSION.path()), null,
+                        messageProvider.get(Message.PREFIX.path()));
+                return;
+            }
+        default:
             break;
+
         }
-        return null;
+
+        playerChannels.put(player.getUniqueId(), channel);
+        Messenger.sendMessage(player, "Now talking in <" + channel.getColor() + ">" + channel + "</" + channel.getColor() + ">");
+    }
+
+    public ChatChannel getPlayerChannel(Player player) {
+        return playerChannels.get(player.getUniqueId());
     }
 
     public void registerPlayer(Player player) {
@@ -195,79 +173,106 @@ public class ChatChannelManager {
             Logger.logError("Could not add player " + player.getName() + " to chat because citizen data is missing.", "UnitedLands");
             return;
         }
+        viewers.add(citizen);
 
-        var globalChannel = getOrCreateChannel(citizen, ChatChannelType.GLOBAL);
-        globalChannel.addViewer(player);
+        Logger.debug("receivers: " + viewers.size());
+        Logger.debug("viewers: " + viewers.size());
 
-        var localChannel = getOrCreateChannel(citizen, ChatChannelType.LOCAL);
-        localChannel.addViewer(player);
-
-        if (player.isOp()) {
-            var staffChannel = getOrCreateChannel(citizen, ChatChannelType.STAFF);
-            staffChannel.addViewer(player);
-        }
-
-        playerChannels.put(player, globalChannel);
+        playerChannels.put(player.getUniqueId(), ChatChannel.GLOBAL);
     }
 
     public void unregisterPlayer(Player player) {
-        playerChannels.remove(player);
-        for (var channel : channels.values()) {
-            channel.removeViewer(player);
-        }
-        channels.values().removeIf(c -> c.getViewerCount() == 0 && c.getType().removeEmpty());
+        viewers.removeIf(v -> v.getUuid().equals(player.getUniqueId()));
+        playerChannels.remove(player.getUniqueId());
+        Logger.debug("viewers: " + viewers.size());
     }
 
-    public void sendMessage(Player player, ChatChannelType channelType, String message) {
+    public void sendMessage(Player player, ChatChannel channel, String message) {
 
-        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
-        if (citizen == null)
-            return;
-
-        var channel = getOrCreateChannel(citizen, channelType);
-        if (channel == null) {
-            Messenger.sendMessage(player, "<yellow>You don't have access to that channel.");
+        var senderViewer = viewers.stream().filter(c -> c.getUuid().equals(player.getUniqueId())).findFirst().orElse(null);
+        if (senderViewer == null) {
             return;
         }
 
-        Set<Player> viewers = new HashSet<>();
-        if (channel.getRange() == -1) {
-            viewers = channel.getViewers();
-        } else {
-            viewers = channel.getViewersInRange(player.getLocation());
+        List<Player> receivers = filterViewers(senderViewer, channel);
+        Logger.debug("receivers: " + receivers.size());
+        Logger.debug("receivers: " + receivers.stream().map(Player::getName).toList());
+
+        Logger.debug("viewers: " + viewers.size());
+        Logger.debug("viewers: " + viewers.stream().map(Citizen::getName).toList());
+
+
+        if (receivers.size() <= 1) {
+            Messenger.sendMessage(player, "<dark_gray>No one can hear you.</dark_gray>");
         }
 
-        var color = channel.getType().getColor();
+        var color = channel.getColor();
         var formattedMessage = getFormattedMessage(channel, message, color, player);
 
-        Audience.audience(viewers).sendMessage(formattedMessage);
+        Logger.debug(formattedMessage.toString());
+
+        Audience.audience(receivers).sendMessage(formattedMessage);
+    }
+
+    private List<Player> filterViewers(Citizen citizen, ChatChannel channel) {
+
+        switch (channel) {
+        case GLOBAL:
+            return viewers.stream().map(c -> c.getPlayer()).toList();
+        case LOCAL:
+            return viewers.stream()
+                    .filter(c -> c.getPlayer().getLocation().distanceSquared(citizen.getPlayer().getLocation()) <= 100 * 100)
+                    .map(c -> c.getPlayer()).toList();
+        case SETTLEMENT:
+            return viewers.stream().filter(c -> c.hasSettlement() && c.getSettlement().equals(citizen.getSettlement())).map(c -> c.getPlayer())
+                    .toList();
+        case COUNTRY:
+            return viewers.stream().filter(c -> c.hasCountry() && c.getCountry().equals(citizen.getCountry())).map(c -> c.getPlayer()).toList();
+        case STAFF:
+            return viewers.stream().filter(c -> c.getPlayer().hasPermission("united.lands.admin")).map(c -> c.getPlayer()).toList();
+        default:
+            break;
+        }
+        return new ArrayList<>();
     }
 
     public void handleMessage(AsyncChatEvent event) {
 
         var channel = getPlayerChannel(event.getPlayer());
+        var senderViewer = viewers.stream().filter(c -> c.getUuid().equals(event.getPlayer().getUniqueId())).findFirst().orElse(null);
+        if (senderViewer == null) {
+            return;
+        }
 
+        var receivers = filterViewers(senderViewer, channel);
         event.viewers().clear();
-        if (channel.getRange() == -1) {
-            event.viewers().addAll(channel.getViewers());
-        } else {
-            event.viewers().addAll(channel.getViewersInRange(event.getPlayer().getLocation()));
+        event.viewers().addAll(receivers);
+
+        Logger.debug("receivers: " + receivers.size());
+        Logger.debug("receivers: " + receivers.stream().map(Player::getName).toList());
+
+        Logger.debug("viewers: " + viewers.size());
+        Logger.debug("viewers: " + viewers.stream().map(Citizen::getName).toList());
+
+        if (receivers.size() <= 1) {
+            Messenger.sendMessage(event.getPlayer(), "<dark_gray>No one can hear you.</dark_gray>");
         }
 
         var text = PlainTextComponentSerializer.plainText().serialize(event.message());
-        var color = channel.getType().getColor();
+        var color = channel.getColor();
 
         event.renderer((source, sourceDisplayName, message, viewer) -> getFormattedMessage(channel, text, color, source));
-
     }
 
     private @NotNull TextComponent getFormattedMessage(ChatChannel channel, String text, String color, Player source) {
         var miniMessage = MiniMessage.miniMessage();
-        return Component.text()
-                .append(miniMessage.deserialize(channel.getType().getPrefix()))
-                .append(Component.text(source.getName()))
-                .append(miniMessage.deserialize("<dark_gray>: </dark_gray>"))
-                .append(miniMessage.deserialize("<" + color + ">" + text + "</" + color + ">"))
+
+        var prefix = channel.getPrefix();
+        if (plugin.usePAPI())
+            prefix = PlaceholderAPIIntegration.instance().setPlaceholders(source, prefix);
+
+        return Component.text().append(miniMessage.deserialize(prefix)).append(Component.text(source.getName()))
+                .append(miniMessage.deserialize("<dark_gray>: </dark_gray>")).append(miniMessage.deserialize("<" + color + ">" + text + "</" + color + ">"))
                 .build();
     }
 

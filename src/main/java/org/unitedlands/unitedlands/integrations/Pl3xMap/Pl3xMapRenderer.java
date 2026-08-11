@@ -267,7 +267,6 @@ public class Pl3xMapRenderer {
         var countryPolygons = country.getRegions().stream().map(Region::getPolygon).collect(Collectors.toList());
         var vassals = UnitedLandsDataManager.instance().getCountryVassals(country);
         if (vassals.size() > 0) {
-
             strokeWidth *= 1.5;
             for (var vassal : vassals) {
                 Logger.debug("Vassal: " + vassal.getName());
@@ -287,8 +286,14 @@ public class Pl3xMapRenderer {
         for (var mergedPolygon : mergedPolygons) {
             LinkedList<Point> polygonPoints = new LinkedList<>();
             for (int j = 0; j < mergedPolygon.length - 2; j = j + 2) {
-                var offsetPolygon = PolygonUtils.offsetPolygon(mergedPolygon, -1 * strokeWidth);
-                //polygonPoints.add(new Point((int) mergedPolygon[j], (int) mergedPolygon[j + 1]));
+                double[] offsetPolygon = null;
+                if (country.getOverlord() == null) {
+                    offsetPolygon = PolygonUtils.offsetPolygon(mergedPolygon, -1 * strokeWidth);
+                } else {
+                    offsetPolygon = PolygonUtils.offsetPolygon(mergedPolygon, -1 * strokeWidth * 3);
+                }
+                // polygonPoints.add(new Point((int) mergedPolygon[j], (int) mergedPolygon[j +
+                // 1]));
                 polygonPoints.add(new Point((int) offsetPolygon[j], (int) offsetPolygon[j + 1]));
             }
             finalPolygons.add(new Polygon(key, new Polyline("border-" + country.getUuid().toString() + "-" + i, polygonPoints)));

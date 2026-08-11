@@ -1,7 +1,9 @@
 package org.unitedlands.unitedlands.classes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,9 +36,15 @@ public class GeopolObject implements Identifiable, MetadataHolder {
 
     @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "metadata_serialized", columnDefinition = "MEDIUMTEXT")
     private String metadataSerialized;
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "attributes_serialized", columnDefinition = "MEDIUMTEXT")
+    private String attributesSerialized;
+    @DatabaseField(canBeNull = true, dataType = DataType.LONG_STRING, columnName = "attribute_modifiers_serialized", columnDefinition = "MEDIUMTEXT")
+    private String attributesModifiersSerialized;
 
     protected transient World world;
     protected transient Map<String, MetaDataField<?>> metadata;
+    protected transient Map<GeopolAttributeType, GeopolAttribute> attributes;
+    protected transient List<GeopolAttributeModifier> attributeModifiers;
 
     @Override
     public UUID getUuid() {
@@ -146,6 +154,87 @@ public class GeopolObject implements Identifiable, MetadataHolder {
     }
 
     public void saveMetadata() {
+    }
+
+    public Map<GeopolAttributeType, GeopolAttribute> getAttributes() {
+        if (attributes == null && attributesSerialized != null && !attributesSerialized.isEmpty()) {
+            var t = new TypeToken<Map<GeopolAttributeType, GeopolAttribute>>() {
+            };
+            attributes = JsonUtils.deserialize(attributesSerialized, t);
+        }
+        return attributes;
+    }
+
+    public boolean hasAttribute(GeopolAttributeType type) {
+        return getAttributes().containsKey(type);
+    }
+
+    public GeopolAttribute getAttribute(GeopolAttributeType type) {
+        if (getAttributes() == null)
+            return null;
+        return getAttributes().get(type);
+    }
+
+    public void addAttribute(GeopolAttributeType type, GeopolAttribute attribute) {
+        if (getAttributes() == null)
+            attributes = new HashMap<>();
+        attributes.put(type, attribute);
+        attributesSerialized = JsonUtils.serialize(attributes);
+    }
+
+    public void removeAttribute(GeopolAttributeType type) {
+        if (getAttributes() == null)
+            return;
+        attributes.remove(type);
+        attributesSerialized = JsonUtils.serialize(attributes);
+    }
+
+    public void saveAttributes() {
+    }
+
+    public List<GeopolAttributeModifier> getAttributeModifiers() {
+        if (attributeModifiers == null && attributesModifiersSerialized != null && !attributesModifiersSerialized.isEmpty()) {
+            var t = new TypeToken<List<GeopolAttributeModifier>>() {
+            };
+            attributeModifiers = JsonUtils.deserialize(attributesModifiersSerialized, t);
+        }
+        return attributeModifiers;
+    }
+
+    public List<GeopolAttributeModifier> getAttributeModifiers(GeopolAttributeType type) {
+        if (getAttributeModifiers() == null)
+            return null;
+        return getAttributeModifiers().stream().filter(m -> m.getType().equals(type)).toList();
+    }
+
+    public GeopolAttributeModifier getAttributeModifier(String key) {
+        if (getAttributeModifiers() == null)
+            return null;
+        return getAttributeModifiers().stream().filter(m -> m.getKey().equals(key)).findFirst().orElse(null);
+    }
+
+    public void addAttributeModifier(GeopolAttributeModifier modifier) {
+        if (getAttributeModifiers() == null)
+            attributeModifiers = new ArrayList<>();
+        attributeModifiers.add(modifier);
+        attributesModifiersSerialized = JsonUtils.serialize(attributeModifiers);
+    }
+
+    public void removeAttributeModifiers(GeopolAttributeType type) {
+        if (getAttributeModifiers() == null)
+            return;
+        attributeModifiers.removeIf(m -> m.getType().equals(type));
+        attributesModifiersSerialized = JsonUtils.serialize(attributeModifiers);
+    }
+
+    public void removeAttributeModifier(String key) {
+        if (getAttributeModifiers() == null)
+            attributeModifiers = new ArrayList<>();
+        attributeModifiers.removeIf(m -> m.getKey().equals(key));
+        attributesModifiersSerialized = JsonUtils.serialize(attributeModifiers);
+    }
+
+    public void saveAttributeModifiers() {
     }
 
     @Override

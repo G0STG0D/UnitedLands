@@ -1,0 +1,149 @@
+package org.unitedlands.unitedlands.commands.handlers.settlement;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.unitedlands.classes.Confirmation;
+import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.events.settlement.SettlementCreatedEvent;
+import org.unitedlands.unitedlands.classes.message.Message;
+import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
+import org.unitedlands.unitedlands.utils.CoordinateUtils;
+import org.unitedlands.unitedlands.utils.MessageProvider;
+import org.unitedlands.utils.Messenger;
+
+@UnitedSubCommand(
+    parent          = CmdSettlement.class,
+    name            = "create",
+    description     = "Creates a new settlement",
+    usage           = "/settlement create <settlement_name>",
+    playerOnly      = true
+)
+public class CmdSettlementCreate extends SettlementCommandHandler {
+
+    @Override
+    public List<String> handleTab(CommandSender sender, String[] args) {
+        return null;
+    }
+
+    @Override
+    public void handleCommand(CommandSender sender, String[] args) {
+
+        if (args.length != 1) {
+            sendUsage(sender);
+            return;
+        }
+
+        var player = (Player) sender;
+        var citizen = getCitizen(player);
+        if (citizen == null)
+            return;
+
+        if (citizen.hasSettlement()) {
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CREATE__ALREADY_IN_SETTLEMENT.path()),
+                    Map.of("settlement", citizen.getSettlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            return;
+        }
+
+        var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
+        var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
+        if (existingChunk != null) {
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CREATE__ALREADY_CLAIMED.path()),
+                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            return;
+        }
+
+        if (!UnitedLandsEconomyManager.instance().has(citizen.getUuid(),
+                new BigDecimal(Settings.settlementCreateCosts))) {
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
+                    Map.of("amount", UnitedLandsEconomyManager.instance().format(Settings.settlementCreateCosts)),
+                    MessageProvider.instance().get(Message.PREFIX.path()));
+            return;
+        }
+
+        var region = UnitedLandsDataManager.instance()
+                .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(player.getLocation()));
+        if (region != null && region.hasCountry()) {
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CREATE__COUNTRY_WARNING.path()),
+                    Map.of("country", region.getCountry().getCleanName()),
+                    MessageProvider.instance().get(Message.PREFIX.path()));
+        }
+
+        var confirmation = new Confirmation("settlement");
+        confirmation.setRunnable(() -> {
+
+            var world = player.getLocation().getWorld();
+
+            Settlement settlement = new Settlement();
+            settlement.setUuid(UUID.randomUUID());
+            settlement.setName(args[0]);
+            settlement.setFounder(player);
+            settlement.setFoundingTimestamp(System.currentTimeMillis());
+            settlement.setWorld(world);
+            settlement.setHomeChunkCoordinates(chunkCoords);
+            settlement.setSpawn(player.getLocation());
+
+            var regionInfo = "no region";
+            var countryInfo = "no country";
+            if (region != null) {
+                settlement.setRegion(region);
+                region.addSettlement(settlement);
+                regionInfo = region.getCleanName();
+
+                if (region.hasCountry()) {
+                    var country = region.getCountry();
+                    settlement.setCountry(country);
+                    country.addSettlement(settlement);
+                    countryInfo = country.getCleanName();
+                }
+            }
+
+            var chunk = new SettlementChunk();
+            chunk.setUuid(UUID.randomUUID());
+            chunk.setCoordinates(CoordinateUtils.locationToChunkCoordinates(player.getLocation()));
+            chunk.setWorld(world);
+            chunk.setClaimTimestamp(System.currentTimeMillis());
+            chunk.setSettlement(settlement);
+
+            settlement.addChunk(chunk);
+            settlement.addCitizen(citizen);
+            UnitedLandsDataManager.instance().createSettlementDbData(settlement);
+
+            UnitedLandsEconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
+            UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.settlementCreateCosts);
+
+            citizen.setSettlement(settlement);
+            citizen.addSettlementRank("mayor");
+            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CREATE__PLAYER_MESSAGE.path()),
+                    Map.of("settlement", settlement.getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CREATE__BROADCAST_MESSAGE.path()),
+                    Map.of("player", player.getName(),
+                            "settlement", settlement.getCleanName(),
+                            "region", regionInfo,
+                            "country", countryInfo),
+                    MessageProvider.instance().get(Message.PREFIX.path()));
+
+            (new SettlementCreatedEvent(settlement)).callEvent();
+
+        })
+                .setTitle(MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CREATE__CONFIRM.path()))
+                .setReplacements(Map.of("settlement", args[0], "cost",
+                        UnitedLandsEconomyManager.instance().format(Settings.settlementCreateCosts)))
+                .setSender(player)
+                .setReceiver(player)
+                .send();
+    }
+
+}

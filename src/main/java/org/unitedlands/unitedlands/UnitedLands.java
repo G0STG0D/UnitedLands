@@ -9,16 +9,13 @@ import org.unitedlands.classes.ConfigFile;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.message.MessageRegistry;
-import org.unitedlands.unitedlands.commands.AdminCommands;
 import org.unitedlands.unitedlands.commands.ChannelCommand;
 import org.unitedlands.unitedlands.commands.CitizenCommands;
-import org.unitedlands.unitedlands.commands.CountryCommands;
-import org.unitedlands.unitedlands.commands.RegionCommands;
 import org.unitedlands.unitedlands.commands.SettlementChunkCommands;
-import org.unitedlands.unitedlands.commands.SettlementCommands;
 import org.unitedlands.unitedlands.commands.WebCommands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
+import org.unitedlands.unitedlands.integrations.papi.PlaceholderAPIIntegration;
 import org.unitedlands.unitedlands.listeners.BlockListener;
 import org.unitedlands.unitedlands.listeners.ChatListener;
 import org.unitedlands.unitedlands.listeners.ExplosionListener;
@@ -68,6 +65,7 @@ public class UnitedLands extends JavaPlugin {
     private NewDayScheduler newDayScheduler;
 
     private boolean useFloodgate;
+    private boolean usePAPI;
 
     @Override
     public void onEnable() {
@@ -129,33 +127,19 @@ public class UnitedLands extends JavaPlugin {
             Logger.log("Enabling floodgate integrations.", "UnitedLands");
             useFloodgate = true;
         }
+        Plugin papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
+        if (papi != null && papi.isEnabled()) {
+            Logger.log("Enabling floodgate integrations.", "UnitedLands");
+            new PlaceholderAPIIntegration();
+            usePAPI = true;
+        }
     }
 
     private void registerCommands() {
 
-        var countryCommands = new CountryCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("country")).setExecutor(countryCommands);
-        Objects.requireNonNull(getCommand("country")).setTabCompleter(countryCommands);
-
-        var regionCommands = new RegionCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("region")).setExecutor(regionCommands);
-        Objects.requireNonNull(getCommand("region")).setTabCompleter(regionCommands);
-
-        var settlementCommands = new SettlementCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("settlement")).setExecutor(settlementCommands);
-        Objects.requireNonNull(getCommand("settlement")).setTabCompleter(settlementCommands);
-
         var settlementChunkCommands = new SettlementChunkCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("settlementchunk")).setExecutor(settlementChunkCommands);
         Objects.requireNonNull(getCommand("settlementchunk")).setTabCompleter(settlementChunkCommands);
-
-        var adminCommands = new AdminCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("uladmin")).setExecutor(adminCommands);
-        Objects.requireNonNull(getCommand("uladmin")).setTabCompleter(adminCommands);
-
-        // var approvalCommand = new ApprovalCommand(this, messageProvider);
-        // Objects.requireNonNull(getCommand("approve")).setExecutor(approvalCommand);
-        // Objects.requireNonNull(getCommand("approve")).setTabCompleter(approvalCommand);
 
         var citizenCommand = new CitizenCommands(this, messageProvider);
         Objects.requireNonNull(getCommand("citizen")).setExecutor(citizenCommand);
@@ -215,6 +199,10 @@ public class UnitedLands extends JavaPlugin {
 
     public boolean useFloodgate() {
         return useFloodgate;
+    }
+
+    public boolean usePAPI() {
+        return usePAPI;
     }
 
     public NewDayScheduler getNewDayScheduler() {

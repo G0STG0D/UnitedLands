@@ -5,24 +5,20 @@ import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.unitedlands.classes.BaseCommandHandler;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.message.Message;
+import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
+import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
-public class RegionCommandHandler extends BaseCommandHandler<UnitedLands> {
+public class RegionCommandHandler implements UnitedCommandExecutor{
 
     public record RegionCommandHandlerContext(Player player, Citizen citizen,
             Region region) {
-    }
-
-    public RegionCommandHandler(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
     }
 
     @Override
@@ -48,8 +44,8 @@ public class RegionCommandHandler extends BaseCommandHandler<UnitedLands> {
 
         var region = playerCache.getCachedRegion();
         if (!region.hasCountry() || !region.getCountry().equals(citizen.getCountry())) {
-            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_REGION_PERMISSION.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_REGION_PERMISSION.path()),
+                    null, MessageProvider.instance().get(Message.PREFIX.path()));
             return null;
         }
 
@@ -68,17 +64,17 @@ public class RegionCommandHandler extends BaseCommandHandler<UnitedLands> {
     protected Citizen getCitizen(Player player) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
+                    null, MessageProvider.instance().get(Message.PREFIX.path()));
             return null;
         }
         return citizen;
     }
 
     protected boolean hasPermission(String permission, Citizen citizen) {
-        if (!plugin.getPermissionManager().hasRankPermission(permission, citizen)) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), messageProvider.get(Message.GENERAL_ERRORS__NO_COUNTRY_PERMISSION.path()),
-                    Map.of("perm", permission), messageProvider.get(Message.PREFIX.path()));
+        if (!PermissionManager.instance().hasRankPermission(permission, citizen)) {
+            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_COUNTRY_PERMISSION.path()),
+                    Map.of("perm", permission), MessageProvider.instance().get(Message.PREFIX.path()));
             return false;
         }
         return true;

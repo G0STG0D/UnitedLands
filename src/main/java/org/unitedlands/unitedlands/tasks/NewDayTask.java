@@ -44,17 +44,17 @@ public class NewDayTask implements Runnable {
                     var tax = citizenBalance * settlement.getTax();
                     UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax);
                     totalTax += tax;
-                    notifyPlayer(citizen.getPlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
+                    notifyPlayer(citizen.getOfflinePlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
                 } else {
                     // Flat tax
                     var tax = settlement.getTax();
                     if (citizenBalance >= tax) {
                         UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax);
                         totalTax += tax;
-                        notifyPlayer(citizen.getPlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
+                        notifyPlayer(citizen.getOfflinePlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
                     } else {
                         // TODO: kick citizen?
-                        notifyPlayer(settlement.getMayor().getPlayer().getPlayer(), Message.NEW_DAY__CITIZEN_BANKRUPT.path(), tax);
+                        notifyPlayer(settlement.getMayor().getOfflinePlayer().getPlayer(), Message.NEW_DAY__CITIZEN_BANKRUPT.path(), tax);
                     }
                 }
             }
