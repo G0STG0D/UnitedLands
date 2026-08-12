@@ -7,14 +7,13 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.message.Message;
-import org.unitedlands.unitedlands.commands.handlers.settlement.rank.CmdSettlementRank;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
 @UnitedSubCommand(
-        parent = CmdSettlementRank.class,
+        parent = CmdSettlementSet.class,
         name = "color",
         description = "Sets the settlement color",
         usage = "/settlement set color <#hexcolor>",

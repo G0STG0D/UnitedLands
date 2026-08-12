@@ -34,8 +34,7 @@ public class CmdAdminSettlementUnclaim extends SettlementAdminCommandHandler {
         var player = (Player) sender;
 
         if (args.length != 0) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__UNCLAIM__USAGE.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            sendUsage(sender);
             return;
         }
 

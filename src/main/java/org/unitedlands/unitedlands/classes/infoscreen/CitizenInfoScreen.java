@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
@@ -16,12 +14,12 @@ import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
 public class CitizenInfoScreen extends InfoScreen {
 
-    public CitizenInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, Citizen citizen) {
-        super(plugin, messageProvider);
+    public CitizenInfoScreen(Citizen citizen) {
 
         var header = buildHeader(citizen.getName());
         addComponent("header", header);
@@ -30,20 +28,20 @@ public class CitizenInfoScreen extends InfoScreen {
         var logonDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(citizen.getLastLogon());
 
         addComponent("registered",
-                messageProvider.get(Message.INFO_SCREENS__CITIZEN__REGISTERED.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__REGISTERED.path()),
                 Map.of("registered", joinDate, "lastlogon", logonDate));
 
         addComponent("settlement-country",
-                messageProvider.get(Message.INFO_SCREENS__CITIZEN__COUNTRY.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__COUNTRY.path()),
                 Map.of("settlement", citizen.getSettlement() != null ? citizen.getSettlement().getCleanName() : "-",
                         "country", citizen.getCountry() != null ? citizen.getCountry().getCleanName() : "-"));
 
         addComponent("settlement-ranks",
-                messageProvider.get(Message.INFO_SCREENS__CITIZEN__SETTLEMENT_RANKS.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__SETTLEMENT_RANKS.path()),
                 Map.of("settlementranks", String.join(", ", citizen.getSettlementRanks())));
 
         addComponent("country-ranks",
-                Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__CITIZEN__COUNTRY_RANKS.path()),
+                Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__COUNTRY_RANKS.path()),
                         Map.of("countryranks", String.join(", ", citizen.getCountryRanks()))));
 
         addComponent("balance",
@@ -54,7 +52,7 @@ public class CitizenInfoScreen extends InfoScreen {
 
         if (metadata != null && !metadata.isEmpty()) {
 
-            var metaDataWrapper = messageProvider.get(Message.INFO_SCREENS__CITIZEN__METADATA.path());
+            var metaDataWrapper = MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__METADATA.path());
 
             List<String> fields = new ArrayList<>();
             for (var m : metadata.values()) {

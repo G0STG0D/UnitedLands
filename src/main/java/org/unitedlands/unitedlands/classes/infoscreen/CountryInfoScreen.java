@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.min;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
@@ -24,26 +19,15 @@ import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Formatter;
 import org.unitedlands.utils.Messenger;
 
-import io.papermc.paper.dialog.Dialog;
-import io.papermc.paper.registry.data.dialog.ActionButton;
-import io.papermc.paper.registry.data.dialog.DialogBase;
-import io.papermc.paper.registry.data.dialog.action.DialogAction;
-import io.papermc.paper.registry.data.dialog.body.DialogBody;
-import io.papermc.paper.registry.data.dialog.type.DialogType;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickCallback;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-
 public class CountryInfoScreen extends InfoScreen {
 
-    public CountryInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, Country country) {
-        super(plugin, messageProvider);
+    public CountryInfoScreen(Country country) {
 
         var header = buildHeader(country.getCleanName());
         addComponent("header", header);
 
         // var board =
-        // Messenger.getMessage(messageProvider.get("info-screens.country.board"),
+        // Messenger.getMessage(MessageProvider.instance().get("info-screens.country.board"),
         // Map.of("board",
         // settlement.getTownBoard() != null ? settlement.getTownBoard()
         // : "/settlement setboard [msg]"));
@@ -51,26 +35,26 @@ public class CountryInfoScreen extends InfoScreen {
 
         var foundingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(country.getFoundingTimestamp());
         var founder = country.getFounderName() != null ? country.getFounderName() : "-";
-        var founded = Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__COUNTRY__FOUNDED.path()),
+        var founded = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__FOUNDED.path()),
                 Map.of("founded", foundingDate, "founder", founder));
         addComponent("founded", founded);
 
         var countryLeader = country.getLeader();
-        var leader = Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__COUNTRY__LEADER.path()),
+        var leader = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__LEADER.path()),
                 Map.of("leader", countryLeader != null ? countryLeader.getName() : "-"));
         addComponent("leader", leader);
 
         var capitalSettlement = country.getCapital();
-        var capital = Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__COUNTRY__CAPITAL.path()),
+        var capital = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__CAPITAL.path()),
                 Map.of("capital", capitalSettlement != null ? capitalSettlement.getCleanName() : "-"));
         addComponent("capital", capital);
 
 
-        addComponent("area", messageProvider.get(Message.INFO_SCREENS__COUNTRY__AREA.path()),
+        addComponent("area", MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__AREA.path()),
                 Map.of("area", String.format("%,.0f", country.getArea())));
 
 
-        var balance = Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__COUNTRY__BALANCE.path()),
+        var balance = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__BALANCE.path()),
                 Map.of("balance", UnitedLandsEconomyManager.instance()
                         .format(UnitedLandsEconomyManager.instance()
                                 .getBalance(country.getUuid()))));
@@ -83,7 +67,7 @@ public class CountryInfoScreen extends InfoScreen {
                 claimsList.add("<red>" + claim.getCleanName() + "</red> (" + Formatter
                         .formatDuration(claim.getClaimEndTime() - System.currentTimeMillis()) + ")");
 
-            var claims = Messenger.getMessage(messageProvider.get(Message.INFO_SCREENS__COUNTRY__CLAIMS.path()),
+            var claims = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__CLAIMS.path()),
                     Map.of("claims", String.join(", ", claimsList)));
             addComponent("claims", claims);
         }
@@ -92,7 +76,7 @@ public class CountryInfoScreen extends InfoScreen {
 
         if (metadata != null && !metadata.isEmpty()) {
 
-            var metaDataWrapper = messageProvider.get(Message.INFO_SCREENS__COUNTRY__METADATA.path());
+            var metaDataWrapper = MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__METADATA.path());
 
             List<String> fields = new ArrayList<>();
             for (var m : metadata.values()) {
@@ -124,29 +108,6 @@ public class CountryInfoScreen extends InfoScreen {
                 addComponent("metadata", metadataComponent);
             }
         }
-    }
-
-    public static void sendJavaDialog(Player player, Country country) {
-
-
-        List<DialogBody> dialogBody = new ArrayList<>();
-        var miniMessage = MiniMessage.miniMessage();
-
-        var title = miniMessage.deserialize("<green><bold>" + country.getCleanName() + "</bold></green>");
-        
-        var foundingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(country.getFoundingTimestamp());
-        var founder = country.getFounderName() != null ? country.getFounderName() : "-";
-        var founded = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__FOUNDED.path()),
-                Map.of("founded", foundingDate, "founder", founder));
-
-        dialogBody.add(DialogBody.plainMessage(founded));
-
-        Dialog dialog = Dialog.create(builder -> builder.empty().base(DialogBase.builder(title).body(dialogBody).build())
-                .type(DialogType.notice()));
-
-        player.showDialog(dialog);
-
-
     }
 
 }

@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.registrars.command.UnitedCommandExecutor;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.infoscreen.RegionInfoScreen;
 import org.unitedlands.unitedlands.classes.message.Message;
@@ -53,7 +52,7 @@ public class CmdRegionInfo implements UnitedCommandExecutor {
             }
         }
 
-        var infoscreen = new RegionInfoScreen(UnitedLands.instance(), MessageProvider.instance(), region);
+        var infoscreen = new RegionInfoScreen(region);
         infoscreen.send(sender);
     }
 

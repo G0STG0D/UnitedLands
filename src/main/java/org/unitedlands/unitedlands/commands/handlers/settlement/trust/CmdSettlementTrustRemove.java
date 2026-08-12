@@ -16,7 +16,7 @@ import org.unitedlands.utils.Messenger;
 
 @UnitedSubCommand(
         parent = CmdSettlementTrust.class,
-        name = "add",
+        name = "remove",
         description = "Removes settlement trust from a player",
         usage = "/settlement trust remove <player>",
         playerOnly = true

@@ -15,7 +15,7 @@ import org.unitedlands.utils.Messenger;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
-        name = "invite",
+        name = "joincountry",
         description = "Joins the region's country with a settlement",
         usage = "/settlement joincountry",
         playerOnly = true

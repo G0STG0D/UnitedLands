@@ -2,28 +2,26 @@ package org.unitedlands.unitedlands.classes.infoscreen;
 
 import java.text.SimpleDateFormat;
 import java.util.Map;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.utils.MessageProvider;
 
 public class SettlementChunkInfoScreen extends InfoScreen {
 
-    public SettlementChunkInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, SettlementChunk chunk) {
-        super(plugin, messageProvider);
+    public SettlementChunkInfoScreen(SettlementChunk chunk) {
 
         var header = buildHeader(chunk.getCoordinates().toCleanString());
         addComponent("header", header);
 
         addComponent("type",
-                messageProvider.get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__TYPE.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__TYPE.path()),
                 Map.of(
                         "type", chunk.getChunkType() != null ? chunk.getChunkType() : "None"));
 
         addComponent("owner",
-                messageProvider.get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__OWNER.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__OWNER.path()),
                 Map.of(
                         "owner", chunk.getOwner() != null ? chunk.getOwner().getName() : "-",
                         "claimed", new SimpleDateFormat("dd-MM-yyyy HH:mm").format(chunk.getClaimTimestamp())));
@@ -32,7 +30,7 @@ public class SettlementChunkInfoScreen extends InfoScreen {
         var price = chunk.isForSale() ? "<white>" + UnitedLandsEconomyManager.instance().format(chunk.getSalePrice()) + "</white>" : "-";
 
         addComponent("sale",
-                messageProvider.get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__SALE.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__SALE.path()),
                 Map.of(
                         "forsale", forsale, "price", price));
 
@@ -43,7 +41,7 @@ public class SettlementChunkInfoScreen extends InfoScreen {
         var explosions = chunk.allowExplosions() ? "<green>Explosions</green>" : "<red>Explosions</red>";
 
         addComponent("toggles",
-                messageProvider.get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__TOGGLES.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__TOGGLES.path()),
                 Map.of("pvp", pvp,
                         "mobs", mobs,
                         "animals", animals,
@@ -51,14 +49,14 @@ public class SettlementChunkInfoScreen extends InfoScreen {
                         "explosions", explosions));
 
         addComponent("perm1",
-                messageProvider.get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__PERM_1.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__PERM_1.path()),
                 Map.of(
                         "break", LocationMembership.toInfoScreenString(chunk.getBreakPermissions()),
                         "place", LocationMembership.toInfoScreenString(chunk.getPlacePermissions()),
                         "open", LocationMembership.toInfoScreenString(chunk.getContainerPermissions())));
 
         addComponent("perm2",
-                messageProvider.get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__PERM_2.path()),
+                MessageProvider.instance().get(Message.INFO_SCREENS__SETTLEMENT_CHUNK__PERM_2.path()),
                 Map.of(
                         "switch", LocationMembership.toInfoScreenString(chunk.getSwitchPermissions()),
                         "use", LocationMembership.toInfoScreenString(chunk.getBlockUsePermissions()),

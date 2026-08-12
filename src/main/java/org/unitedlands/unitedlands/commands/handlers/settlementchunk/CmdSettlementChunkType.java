@@ -5,19 +5,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
+import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
-public class SettlementChunkSetType extends SettlementChunkCommandHandler {
-
-    public SettlementChunkSetType(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+        parent = CmdSettlementChunk.class,
+        name = "type",
+        description = "Sets the type of settlement chunk",
+        usage = "/settlementchunk type <type>",
+        playerOnly = true
+)
+public class CmdSettlementChunkType extends SettlementChunkCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -30,8 +33,7 @@ public class SettlementChunkSetType extends SettlementChunkCommandHandler {
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 1) {
-            Messenger.sendMessage(sender, messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__USAGE.path()), null,
-                    messageProvider.get(Message.PREFIX.path()));
+            sendUsage(sender);
             return;
         }
 
@@ -41,8 +43,8 @@ public class SettlementChunkSetType extends SettlementChunkCommandHandler {
 
         var type = args[0];
         if (!Settings.settlementChunkTypes.containsKey(type)) {
-            Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__UNKNOWN_TYPE.path()),
-                    Map.of("type", type), messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__UNKNOWN_TYPE.path()),
+                    Map.of("type", type), MessageProvider.instance().get(Message.PREFIX.path()));
             return;
         }
 
@@ -50,9 +52,9 @@ public class SettlementChunkSetType extends SettlementChunkCommandHandler {
         if (typeSettings.maxPerSettlement != -1) {
             var chunksOfType = context.settlementChunk().getSettlement().getChunksOfType(type);
             if (chunksOfType.size() >= typeSettings.maxPerSettlement) {
-                Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__TOO_MANY_OF_TYPE.path()),
+                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__TOO_MANY_OF_TYPE.path()),
                         Map.of("type", type, "max", String.valueOf(typeSettings.maxPerSettlement)),
-                        messageProvider.get(Message.PREFIX.path()));
+                        MessageProvider.instance().get(Message.PREFIX.path()));
                 return;
             }
         }
@@ -60,8 +62,8 @@ public class SettlementChunkSetType extends SettlementChunkCommandHandler {
         context.settlementChunk().setChunkType(type);
         UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
 
-        Messenger.sendMessage(context.player(), messageProvider.get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__SUCCESS.path()),
-                Map.of("type", type), messageProvider.get(Message.PREFIX.path()));
+        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__SUCCESS.path()),
+                Map.of("type", type), MessageProvider.instance().get(Message.PREFIX.path()));
 
     }
 

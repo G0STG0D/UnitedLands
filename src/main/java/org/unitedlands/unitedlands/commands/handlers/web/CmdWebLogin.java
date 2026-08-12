@@ -4,23 +4,26 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.unitedlands.classes.BaseCommandHandler;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
-public class WebLoginCommandHandler extends BaseCommandHandler<UnitedLands> {
-
-    public WebLoginCommandHandler(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+        parent = CmdWeb.class,
+        name = "login",
+        description = "Confirms an external web UI login",
+        usage = "/ulweb login <code>",
+        playerOnly = true
+)
+public class CmdWebLogin implements UnitedCommandExecutor {
 
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-        if (args.length == 0)
-            // TODO: usage
+        if (args.length == 0) {
+            sendUsage(sender);
             return;
+        }
 
         var code = args[0];
 

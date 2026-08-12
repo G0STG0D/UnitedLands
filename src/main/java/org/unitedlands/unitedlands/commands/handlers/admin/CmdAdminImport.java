@@ -7,8 +7,8 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.unitedlands.classes.BaseCommandHandler;
-import org.unitedlands.interfaces.IMessageProvider;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Region;
@@ -18,11 +18,14 @@ import org.unitedlands.unitedlands.utils.PolygonUtils;
 import org.unitedlands.unitedlands.utils.SvgUtils;
 import org.unitedlands.utils.Logger;
 
-public class AdminImportCommand extends BaseCommandHandler<UnitedLands> {
-
-    public AdminImportCommand(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+        parent = CmdAdmin.class,
+        name = "import",
+        description = "Admin regions import",
+        usage = "/ula import <world> <filename>",
+        catchAll = true 
+)
+public class CmdAdminImport implements UnitedCommandExecutor {
 
     @Override
     public List<String> handleTab(CommandSender arg0, String[] arg1) {
@@ -101,35 +104,11 @@ public class AdminImportCommand extends BaseCommandHandler<UnitedLands> {
 
             UnitedLandsDataManager.instance().buildRegionIndex();
 
-            // Pl3xMapRenderer.instance().renderPolyRegions(UnitedLandsDataManager.instance().getRegions(), false);
-
         } catch (Exception ex) {
             Logger.logError("Error parsing " + file + ": " + ex.getMessage(), "UnitedLands");
             ex.printStackTrace();
             return;
         }
-
-        // RegionGenerator.importRegionsAsync(worldName, file).thenAccept(regions -> {
-
-        // GlobalDataManager.instance().clearData();
-        // var counter = 1;
-        // for (var region : regions) {
-
-        // if (shouldSave) {
-        // GlobalDataManager.instance().createRegionDbData(region);
-        // } else {
-        // GlobalDataManager.instance().registerRegion(region);
-        // }
-
-        // Logger.log("Registered region " + region.getName() + " (" + counter + "/" +
-        // regions.size() + ")");
-        // counter++;
-        // }
-
-        // Pl3xMapRenderer.instance().renderRegions(GlobalDataManager.instance().getRegions(),
-        // isDebug);
-
-        // });
 
     }
 

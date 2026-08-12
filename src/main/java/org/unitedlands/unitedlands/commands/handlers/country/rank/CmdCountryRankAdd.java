@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.country;
+package org.unitedlands.unitedlands.commands.handlers.country.rank;
 
 import java.util.List;
 import java.util.Map;

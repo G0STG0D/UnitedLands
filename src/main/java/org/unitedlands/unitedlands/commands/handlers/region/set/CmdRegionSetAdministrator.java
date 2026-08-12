@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.region;
+package org.unitedlands.unitedlands.commands.handlers.region.set;
 
 import java.util.List;
 import java.util.Map;

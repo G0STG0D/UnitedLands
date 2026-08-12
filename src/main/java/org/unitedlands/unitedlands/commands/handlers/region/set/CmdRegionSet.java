@@ -1,8 +1,9 @@
-package org.unitedlands.unitedlands.commands.handlers.region;
+package org.unitedlands.unitedlands.commands.handlers.region.set;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.registrars.command.UnitedCommandExecutor;
+import org.unitedlands.unitedlands.commands.handlers.region.CmdRegion;
 
 
 @UnitedSubCommand(

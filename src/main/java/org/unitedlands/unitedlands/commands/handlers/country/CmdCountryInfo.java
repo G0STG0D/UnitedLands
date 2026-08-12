@@ -5,12 +5,10 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.classes.infoscreen.CountryInfoScreen;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 
 @UnitedSubCommand(
     parent          = CmdCountry.class,
@@ -48,7 +46,7 @@ public class CmdCountryInfo extends CountryCommandHandler {
             }
         }
 
-        var infoScreen = new CountryInfoScreen(UnitedLands.instance(), MessageProvider.instance(), country);
+        var infoScreen = new CountryInfoScreen(country);
         infoScreen.send(player);
     }
 }

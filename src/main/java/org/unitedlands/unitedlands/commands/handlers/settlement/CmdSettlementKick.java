@@ -18,9 +18,9 @@ import org.unitedlands.utils.Messenger;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
-        name = "invite",
-        description = "Invites a player to the settlement",
-        usage = "/settlement invite <player>",
+        name = "kick",
+        description = "Kicks a player from the settlement",
+        usage = "/settlement kick <player>",
         playerOnly = true
 )
 public class CmdSettlementKick extends SettlementCommandHandler {

@@ -6,17 +6,3 @@ description: UnitedLands Core claiming and geopol plugin
 author: Theriel_
 depend: [ UnitedLib ]
 softdepend: [ Vault, Pl3xmap, Towny, PlaceholderAPI ]
-commands:
-   channel:
-      description: UnitedLands chat channel commands
-   citizen:
-      description: UnitedLands citizen commands.
-      aliases: [cit]
-   regionchunk:
-      description: UnitedLands region chunk commands.
-      aliases: [rc]
-   settlementchunk:
-      description: UnitedLands region chunk commands.
-      aliases: [plot]
-   ulweb:
-      description: UnitedLands web UI commands.

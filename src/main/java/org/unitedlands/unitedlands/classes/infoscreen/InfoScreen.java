@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.utils.Messenger;
@@ -16,15 +14,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public abstract class InfoScreen {
 
-    protected final Plugin plugin;
-    protected final IMessageProvider messageProvider;
-
     protected LinkedList<InfoScreenComponent> components = new LinkedList<>();
-
-    public InfoScreen(Plugin plugin, IMessageProvider messageProvider) {
-        this.plugin = plugin;
-        this.messageProvider = messageProvider;
-    }
 
     public LinkedList<InfoScreenComponent> getComponents() {
         return components;

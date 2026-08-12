@@ -1,7 +1,5 @@
 package org.unitedlands.unitedlands;
 
-import java.util.Objects;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,10 +7,6 @@ import org.unitedlands.classes.ConfigFile;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.message.MessageRegistry;
-import org.unitedlands.unitedlands.commands.ChannelCommand;
-import org.unitedlands.unitedlands.commands.CitizenCommands;
-import org.unitedlands.unitedlands.commands.SettlementChunkCommands;
-import org.unitedlands.unitedlands.commands.WebCommands;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
 import org.unitedlands.unitedlands.integrations.papi.PlaceholderAPIIntegration;
@@ -88,7 +82,6 @@ public class UnitedLands extends JavaPlugin {
 
         loadManagers();
         loadIntegrations();
-        registerCommands();
         registerListeners();
 
         webServices = new UnitedLandsWebServices(this);
@@ -99,6 +92,7 @@ public class UnitedLands extends JavaPlugin {
     @Override
     public void onDisable() {
         webServices.stopWebServices();
+        newDayScheduler.stopScheduler();
         Pl3xMapRenderer.instance().shutdown();
     }
 
@@ -133,25 +127,6 @@ public class UnitedLands extends JavaPlugin {
             new PlaceholderAPIIntegration();
             usePAPI = true;
         }
-    }
-
-    private void registerCommands() {
-
-        var settlementChunkCommands = new SettlementChunkCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("settlementchunk")).setExecutor(settlementChunkCommands);
-        Objects.requireNonNull(getCommand("settlementchunk")).setTabCompleter(settlementChunkCommands);
-
-        var citizenCommand = new CitizenCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("citizen")).setExecutor(citizenCommand);
-        Objects.requireNonNull(getCommand("citizen")).setTabCompleter(citizenCommand);
-
-        var webCommand = new WebCommands(this, messageProvider);
-        Objects.requireNonNull(getCommand("ulweb")).setExecutor(webCommand);
-        Objects.requireNonNull(getCommand("ulweb")).setTabCompleter(webCommand);
-
-        var channelCommand = new ChannelCommand(this, messageProvider);
-        Objects.requireNonNull(getCommand("channel")).setExecutor(channelCommand);
-        Objects.requireNonNull(getCommand("channel")).setTabCompleter(channelCommand);
     }
 
     private void registerListeners() {

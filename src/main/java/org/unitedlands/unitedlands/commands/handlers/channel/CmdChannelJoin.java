@@ -5,17 +5,20 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.unitedlands.classes.BaseCommandHandler;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.classes.ChatChannel;
 import org.unitedlands.unitedlands.managers.ChatChannelManager;
 
-public class ChannelJoinCommand extends BaseCommandHandler<UnitedLands> {
-
-    public ChannelJoinCommand(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+    parent = CmdChannel.class,
+    name            = "join",
+    aliases         = { "j" },
+    description     = "Switches the chat channel",
+    usage           = "/channel join <channel>",
+    playerOnly      = true
+)
+public class CmdChannelJoin implements UnitedCommandExecutor{
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {

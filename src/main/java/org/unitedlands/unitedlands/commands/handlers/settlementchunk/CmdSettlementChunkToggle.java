@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.settlement;
+package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
 import java.util.List;
 import java.util.Map;
@@ -7,23 +7,23 @@ import javax.annotation.Nullable;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
-import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
+import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
 @UnitedSubCommand(
-        parent = CmdSettlement.class,
+        parent = CmdSettlementChunk.class,
         name = "toggle",
-        description = "Sets settlement toggles",
-        usage = "/settlement toggle <toggle> <on|off>",
-        catchAll = true,
-        playerOnly = true
+        description = "Sets settlement chunk toggles",
+        usage = "/settlementchunk toggle <toggle> <on|off>",
+        playerOnly = true,
+        catchAll = true
 )
-public class CmdSettlementToggle extends SettlementCommandHandler {
+public class CmdSettlementChunkToggle extends SettlementChunkCommandHandler {
 
-    List<String> fields = List.of("pvp", "monsters", "animals", "fire", "explosions", "public");
+    List<String> fields = List.of("pvp", "monsters", "animals", "fire", "explosions");
     List<String> switches = List.of("on", "off", "unset");
 
     @Override
@@ -46,7 +46,7 @@ public class CmdSettlementToggle extends SettlementCommandHandler {
             return;
         }
 
-        var context = validate(sender, "settlement.manage.toggle");
+        var context = validate(sender, "settlement.plot.toggle");
         if (context == null)
             return;
 
@@ -59,26 +59,20 @@ public class CmdSettlementToggle extends SettlementCommandHandler {
         }
 
         switch (args[0]) {
-            case "public":
-                // public can't be inherited, enforce value
-                if (enable == null)
-                    enable = false;
-                context.settlement().setPublic(enable);
-                break;
             case "pvp":
-                context.settlement().setAllowPvp(enable);
+                context.settlementChunk().setAllowPvp(enable);
                 break;
             case "monsters":
-                context.settlement().setAllowMonsters(enable);
+                context.settlementChunk().setAllowMonsters(enable);
                 break;
             case "animals":
-                context.settlement().setAllowAnimals(enable);
+                context.settlementChunk().setAllowAnimals(enable);
                 break;
             case "fire":
-                context.settlement().setAllowFire(enable);
+                context.settlementChunk().setAllowFire(enable);
                 break;
             case "explosions":
-                context.settlement().setAllowExplosions(enable);
+                context.settlementChunk().setAllowExplosions(enable);
                 break;
             default:
                 Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__TOGGLE__UNKNOWN_TOGGLE.path()),
@@ -86,9 +80,9 @@ public class CmdSettlementToggle extends SettlementCommandHandler {
                 return;
         }
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__TOGGLE__SUCCESS.path()), Map.of(
+        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__TOGGLE__SUCCESS.path()), Map.of(
                 "field", args[0],
                 "state",
                 enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>"),

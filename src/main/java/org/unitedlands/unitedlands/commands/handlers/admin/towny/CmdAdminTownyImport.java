@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.unitedlands.classes.BaseCommandHandler;
-import org.unitedlands.interfaces.IMessageProvider;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
@@ -25,6 +25,7 @@ import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
+import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
 import com.palmergames.bukkit.towny.object.Town;
@@ -37,16 +38,18 @@ import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
 import com.palmergames.bukkit.towny.object.metadata.LocationDataField;
 import com.palmergames.bukkit.towny.object.metadata.LongDataField;
 
-public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
-
-    public AdminTownyImportCommand(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+        parent = CmdAdminTowny.class,
+        name = "import",
+        description = "Admin towny import",
+        usage = "/ula towny import [town|nation]"
+)
+public class CmdAdminTownyImport implements UnitedCommandExecutor {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1)
-            return plugin.getTownyProvider().getTownNames();
+            return UnitedLands.instance().getTownyProvider().getTownNames();
         return null;
     }
 
@@ -56,18 +59,18 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
         var player = (Player) sender;
 
         if (args.length > 1) {
-            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__USAGE.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+            sendUsage(sender);
+            return;
         }
 
         if (args.length == 1) {
-            var town = plugin.getTownyProvider().getTown(args[0]);
+            var town = UnitedLands.instance().getTownyProvider().getTown(args[0]);
             if (town == null)
                 return;
 
             importTown(player, town);
         } else {
-            var towns = plugin.getTownyProvider().getTowns();
+            var towns = UnitedLands.instance().getTownyProvider().getTowns();
 
             for (Town town : towns) {
                 var spawnLocation = town.getSpawnOrNull();
@@ -81,8 +84,8 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                 importTown(player, town);
             }
 
-            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__FINISHED.path()),
-                    null, messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__FINISHED.path()),
+                    null, MessageProvider.instance().get(Message.PREFIX.path()));
         }
 
     }
@@ -208,9 +211,9 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                 }
             }
 
-            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_SETTLEMENT.path()),
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_SETTLEMENT.path()),
                     Map.of("settlement", settlement.getName(), "plots", plots.size() + ""),
-                    messageProvider.get(Message.PREFIX.path()));
+                    MessageProvider.instance().get(Message.PREFIX.path()));
 
             if (town.hasNation() && town.isCapital() && region != null && !region.hasCountry()) {
                 var nation = town.getNation();
@@ -240,14 +243,14 @@ public class AdminTownyImportCommand extends BaseCommandHandler<UnitedLands> {
                     UnitedLandsDataManager.instance().updateRegionDbData(region);
                     UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
 
-                    Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_COUNTRY.path()),
-                            Map.of("country", country.getName()), messageProvider.get(Message.PREFIX.path()));
+                    Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_COUNTRY.path()),
+                            Map.of("country", country.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
                 }
             }
 
         } catch (Exception ex) {
-            Messenger.sendMessage(player, messageProvider.get(Message.ADMIN__TOWNY__IMPORT__ERROR.path()),
-                    Map.of("message", ex.getMessage()), messageProvider.get(Message.PREFIX.path()));
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__ERROR.path()),
+                    Map.of("message", ex.getMessage()), MessageProvider.instance().get(Message.PREFIX.path()));
         }
     }
 

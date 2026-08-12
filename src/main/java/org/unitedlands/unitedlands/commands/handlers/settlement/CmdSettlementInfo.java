@@ -5,12 +5,10 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.infoscreen.SettlementInfoScreen;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -48,7 +46,7 @@ public class CmdSettlementInfo extends SettlementCommandHandler {
             }
         }
 
-        var screen = new SettlementInfoScreen(UnitedLands.instance(), MessageProvider.instance(), settlement);
+        var screen = new SettlementInfoScreen(settlement);
         screen.send(player);
 
     }

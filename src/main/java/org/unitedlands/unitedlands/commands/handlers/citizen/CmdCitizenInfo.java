@@ -4,19 +4,20 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.unitedlands.classes.BaseCommandHandler;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.annotations.UnitedSubCommand;
+import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.infoscreen.CitizenInfoScreen;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
 
-public class CitizenInfoCommand extends BaseCommandHandler<UnitedLands> {
-
-    public CitizenInfoCommand(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+    parent          = CmdCitizen.class,
+    name            = "info",
+    description     = "Shows information about a citizen",
+    usage           = "/citizen info <citizen_name>",
+    playerOnly      = true
+)
+public class CmdCitizenInfo implements UnitedCommandExecutor {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -40,12 +41,8 @@ public class CitizenInfoCommand extends BaseCommandHandler<UnitedLands> {
             }
         }
 
-        var screen = new CitizenInfoScreen(plugin, messageProvider, citizen);
-        if (screen.getComponents().size() > 0) {
-            for (var component : screen.getComponents()) {
-                Messenger.send(sender, component.getContent());
-            }
-        }
+        var screen = new CitizenInfoScreen(citizen);
+        screen.send(sender);
     }
 
 }

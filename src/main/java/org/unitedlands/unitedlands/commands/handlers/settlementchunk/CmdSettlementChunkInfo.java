@@ -3,17 +3,19 @@ package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
-import org.unitedlands.interfaces.IMessageProvider;
-import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 import org.unitedlands.unitedlands.classes.infoscreen.SettlementChunkInfoScreen;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 
-public class SettlementChunkInfoCommand extends SettlementChunkCommandHandler {
-
-    public SettlementChunkInfoCommand(UnitedLands plugin, IMessageProvider messageProvider) {
-        super(plugin, messageProvider);
-    }
+@UnitedSubCommand(
+        parent = CmdSettlementChunk.class,
+        name = "info",
+        description = "Shows information about a settlement chunk",
+        usage = "/settlementchunk info",
+        playerOnly = true
+)
+public class CmdSettlementChunkInfo extends SettlementChunkCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -29,7 +31,7 @@ public class SettlementChunkInfoCommand extends SettlementChunkCommandHandler {
         if (context == null)
             return;
 
-        var screen = new SettlementChunkInfoScreen(plugin, messageProvider, context.settlementChunk());
+        var screen = new SettlementChunkInfoScreen(context.settlementChunk());
         screen.send(context.player());
 
     }

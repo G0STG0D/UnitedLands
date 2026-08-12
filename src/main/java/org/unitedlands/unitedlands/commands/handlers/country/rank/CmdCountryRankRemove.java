@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.country;
+package org.unitedlands.unitedlands.commands.handlers.country.rank;
 
 import java.util.List;
 import java.util.Map;
@@ -16,14 +16,13 @@ import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.Messenger;
 
-
 @UnitedSubCommand(
-    parent          = CmdCountryRank.class,
-    name            = "remove",
-    description     = "Removes a country rank from a citizen",
-    usage           = "/country rank remove <player> <rank>",
-    playerOnly      = true,
-    catchAll        = true
+        parent = CmdCountryRank.class,
+        name = "remove",
+        description = "Removes a country rank from a citizen",
+        usage = "/country rank remove <player> <rank>",
+        playerOnly = true,
+        catchAll = true
 )
 public class CmdCountryRankRemove extends CountryCommandHandler {
 
@@ -58,8 +57,7 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
     public void handleCommand(CommandSender sender, String[] args) {
 
         if (args.length != 2) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__COUNTRY__REMOVERANK__USAGE.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            sendUsage(sender);
             return;
         }
 

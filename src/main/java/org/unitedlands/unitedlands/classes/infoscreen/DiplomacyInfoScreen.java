@@ -3,18 +3,17 @@ package org.unitedlands.unitedlands.classes.infoscreen;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.unitedlands.interfaces.IMessageProvider;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
 
 public class DiplomacyInfoScreen extends InfoScreen {
 
-        public DiplomacyInfoScreen(UnitedLands plugin, IMessageProvider messageProvider, Country country) {
-                super(plugin, messageProvider);
+        public DiplomacyInfoScreen(Country country) {
 
-                var configSection = plugin.getMessageConfig().get().getConfigurationSection("info-screens.diplomacy");
+                var configSection = UnitedLands.instance().getMessageConfig().get().getConfigurationSection("info-screens.diplomacy");
                 if (configSection == null)
                         return;
 
@@ -29,7 +28,7 @@ public class DiplomacyInfoScreen extends InfoScreen {
                         allyNames = String.join(", ",
                                         countryAllies.stream().map(Country::getCleanName).collect(Collectors.toList()));
                 }
-                var allies = Messenger.getMessage(messageProvider.get("info-screens.diplomacy.allies"),
+                var allies = Messenger.getMessage(MessageProvider.instance().get("info-screens.diplomacy.allies"),
                                 Map.of("count", String.valueOf(allyCount), "allies", allyNames));
                 addComponent("allies", allies);
 
@@ -42,7 +41,7 @@ public class DiplomacyInfoScreen extends InfoScreen {
                 //         allyNames = String.join(", ",
                 //                         countryAllies.stream().map(Country::getCleanName).collect(Collectors.toList()));
                 // }
-                var naps = Messenger.getMessage(messageProvider.get("info-screens.diplomacy.naps"),
+                var naps = Messenger.getMessage(MessageProvider.instance().get("info-screens.diplomacy.naps"),
                                 Map.of("count", String.valueOf(napCount), "naps", napNames));
                 addComponent("naps", naps);
 
@@ -54,7 +53,7 @@ public class DiplomacyInfoScreen extends InfoScreen {
                 //         allyNames = String.join(", ",
                 //                         countryAllies.stream().map(Country::getCleanName).collect(Collectors.toList()));
                 // }
-                var tradeTreaties = Messenger.getMessage(messageProvider.get("info-screens.diplomacy.trade-treaties"),
+                var tradeTreaties = Messenger.getMessage(MessageProvider.instance().get("info-screens.diplomacy.trade-treaties"),
                                 Map.of("count", String.valueOf(tradeTreatyCount), "trade-treaties", tradeTreatyNames));
                 addComponent("trade-treaties", tradeTreaties);
 
@@ -67,7 +66,7 @@ public class DiplomacyInfoScreen extends InfoScreen {
                         claimPermissionNames = String.join(", ",
                                         countryClaimPermissions.stream().map(Settlement::getCleanName).collect(Collectors.toList()));
                 }
-                var claimPermissions = Messenger.getMessage(messageProvider.get("info-screens.diplomacy.allies"),
+                var claimPermissions = Messenger.getMessage(MessageProvider.instance().get("info-screens.diplomacy.allies"),
                                 Map.of("count", String.valueOf(claimPermissionCount), "claim-permissions", claimPermissionNames));
                 addComponent("claim-permissions", claimPermissions);
 

@@ -48,7 +48,7 @@ public class CmdCountryCreate implements UnitedCommandExecutor {
         var region = settlement.getRegion();
 
         if (region == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__COUNTRY__CREATE__USAGE.path()),
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__REGION_NOT_FOUND.path()),
                     null, MessageProvider.instance().get(Message.PREFIX.path()));
             return;
         }
