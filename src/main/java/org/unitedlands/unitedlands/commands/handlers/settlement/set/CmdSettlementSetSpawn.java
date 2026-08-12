@@ -36,7 +36,7 @@ public class CmdSettlementSetSpawn extends SettlementCommandHandler {
 
         context.settlement().setSpawn(context.player().getLocation());
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETSPAWN__SUCCESS.path()),
                 null, MessageProvider.instance().get(Message.PREFIX.path()));

@@ -60,7 +60,7 @@ public class CmdSettlementTrustRemove extends SettlementCommandHandler {
         }
 
         context.settlement().removeTrusted(targetCitizen);
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
         if (targetPlayer.isOnline()) {
             Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__REMOVETRUST__UNTRUSTED.path()),

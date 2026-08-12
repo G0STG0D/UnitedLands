@@ -76,14 +76,14 @@ public class CmdCountryUnclaim extends CountryCommandHandler {
                                 UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
                             }
                             countrySettlement.removeCountry();
-                            UnitedLandsDataManager.instance().updateSettlementDbData(countrySettlement);
+                            UnitedLandsDataManager.instance().updateSettlementDbData(countrySettlement, true);
                         }
 
                         region.removeCountry();
                         context.country().removeRegion(region);
 
-                        UnitedLandsDataManager.instance().updateRegionDbData(region);
-                        UnitedLandsDataManager.instance().updateCountryDbData(context.country());
+                        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+                        UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
 
                         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__UNCLAIM__SUCCESS.path()), null,
                                 MessageProvider.instance().get(Message.PREFIX.path()));
@@ -106,7 +106,7 @@ public class CmdCountryUnclaim extends CountryCommandHandler {
                         region.removeClaimantCountry();
                         region.setClaimStartTime(null);
                         region.setClaimEndTime(null);
-                        UnitedLandsDataManager.instance().updateRegionDbData(region);
+                        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
                         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__UNCLAIM__SUCCESS.path()), null,
                                 MessageProvider.instance().get(Message.PREFIX.path()));
                     }

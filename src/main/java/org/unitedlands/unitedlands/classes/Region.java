@@ -451,17 +451,17 @@ public class Region extends GeopolObject implements PermissionHolder {
 
     @Override
     public void saveMetadata() {
-        UnitedLandsDataManager.instance().updateRegionDbData(this);
+        UnitedLandsDataManager.instance().updateRegionDbData(this, false);
     }
 
     @Override
     public void saveAttributes() {
-        UnitedLandsDataManager.instance().updateRegionDbData(this);
+        UnitedLandsDataManager.instance().updateRegionDbData(this, false);
     }
 
     @Override
     public void saveAttributeModifiers() {
-        UnitedLandsDataManager.instance().updateRegionDbData(this);
+        UnitedLandsDataManager.instance().updateRegionDbData(this, false);
     }
 
     public void startClaimTask() {
@@ -484,8 +484,8 @@ public class Region extends GeopolObject implements PermissionHolder {
             setClaimStartTime(null);
             setClaimEndTime(null);
 
-            UnitedLandsDataManager.instance().updateRegionDbData(this);
-            UnitedLandsDataManager.instance().updateCountryDbData(getCountry());
+            UnitedLandsDataManager.instance().updateRegionDbData(this, true);
+            UnitedLandsDataManager.instance().updateCountryDbData(getCountry(), true);
 
             RegionClaimedEvent claimedEvent = new RegionClaimedEvent(this, country);
             claimedEvent.callEvent();

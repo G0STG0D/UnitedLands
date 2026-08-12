@@ -51,7 +51,7 @@ public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler 
         ;
         country.removeSettlement(settlement);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__REMOVESETTLEMENT__SUCCESS.path()),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),

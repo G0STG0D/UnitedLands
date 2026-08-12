@@ -67,7 +67,7 @@ public class CmdSettlementSetTaxPercent extends SettlementCommandHandler {
             }
         }
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__USETAXPERCENT__SUCCESS.path()),
                 Map.of("settlement", context.settlement().getCleanName(),

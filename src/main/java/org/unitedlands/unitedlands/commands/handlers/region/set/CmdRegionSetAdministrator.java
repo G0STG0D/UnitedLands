@@ -48,7 +48,7 @@ public class CmdRegionSetAdministrator extends RegionCommandHandler {
         }
 
         context.region().setAdministrator(targetCitizen);
-        UnitedLandsDataManager.instance().updateRegionDbData(context.region());
+        UnitedLandsDataManager.instance().updateRegionDbData(context.region(), true);
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__REGION__SETADMINISTRATOR__SUCCESS.path()),
                 Map.of("citizen", args[0], "region", context.region().getName()), MessageProvider.instance().get(Message.PREFIX.path()));
 

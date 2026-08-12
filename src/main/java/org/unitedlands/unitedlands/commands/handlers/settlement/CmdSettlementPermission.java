@@ -135,7 +135,7 @@ public class CmdSettlementPermission extends SettlementCommandHandler {
                 "state", add ? "<green>on</green>" : "<red>off</red>"),
                 MessageProvider.instance().get(Message.PREFIX.path()));
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
     }
 
 }

@@ -94,7 +94,7 @@ public class CmdAdminImport implements UnitedCommandExecutor {
                     Logger.log("Registered new region " + region.getName() + " (" + counter + "/" +
                             parsed.size() + ")");
                 } else {
-                    UnitedLandsDataManager.instance().updateRegionDbData(region);
+                    UnitedLandsDataManager.instance().updateRegionDbData(region, true);
                     Logger.log("Updated region " + region.getName() + " (" + counter + "/" +
                             parsed.size() + ")");
                 }

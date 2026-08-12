@@ -55,7 +55,7 @@ public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandl
 
         (new SettlementPlayerLeaveEvent(settlement, citizen.getPlayer().getPlayer())).callEvent();
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__REMOVECITIZEN__SUCCESS.path()),

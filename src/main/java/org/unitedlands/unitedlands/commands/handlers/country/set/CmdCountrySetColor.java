@@ -41,7 +41,7 @@ public class CmdCountrySetColor extends CountryCommandHandler {
         context.country().setFillColor(args[0] + "10");
         context.country().setStrokeColor(args[0]);
 
-        UnitedLandsDataManager.instance().updateCountryDbData(context.country());
+        UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__SETCOLOR__SUCCESS.path()),
                 Map.of("color", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));

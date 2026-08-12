@@ -35,7 +35,7 @@ public class CmdRegionSetName extends RegionCommandHandler {
         var oldname = context.region().getName();
 
         context.region().setName(args[0]);
-        UnitedLandsDataManager.instance().updateRegionDbData(context.region());
+        UnitedLandsDataManager.instance().updateRegionDbData(context.region(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__REGION__SET_SETNAME__SUCCESS.path()),
                 Map.of("oldname", oldname, "newname", context.region().getName()), MessageProvider.instance().get(Message.PREFIX.path()));

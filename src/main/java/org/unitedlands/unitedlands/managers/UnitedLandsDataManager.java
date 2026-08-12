@@ -257,10 +257,11 @@ public class UnitedLandsDataManager {
         Pl3xMapRenderer.instance().addToRenderQueue(settlement);
     }
 
-    public void updateSettlementDbData(Settlement settlement) {
+    public void updateSettlementDbData(Settlement settlement, boolean render) {
         databaseManager.getSettlementService().updateAsync(settlement);
 
-        Pl3xMapRenderer.instance().addToRenderQueue(settlement);
+        if (render)
+            Pl3xMapRenderer.instance().addToRenderQueue(settlement);
     }
 
     public void removeSettlementDbData(Settlement settlement) {
@@ -373,9 +374,10 @@ public class UnitedLandsDataManager {
         queueRegionRender(region);
     }
 
-    public void updateRegionDbData(Region region) {
+    public void updateRegionDbData(Region region, boolean render) {
         databaseManager.getRegionService().updateAsync(region);
-        queueRegionRender(region);
+        if (render)
+            queueRegionRender(region);
     }
 
     public void removeRegionDbData(Region region) {
@@ -445,9 +447,10 @@ public class UnitedLandsDataManager {
         queueCountryRender(country);
     }
 
-    public void updateCountryDbData(Country country) {
+    public void updateCountryDbData(Country country, boolean render) {
         databaseManager.getCountryService().updateAsync(country);
-        queueCountryRender(country);
+        if (render)
+           queueCountryRender(country);
     }
 
     private void queueCountryRender(Country country) {

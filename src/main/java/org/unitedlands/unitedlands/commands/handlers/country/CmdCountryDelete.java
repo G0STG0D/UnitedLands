@@ -49,10 +49,10 @@ public class CmdCountryDelete extends CountryCommandHandler {
                         UnitedLandsDataManager.instance().updateCitizenDbData(settlementCitizen);
                     }
                     settlement.removeCountry();
-                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
                 }
                 region.removeCountry();
-                UnitedLandsDataManager.instance().updateRegionDbData(region);
+                UnitedLandsDataManager.instance().updateRegionDbData(region, true);
             }
 
             UnitedLandsEconomyManager.instance().deleteAccount(context.country().getUuid());

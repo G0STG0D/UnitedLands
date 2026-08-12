@@ -86,7 +86,7 @@ public class CmdSettlementToggle extends SettlementCommandHandler {
                 return;
         }
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__TOGGLE__SUCCESS.path()), Map.of(
                 "field", args[0],

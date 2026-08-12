@@ -524,17 +524,17 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     @Override
     public void saveMetadata() {
-        UnitedLandsDataManager.instance().updateSettlementDbData(this);
+        UnitedLandsDataManager.instance().updateSettlementDbData(this, false);
     }
 
     @Override
     public void saveAttributes() {
-        UnitedLandsDataManager.instance().updateSettlementDbData(this);
+        UnitedLandsDataManager.instance().updateSettlementDbData(this, false);
     }
 
     @Override
     public void saveAttributeModifiers() {
-        UnitedLandsDataManager.instance().updateSettlementDbData(this);
+        UnitedLandsDataManager.instance().updateSettlementDbData(this, false);
     }
 
 }

@@ -74,7 +74,7 @@ public class CmdSettlementSetTaxes extends SettlementCommandHandler {
         var valueString = context.settlement().useTaxPercent() ? String.format("%.2f%%", value * 100)
                 : UnitedLandsEconomyManager.instance().format((double) value);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETTAX__SUCCESS.path()),
                 Map.of("settlement", context.settlement().getCleanName(), "value", valueString), MessageProvider.instance().get(Message.PREFIX.path()));

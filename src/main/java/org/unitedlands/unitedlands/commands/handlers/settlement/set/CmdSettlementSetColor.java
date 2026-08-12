@@ -42,7 +42,7 @@ public class CmdSettlementSetColor extends SettlementCommandHandler {
         context.settlement().setFillColor(args[0] + "10");
         context.settlement().setStrokeColor(args[0]);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETCOLOR__SUCCESS.path()),
                 Map.of("color", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));

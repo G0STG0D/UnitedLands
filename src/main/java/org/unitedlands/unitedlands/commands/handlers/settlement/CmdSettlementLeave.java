@@ -54,7 +54,7 @@ public class CmdSettlementLeave extends SettlementCommandHandler {
 
             (new SettlementPlayerLeaveEvent(context.settlement(), context.player())).callEvent();
 
-            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
             UnitedLandsDataManager.instance().updateCitizenDbData(context.citizen());
 
             Messenger.sendMessage(context.settlement().getOnlinePlayers(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__PLAYER_LEFT.path()),

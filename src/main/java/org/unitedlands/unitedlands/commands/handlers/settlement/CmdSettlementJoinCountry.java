@@ -61,7 +61,7 @@ public class CmdSettlementJoinCountry extends SettlementCommandHandler {
             context.settlement().setCountry(country);
             country.addSettlement(context.settlement());
 
-            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
             Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__JOINCOUNTRY__BROADCAST_MESSAGE.path()),
                     Map.of("settlement", context.settlement().getCleanName(), "country", country.getCleanName()),

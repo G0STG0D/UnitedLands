@@ -50,7 +50,7 @@ public class CmdAdminSettlementCitizenAdd extends SettlementAdminCommandHandler 
         settlement.addCitizen(citizen);
         citizen.setSettlement(settlement);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__SUCCESS.path()),

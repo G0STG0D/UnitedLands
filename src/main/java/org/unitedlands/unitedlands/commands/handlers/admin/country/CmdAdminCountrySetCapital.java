@@ -62,7 +62,7 @@ public class CmdAdminCountrySetCapital extends CountryAdminCommandHandler {
 
         country.setCapital(settlement);
 
-        UnitedLandsDataManager.instance().updateCountryDbData(country);
+        UnitedLandsDataManager.instance().updateCountryDbData(country, true);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__SETCAPITAL__SUCCESS.path()),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),

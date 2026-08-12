@@ -79,7 +79,7 @@ public class CmdRegionToggle extends RegionCommandHandler {
             return;
         }
 
-        UnitedLandsDataManager.instance().updateRegionDbData(context.region());
+        UnitedLandsDataManager.instance().updateRegionDbData(context.region(), false);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__REGION__TOGGLE__SUCCESS.path()), Map.of(
                 "field", args[0],

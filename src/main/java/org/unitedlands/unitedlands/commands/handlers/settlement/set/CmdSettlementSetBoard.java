@@ -41,7 +41,7 @@ public class CmdSettlementSetBoard extends SettlementCommandHandler {
             message = MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETBOARD__SUCCESS.path());
         }
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
         Messenger.sendMessage(context.player(), message,
                 null, MessageProvider.instance().get(Message.PREFIX.path()));

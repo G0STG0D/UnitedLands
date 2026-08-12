@@ -33,7 +33,7 @@ public class CmdCountrySetName extends CountryCommandHandler {
 
         context.country().setName(args[0]);
 
-        UnitedLandsDataManager.instance().updateCountryDbData(context.country());
+        UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__SETNAME__SUCCESS.path()),
                 Map.of("country", context.country().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));

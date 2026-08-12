@@ -37,7 +37,7 @@ public class CmdAdminCountrySetName extends CountryAdminCommandHandler {
 
         country.setName(args[1]);
 
-        UnitedLandsDataManager.instance().updateCountryDbData(country);
+        UnitedLandsDataManager.instance().updateCountryDbData(country, true);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__SETNAME__SUCCESS.path()),
                 Map.of("oldname", oldname, "newname", country.getName()), MessageProvider.instance().get(Message.PREFIX.path()));

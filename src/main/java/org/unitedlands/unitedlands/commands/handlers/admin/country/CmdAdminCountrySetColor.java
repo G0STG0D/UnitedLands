@@ -43,7 +43,7 @@ public class CmdAdminCountrySetColor extends CountryAdminCommandHandler {
         country.setFillColor(args[1] + "10");
         country.setStrokeColor(args[1]);
 
-        UnitedLandsDataManager.instance().updateCountryDbData(country);
+        UnitedLandsDataManager.instance().updateCountryDbData(country, true);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__SETCOLOR__SUCCESS.path()),
                 Map.of("country", country.getName(), "color", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));

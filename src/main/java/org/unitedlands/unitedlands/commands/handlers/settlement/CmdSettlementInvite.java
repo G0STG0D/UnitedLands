@@ -61,7 +61,7 @@ public class CmdSettlementInvite extends SettlementCommandHandler {
             context.settlement().addCitizen(targetCitizen);
             targetCitizen.setSettlement(context.settlement());
 
-            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             Messenger.sendMessage(context.settlement().getOnlinePlayers(),

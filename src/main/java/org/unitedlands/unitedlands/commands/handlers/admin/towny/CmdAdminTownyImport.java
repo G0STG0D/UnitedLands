@@ -240,8 +240,8 @@ public class CmdAdminTownyImport implements UnitedCommandExecutor {
                     settlement.setCountry(country);
 
                     UnitedLandsDataManager.instance().createCountryDbData(country);
-                    UnitedLandsDataManager.instance().updateRegionDbData(region);
-                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+                    UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
                     Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_COUNTRY.path()),
                             Map.of("country", country.getName()), MessageProvider.instance().get(Message.PREFIX.path()));

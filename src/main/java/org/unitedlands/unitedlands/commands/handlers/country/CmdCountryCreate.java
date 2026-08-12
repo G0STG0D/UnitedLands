@@ -90,8 +90,8 @@ public class CmdCountryCreate implements UnitedCommandExecutor {
             citizen.addCountryRank("leader");
 
             UnitedLandsDataManager.instance().createCountryDbData(country);
-            UnitedLandsDataManager.instance().updateRegionDbData(region);
-            UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+            UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+            UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
             UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
             UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());

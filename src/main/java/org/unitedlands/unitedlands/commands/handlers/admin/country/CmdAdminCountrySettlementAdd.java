@@ -47,7 +47,7 @@ public class CmdAdminCountrySettlementAdd extends CountryAdminCommandHandler {
         settlement.setCountry(country);
         country.addSettlement(settlement);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement);
+        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
         Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__ADDSETTLEMENT__SUCCESS.path()),
                 Map.of("country", country.getName(), "settlement", settlement.getName()),

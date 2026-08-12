@@ -36,7 +36,7 @@ public class CmdSettlementSetName extends SettlementCommandHandler {
 
         context.settlement().setName(args[0]);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement());
+        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETNAME__SUCCESS.path()),
                 Map.of("oldname", oldname, "newname", context.settlement().getName()), MessageProvider.instance().get(Message.PREFIX.path()));

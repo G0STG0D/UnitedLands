@@ -242,17 +242,17 @@ public class Country extends GeopolObject {
 
     @Override
     public void saveMetadata() {
-        UnitedLandsDataManager.instance().updateCountryDbData(this);
+        UnitedLandsDataManager.instance().updateCountryDbData(this, false);
     }
 
     @Override
     public void saveAttributes() {
-        UnitedLandsDataManager.instance().updateCountryDbData(this);
+        UnitedLandsDataManager.instance().updateCountryDbData(this, false);
     }
 
     @Override
     public void saveAttributeModifiers() {
-        UnitedLandsDataManager.instance().updateCountryDbData(this);
+        UnitedLandsDataManager.instance().updateCountryDbData(this, false);
     }
 
 }

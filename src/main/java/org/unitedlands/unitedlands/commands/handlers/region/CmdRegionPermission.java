@@ -132,7 +132,7 @@ public class CmdRegionPermission extends RegionCommandHandler {
                 "state", add ? "<green>on</green>" : "<red>off</red>"),
                 MessageProvider.instance().get(Message.PREFIX.path()));
 
-        UnitedLandsDataManager.instance().updateRegionDbData(context.region());
+        UnitedLandsDataManager.instance().updateRegionDbData(context.region(), false);
     }
 
 }
