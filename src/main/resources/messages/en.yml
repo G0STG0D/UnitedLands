@@ -1,89 +1,65 @@
 admin:
   country:
-    add-settlement:
-      settlement-has-country: (missing)
-      success: (missing)
-      usage: (missing)
     addrank:
       success: <aqua>Successfully added rank {rank} to {citizen} in country {country}.</aqua>
-      unknown-rank: (missing)
-      usage: <gray>/ula country addrank <country_name> <citizen_name> <rank></gray>
     addsettlement:
       settlement-has-country: <yellow>{settlement} is already in a country.</yellow>
       success: <aqua>Successfully added {settlement} to {country}.</aqua>
-      usage: <gray>/ula country addsettlement <country_name> <settlement_name></gray>
     citzen-not-in-country: <yellow>{citizen} is not in the country</yellow>
     claim:
       already-claimed: <yellow>The region is already claimed.</yellow>
       no-region: <yellow>This location has no region.</yellow>
       success: <aqua>Successfully started claiming of {region} for {country}.</aqua>
-      usage: <gray>/ula country claim <country_name> <seconds_to_claim></gray>
     create:
       no-region: <yellow>The selected capital is not in a region.</yellow>
       region-occupied: <yellow>The selected capital is not in a region.</yellow>
-      success: <aqua>Successfully created {country} with capital {settlement} in region {region}.</aqua>
-      usage: <gray>/ula country create <country_name> <capital_name></gray>
+      success: <aqua>Successfully created {country} with capital {settlement} in region
+        {region}.</aqua>
     delete:
       success: <aqua>Country {country} successfully deleted.</aqua>
-      usage: <info>/ula country delete</info>
     removerank:
       success: <aqua>Successfully removed rank {rank} from {citizen} in country {country}.</aqua>
-      usage: <gray>/ula country removerank <country_name> <citizen_name> <rank></gray>
     removesettlement:
       not-in-country: <yellow>{settlement} is not part of the country.</yellow>
       success: <aqua>Successfully removed {settlement} from {country}.</aqua>
-      usage: <gray>/ula country removesettlement <country_name> <settlement_name></gray>
     setcapital:
       settlement-not-in-country: <yellow>{settlement} is not in the country.</yellow>
       success: <aqua>Successfully changed the capital of {country} to {settlement}.</aqua>
-      usage: <gray>/ula country setcapital <country_name> <capital_name></gray>
     setcolor:
       success: <aqua>Successfully changed color of {country} to {color}.</aqua>
-      usage: <gray>/ula country setcolor <country_name> <hex_color></gray>
     setname:
       success: <aqua>Successfully changed name of {oldname} to {newname}.</aqua>
-      usage: <aqua>Successfully changed name of {oldname} to {newname}.</aqua>
-    unknown-rank: <gray>/ula country setname <country_name> <new_name></gray>
+    unknown-rank: <white>/ula country setname <country_name> <new_name></white>
   settlement:
     addcitizen:
       already-in-settlement: <yellow>{citizen} is already part of {settlement}.</yellow>
       success: <aqua>Successfully added {citizen} to settlement {settlement}.</aqua>
-      usage: <gray>/ula settlement addcitizen <settlement_name> <citizen_name></gray>
     addrank:
       success: <aqua>Successfully added rank {rank} to {citizen} in settlement {settlement}.</aqua>
-      usage: <gray>/ula settlement addrank <settlement_name> <citizen_name> <rank></gray>
     citizen-not-in-settlement: <yellow>{citizen} is not a member of {settlement}.</yellow>
     claim:
       already-claimed: <yellow>The chunk is already claimed.</yellow>
       success: <aqua>Chunk {chunk} claimed for {settlement}.</aqua>
-      usage: <gray>/ula settlement claim <settlement_name></gray>
     create:
       already-claimed: <yellow>The chunk is already claimed.</yellow>
       success: <aqua>Successfully created settlement {settlement}.</aqua>
-      usage: <gray>/ula settlement create <settlement_name></gray>
     delete:
       is-capital: <yellow>Cannot delete a capital.</yellow>
       success: <aqua>Successfully deleted settlement {settlement}.</aqua>
-      usage: <gray>/ula settlement delete <settlement_name></gray>
     removecitizen:
       success: <aqua>Successfully removed {citizen} from settlement {settlement}.</aqua>
-      usage: <gray>/ula settlement removecitizen <settlement_name> <citizen_name></gray>
     removerank:
       success: <aqua>Successfully removed rank {rank} from {citizen} in settlement {settlement}.</aqua>
-      usage: <gray>/ula settlement removerank <settlement_name> <citizen_name> <rank></gray>
     setname:
       success: <aqua>Successfully changed name of {oldname} to {newname}.</aqua>
-      usage: <gray>/ula settlement setname <settlement_name> <new_name></gray>
     setspawn:
       not-in-claims: <yellow>Location is not inside settlement claims.</yellow>
       success: <aqua>Successfully changed the spawn of {settlement}.</aqua>
-      usage: <gray>/ula settlement setspawn <settlement_name></gray>
     unclaim:
       has-spawn: <yellow>Cannot unclaim the chunk that contains the settlement spawn.</yellow>
       is-home-chunk: <yellow>Cannot unclaim the settlement home chunk.</yellow>
       not-claimed: <yellow>This chunk is not claimed.</yellow>
       success: <aqua>Chunk {chunk} of {settlement} unclaimed.</aqua>
-      usage: <gray>/ula settlement unclaim</gray>
     unknown-rank: "<yellow>Unknown rank: {rank}</yellow>"
   towny:
     import:
@@ -91,114 +67,149 @@ admin:
       finished: <aqua>Import finished.</aqua>
       success-country: <aqua>Country import finished.</aqua>
       success-settlement: <aqua>Settlement import finished.</aqua>
-      usage: <gray>/ula towny import [settlement|country] (omit to import all)</gray>
 general-errors:
   citizen-not-found: <yellow>Citizen {citizen} not found.</yellow>
   country-not-found: <yellow>Country {country} not found.</yellow>
   no-citizen-data: <yellow>Missing citizen data for player {player}.</yellow>
   no-claim-permission: <yellow>You don't have permissions in this claim.</yellow>
-  no-country-permission: <yellow>You don't have the necessary country rank do this ({perm}).</yellow>
-  no-funds: (missing)
+  no-country-permission: <yellow>You don't have the necessary country rank do this
+    ({perm}).</yellow>
   no-funds-country: <yellow>The country doesn't have {amount} in its bank.</yellow>
   no-funds-player: <yellow>You don't have {amount} in your account.</yellow>
   no-funds-settlement: <yellow>The settlement doesn't have {amount} in its bank.</yellow>
-  no-permission: (missing)
-  no-settlement-permission: <yellow>You don't have the necessary settlement rank do this ({perm}).</yellow>
-  not-in-claim: (missing)
-  not-in-country: (missing)
+  no-permission: <yellow>You don't have permission to perform this action.</yellow>
+  no-region-permission: <yellow>You don't have permissions in this region.</yellow>
+  no-settlement-permission: <yellow>You don't have the necessary settlement rank do
+    this ({perm}).</yellow>
+  not-in-claim: <yellow>You're not inside of a claimed area.</yellow>
+  not-in-country: <yellow>You're not part of a country.</yellow>
   not-in-settlement: <yellow>You are not member of a settlement.</yellow>
   player-not-found: <yellow>Player {player} not found.</yellow>
-  player-not-in-country: (missing)
-  settlement-not-found: (missing)
+  player-not-in-country: <yellow>You are not a member of {country}.</yellow>
+  region-not-found: <yellow>Region {region} not found.</yellow>
+  settlement-not-found: <yellow>Settlement {settlement} not found.</yellow>
   wrong-color-format: <yellow>Wrong color format, must be hex (#000000).</yellow>
   wrong-number-format: <yellow>Invalid number format.</yellow>
 info-screens:
   citizen:
-    balance: <gray><bold>Balance:</bold> {balance}</gray>
-    country: <gray><bold>Country ranks:</bold> {countryranks}</gray>
-    country-ranks: <gray><bold>Country ranks:</bold> {countryranks}</gray>
-    metadata: <gray>{metadata}</gray>
-    registered: <dark_gray><gray><bold>Registered:</bold> {registered}</gray> | <gray><bold>Last log-on:</bold> {lastlogon} </gray></dark_gray>
-    settlement-ranks: <gray><bold>Settlement ranks:</bold> {settlementranks}</gray>
+    balance: <white><bold>Balance:</bold> {balance}</white>
+    country: <dark_gray><white><bold>Settlement:</bold> {settlement}</white> | <white><bold>Country:</bold>
+      {country} </white></dark_gray>
+    country-ranks: <white><bold>Country ranks:</bold> {countryranks}</white>
+    metadata: <white>{metadata}</white>
+    registered: <dark_gray><white><bold>Registered:</bold> {registered}</white> | <white><bold>Last
+      log-on:</bold> {lastlogon} </white></dark_gray>
+    settlement-ranks: <white><bold>Settlement ranks:</bold> {settlementranks}</white>
   country:
-    balance: <gray><bold>Board:</bold> {board}
-    capital: <gray><bold>Capital:</bold> {capital}
+    area: <white><bold>Area:</bold> {area}</white>
+    balance: <white><bold>Board:</bold> {board}</white>
+    capital: <white><bold>Capital:</bold> {capital}</white>
     citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"
-    claims: "<gray>Claiming (remaining time): {claims}</gray>"
-    founded: <dark_gray><gray><bold>Founded:</bold> {founded}</gray> | <gray><bold>By:</bold> {founder} </gray></dark_gray>
-    leader: <gray><bold>Leader:</bold> {leader}
-    metadata: <gray>{metadata}</gray>
+    claims: "<white>Claiming (remaining time): {claims}</white>"
+    founded: <dark_gray><white><bold>Founded:</bold> {founded}</white> | <white><bold>By:</bold>
+      {founder} </white></dark_gray>
+    leader: <white><bold>Leader:</bold> {leader}
+    metadata: <white>{metadata}</white>
   header:
-    filler: "_"
-    filler-color: "gold"
-    filler-end: ".oOo."
-    filler-start: ".oOo."
+    filler: _
+    filler-color: gold
+    filler-end: .oOo.
+    filler-start: .oOo.
     max-chars: 55
-    title-color: "white"
+    title-color: white
     title-end: " ]."
     title-start: ".[ "
+  region:
+    administrator: <white><bold>Administrator:</bold> {citizen}</white>
+    area: <white><bold>Area:</bold> {area}</white>
+    owner: <dark_gray><white><bold>Country:</bold> {country}</white> | <white><bold>Claimed:</bold>
+      {claimed} </white></dark_gray>
+    perm-1: <dark_gray><white><bold>Perms:</bold></white>  <white>Break</white> {break}
+      | <white>Place</white> {place} | <white>Open</white> {open}<dark_gray>
+    perm-2: <dark_gray><white><bold>         </bold></white><white>Switch</white> {switch}
+      | <white>Use</white> {use}   | <white>Interact</white> {interact}<dark_gray>
+    toggles: <white><bold>Toggles:</bold> <dark_gray>{pvp} | {mobs} | {animals} | {fire}
+      | {explosions} </dark_gray>
   settlement:
-    balance: <gray><bold>Balance:</bold> {balance}</gray>
-    board: <gray><bold>Board:</bold> {board}</gray>
-    citizens: <gray><bold>Citizens:</bold> [<aqua>{citizens-count}</aqua>]</gray>
-    founded: <dark_gray><gray><bold>Founded:</bold> {founded}</gray> | <gray><bold>By:</bold> {founder} </gray></dark_gray>
-    mayor: <gray><bold>Mayor:</bold> {mayor}
-    metadata: <gray>{metadata}</gray>
-    perm-1: <dark_gray><gray><bold>Perms:</bold></gray>  <gray>Break</gray> {break} | <gray>Place</gray> {place} | <gray>Open</gray> {open}<dark_gray>
-    perm-2: <dark_gray><gray><bold>         </bold></gray><gray>Switch</gray> {switch} | <gray>Use</gray> {use}   | <gray>Interact</gray> {interact}<dark_gray>
-    region: <dark_gray><gray><bold>Region:</bold> {region}</gray> | <gray><bold>Country:</bold> {country}</gray></dark_gray>
-    sizeupkeep: <dark_gray><gray><bold>Size:</bold> [<aqua>{size}</aqua>]</gray> | <gray><bold>Upkeep:</bold> [<aqua>{upkeep}</aqua>]</gray></dark_gray>
-    taxes: <gray><bold>Citizen tax:</bold> {taxes} per day</gray>
-    toggles: <gray><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals} | {fire} | {explosions} </dark_gray>
+    balance: <white><bold>Balance:</bold> {balance}</white>
+    board: <white><bold>Board:</bold> {board}</white>
+    citizens: <white><bold>Citizens:</bold> [<aqua>{citizens-count}</aqua>]</white>
+    founded: <dark_gray><white><bold>Founded:</bold> {founded}</white> | <white><bold>By:</bold>
+      {founder} </white></dark_gray>
+    mayor: <white><bold>Mayor:</bold> {mayor}
+    metadata: <white>{metadata}</white>
+    perm-1: <dark_gray><white><bold>Perms:</bold></white>  <white>Break</white> {break}
+      | <white>Place</white> {place} | <white>Open</white> {open}<dark_gray>
+    perm-2: <dark_gray><white><bold>         </bold></white><white>Switch</white> {switch}
+      | <white>Use</white> {use}   | <white>Interact</white> {interact}<dark_gray>
+    region: <dark_gray><white><bold>Region:</bold> {region}</white> | <white><bold>Country:</bold>
+      {country}</white></dark_gray>
+    sizeupkeep: <dark_gray><white><bold>Size:</bold> [<aqua>{size}</aqua>]</white> |
+      <white><bold>Upkeep:</bold> [<aqua>{upkeep}</aqua>]</white></dark_gray>
+    taxes: <white><bold>Citizen tax:</bold> {taxes} per day</white>
+    toggles: <white><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals}
+      | {fire} | {explosions} </dark_gray>
+  settlement-chunk:
+    owner: <dark_gray><white><bold>Owner:</bold> {owner}</white> | <white><bold>Claimed:</bold>
+      {claimed}</white></dark_gray>
+    perm-1: <dark_gray><white><bold>Perms:</bold></white>  <white>Break</white> {break}
+      | <white>Place</white> {place} | <white>Open</white> {open}<dark_gray>
+    perm-2: <dark_gray><white><bold>         </bold></white><white>Switch</white> {switch}
+      | <white>Use</white> {use}   | <white>Interact</white> {interact}<dark_gray>
+    sale: <dark_gray><white><bold>For sale:</bold> {forsale}</white> | <white><bold>Price:</bold>
+      {price}</white></dark_gray>
+    toggles: <white><bold>Toggles:</bold> <dark_gray>{public} | {pvp} | {mobs} | {animals}
+      | {fire} | {explosions} </dark_gray>
+    type: <dark_gray><white><bold>Plot type:</bold> {type}</white></dark_gray>
 new-day:
-  citizen-bankrupt: "<yellow>{citizen} was not able to pay their taxes.</yellow>"
-  citizen-tax-notice: "<aqua>You paid {amount} of taxes to your settlement.</aqua>"
-  country-tax-notice: "<aqua>Your country has collected {amount} of taxes from its settlements.</aqua>"
-  country-upkeep-notice: "<aqua>Your country has paid {amount} of upkeep.</aqua>"
-  settlement-tax-notice: "<aqua>Your town has collected {amount} of taxes from its residents.</aqua>"
-  settlement-upkeep-notice: "<aqua>Your town has paid {amount} of upkeep.</aqua>"
-  start: "<aqua><bold>A new day is starting.</bold> Collecting taxes from settlements and countries...</aqua>"
+  citizen-bankrupt: <yellow>{citizen} was not able to pay their taxes.</yellow>
+  citizen-tax-notice: <aqua>You paid {amount} of taxes to your settlement.</aqua>
+  country-tax-notice: <aqua>Your country has collected {amount} of taxes from its
+    settlements.</aqua>
+  country-upkeep-notice: <aqua>Your country has paid {amount} of upkeep.</aqua>
+  settlement-tax-notice: <aqua>Your town has collected {amount} of taxes from its
+    residents.</aqua>
+  settlement-upkeep-notice: <aqua>Your town has paid {amount} of upkeep.</aqua>
+  start: <aqua><bold>A new day is starting.</bold> Collecting taxes from settlements
+    and countries...</aqua>
 player:
   country:
     addrank:
       rank-already-owned: <yellow>{citzen} already has the rank {rank}.</yellow>
       rank-received: <aqua>You've received the country rank of {rank}.</aqua>
       success: <aqua>Successfully added rank {rank} to {citizen}.</aqua>
-      usage: <gray>/country addrank <citizen_name> <rank></gray>
     claim:
       already-being-claimed: <yellow>This region is already being claimed by {country}</yellow>
       already-claimed: <yellow>This region is already claimed.</yellow>
-      broadcast-message: (missing)
-      claimed-broadcast: <aqua><green>{country}</green> has claimed the region of <red>{region}</region></aqua>
+      claimed-broadcast: <aqua><green>{country}</green> has claimed the region of
+        <red>{region}</region></aqua>
       no-region: <yellow>There is no region in this location.</yellow>
-      player-message: (missing)
-      region-occupied: (missing)
-      start-broadcast: <aqua><green>{country}</green> has started claiming the region of <red>{region}</region>. They will take control of it in {time}.</aqua>
-      too-many-claiming: <yellow>You cannot claim more than {max} region(s) at the same time.</yellow>
-      usage: (missing)
+      start-broadcast: <aqua><green>{country}</green> has started claiming the region
+        of <red>{region}</region>. They will take control of it in {time}.</aqua>
+      too-many-claiming: <yellow>You cannot claim more than {max} region(s) at the
+        same time.</yellow>
     create:
-      broadcast-message: "<aqua>{player} has created the country of <green>{country}</green> (Region: <red>{region}</red>)"
-      player-message: <aqua>Congratulations, you have crated the country of <green>{country}</green>! Find out how to manage it on our /wiki and don't hesitate to ask other players in the chat.</aqua>
+      broadcast-message: "<aqua>{player} has created the country of <green>{country}</green>
+        (Region: <red>{region}</red>)"
+      player-message: <aqua>Congratulations, you have crated the country of <green>{country}</green>!
+        Find out how to manage it on our /wiki and don't hesitate to ask other players
+        in the chat.</aqua>
       region-occupied: <yellow>This region is already owned by {country}</yellow>
-      usage: <gray>/country create <country_name></gray>
     delete:
       broadcast-message: <aqua>{country} has ceased to exist.</aqua>
     deposit:
       success: <aqua>You deposited {amount} into the country bank.</aqua>
-      usage: <gray>/country deposit <amount></gray>
-    not-in-country: (missing)
+    not-in-country: <yellow>You're not member of a country.</yellow>
     removerank:
-      cannot-remove-leader: <yellow>You cannot remove the leader rank. You can only pass it to another citizen.</yellow>
+      cannot-remove-leader: <yellow>You cannot remove the leader rank. You can only
+        pass it to another citizen.</yellow>
       rank-lost: <aqua>You lost the country rank {rank}.</aqua>
       rank-not-owned: <yellow>{citizen} doesn't have the rank {rank}</yellow>
       rank-removed: <aqua>Removed country rank {rank} from {name}.
-      usage: <gray>/country removerank <citizen_name> <rank></gray>
     setcolor:
       success: <aqua>Successfully changed your country's color to {color}</aqua>
-      usage: <gray>/country setcolor <hex_color></gray>
     setname:
       success: <aqua>Successfully changed your country's name to {country}</aqua>
-      usage: <gray>/country setname <new_name></gray>
     unclaim:
       confirm: <yellow>You will lose control of this region. Continue?</yellow>
       confirm-warn-leader: "<red>WARNING: You will lose leadership of the country!</red>"
@@ -206,47 +217,76 @@ player:
       last-region: <yellow>You cannot unclaim your last remaining region.</yellow>
       no-region: <yellow>There is no region to unclaim at this location.</yellow>
       other-country-claiming: <yellow>This region is being claimed by {country}.</yellow>
-      region-not-claimed: <yellow>This region is not claimed or being claimed by your country.</yellow>
+      region-not-claimed: <yellow>This region is not claimed or being claimed by your
+        country.</yellow>
       region-not-owned: <yellow>This region doesn't belong to your country.</yellow>
       success: <aqua>You have forfeited your claims to region {region}.</aqua>
     withdraw:
       success: <aqua>You took {amount} from the country bank.</aqua>
-      usage: <gray>/country withdraw <amount></gray>
+  region:
+    info:
+      not-in-region: <yellow>You're not in a region.</yellow>
+    permission:
+      success: <aqua>Settlement permission {permission} for {membership} set to {state}.</aqua>
+      unknown-membership: "<yellow>Unknown group: {membership}.</yellow>"
+      unknown-permission: "<yellow>Unknown permission: {permission}.</yellow>"
+    setadministrator:
+      not-in-country: <yellow>{citizen} is not part of your country.yellow>
+      success: <aqua>Assigned {citizen} as the administrator of {region}.</aqua>
+    setname:
+      success: <aqua>Successfully changed the region name from {oldname} to {newname}.</aqua>
+    toggle:
+      success: <aqua>Toggled plot {field} to {state}</aqua>
+      unknown-toggle: "<yellow>Unknown toggle: {toggle}"
   settlement:
     addrank:
       rank-already-owned: <yellow>{citzen} already has the rank {rank}.</yellow>
       rank-received: <aqua>You've received the settlement rank of {rank}.</aqua>
       success: <aqua>Successfully added rank {rank} to {citizen}.</aqua>
-      usage: <gray>/settlement addrank <citizen_name> <rank></gray>
+    addtrust:
+      cannot-trust-yourself: <yellow>You can't add yourself.</yellow>
+      success: <aqua>Added {citizen} to trust list.</aqua>
+      trusted: <aqua>You have been trusted in {settlement}.</aqua>
     claim:
       already-claimed: <yellow>This chunk is already claimed.</yellow>
-      has-country: <yellow>This region belongs to {country}, and you lack the permission to claim here.</yellow>
+      has-country: <yellow>This region belongs to {country}, and you lack the permission
+        to claim here.</yellow>
       outside-of-region: <yellow>You cannot claim outside of your region.</yellow>
       success: <aqua>Claimed chunk {chunk} for {settlement} for {costs}</aqua>
     create:
       already-claimed: <yellow>This space is already claimed.</yellow>
-      already-in-settlement: <yellow>You are already a member of a settlement. Leave your current settlement first.</yellow>
-      broadcast-message: "<aqua>{player} has just created the settlement of <blue>{settlement}</blue> (Region: <red>{region}</red> | Country: <green>{country}</green>)</aqua>"
-      confirm: <aqua>Creating settlement <blue>{settlement}</blue> here will cost {cost}. Continue?</aqua>
-      country-warning: <yellow>If you make a settlement here, you will automatically join the country of <green>{country}</green>.</yellow>
-      player-message: <aqua>Congratulations, you have crated the settlement of <bold>{settlement}</bold>! Find out how to manage your town on our /wiki and don't hesitate to ask other players in the chat.</aqua>
-      usage: <gray>/settlement create <settlement_name> <rank></gray>
+      already-in-settlement: <yellow>You are already a member of a settlement. Leave
+        your current settlement first.</yellow>
+      broadcast-message: "<aqua>{player} has just created the settlement of <blue>{settlement}</blue>
+        (Region: <red>{region}</red> | Country: <green>{country}</green>)</aqua>"
+      confirm: <aqua>Creating settlement <blue>{settlement}</blue> here will cost
+        {cost}. Continue?</aqua>
+      country-warning: <yellow>If you make a settlement here, you will automatically
+        join the country of <green>{country}</green>.</yellow>
+      player-message: <aqua>Congratulations, you have crated the settlement of <bold>{settlement}</bold>!
+        Find out how to manage your town on our /wiki and don't hesitate to ask other
+        players in the chat.</aqua>
     delete:
-      broadcast-message: <aqua>The settlement of <blue>{settlement}</blue> has been abandoned.</aqua>
-      confirm: <aqua>Are you sure you wish to delete <blue>{settlement}</blue>? <bold>This cannot be undone!</bold></aqua>
-      is-capital: <yellow>You cannot delete a country capital. Move the capital or delete the country first.</yellow>
+      broadcast-message: <aqua>The settlement of <blue>{settlement}</blue> has been
+        abandoned.</aqua>
+      confirm: <aqua>Are you sure you wish to delete <blue>{settlement}</blue>? <bold>This
+        cannot be undone!</bold></aqua>
+      is-capital: <yellow>You cannot delete a country capital. Move the capital or
+        delete the country first.</yellow>
     deposit:
       success: <aqua>You deposited {amount} into the settlement bank.</aqua>
-      usage: <gray>/settlement deposit <amount></gray>
     invite:
       invite-message: <aqua>You have been invited to join <blue>{settlement}</blue>.</aqua>
       player-joined: <aqua>{name} has joined the town!</aqua>
-      player-message: <aqua>You have joined <blue>{settlement}</blue>! Use [<yellow>/s spawn</yellow>] to go there.</aqua>
-      usage: <gray>/settlement invite <player_name></gray>
+      player-message: <aqua>You have joined <blue>{settlement}</blue>! Use [<yellow>/s
+        spawn</yellow>] to go there.</aqua>
     joincountry:
       already-in-country: <yellow>The settlement is already part of a country.</yellow>
-      broadcast-message: <aqua>The settlement of <blue>{settlement}</blue> has joined the country of <green>{country}</green>.</aqua>
-      confirm: <aqua>Your settlement will become part of <green>{country}</green> and won't be able to leave without being released - or revolting. Do you wish to continue?</aqua>
+      broadcast-message: <aqua>The settlement of <blue>{settlement}</blue> has joined
+        the country of <green>{country}</green>.</aqua>
+      confirm: <aqua>Your settlement will become part of <green>{country}</green>
+        and won't be able to leave without being released - or revolting. Do you wish
+        to continue?</aqua>
       no-country: <yellow>There is no country in this region.</yellow>
       no-region: <yellow>This settlement does not belong to any region.</yellow>
     kick:
@@ -255,7 +295,6 @@ player:
       kicked: <yellow>You have been kicked from <blue>{settlement}</blue>.</yellow>
       not-in-settlement: <yellow>The player is not a citizen of this settlement.</yellow>
       success: <aqua>Player {name} has been kicked from the settlement.</aqua>
-      usage: <gray>/settlement kick <player_name></gray>
     leave:
       confirm: <aqua>Are you sure you wish leave <blue>{settlement}</blue>?</aqua>
       is-leader: <yellow>You're the country leader, you can't leave.</yellow>
@@ -266,53 +305,53 @@ player:
       success: <aqua>Settlement permission {permission} for {membership} set to {state}.</aqua>
       unknown-membership: "<yellow>Unknown group: {membership}.</yellow>"
       unknown-permission: "<yellow>Unknown permission: {permission}.</yellow>"
-      usage: <gray>/settlement setpermission <group> <permission> <on|off></gray>
     player-left: <yellow>{citizen} is not a member of the settlement.</yellow>
     removerank:
-      cannot-remove-mayor: <yellow>You cannot remove the mayor rank. You can only pass it to another citizen.</yellow>
+      cannot-remove-mayor: <yellow>You cannot remove the mayor rank. You can only
+        pass it to another citizen.</yellow>
       lost: <aqua>You lost the settlement rank {rank}.
       rank-not-owned: <yellow>Citizen {citizen} doesn't have the rank {rank}.</yellow>
       success: <aqua>Removed settlement rank {rank} from {citizen}.</aqua>
-      usage: <gray>/settlement removerank <citizen_name> <rank></gray>
+    removetrust:
+      not-trusted: <yellow>{citizen} is not on the trust list.</yellow>
+      success: <aqua>Removed {citizen} from trust list.</aqua>
+      untrusted: <aqua>You have lost trust in {settlement}.</aqua>
     setboard:
       cleared: <aqua>Your settlement's board has been cleared.</aqua>
-      success: <aqua>Your settlement''s board has been updated. Use "/settlement setboard EMPTY" to clear it.</aqua>
-      usage: <gray>/settlement setboard Your settlement board message...</gray>
+      success: <aqua>Your settlement''s board has been updated. Use "/settlement setboard
+        EMPTY" to clear it.</aqua>
     setcolor:
       success: <aqua>Successfully changed your settlement color to {color}.</aqua>
-      usage: <gray>/settlement setcolor <hex_color></gray>
     setname:
       success: <aqua>Successfully changed your settlement name from {oldname} to {newname}.</aqua>
-      usage: <gray>/settlement setname <new_name></gray>
     setspawn:
       not-in-claims: <yellow>The spawn location must be inside of settlement claims.</yellow>
       success: <aqua>Successfully changed your settlement spawn.</aqua>
     settax:
-      above-max: <yellow>You can't set taxes higher than {max}, using maximum allowed value.</yellow>
-      below-min: <yellow>You can't set taxes lower than {min}, using minimum allowed value.</yellow>
+      above-max: <yellow>You can't set taxes higher than {max}, using maximum allowed
+        value.</yellow>
+      below-min: <yellow>You can't set taxes lower than {min}, using minimum allowed
+        value.</yellow>
       success: <aqua>Taxes for {settlement} set to {value}</aqua>
-      usage: <gray>/settlement settaxes <amount></gray>
     spawn:
       no-spawn: <yellow>The target has no spawn point set.</yellow>
       not-public: <yellow>The target spawn is not public.</yellow>
-      tp-cancel: <gray>Teleport cancelled.</gray>
-      tp-start: <gray>Teleporting in 3 seconds. Move to cancel.</gray>
+      tp-cancel: <white>Teleport cancelled.</white>
+      tp-start: <white>Teleporting in 3 seconds. Move to cancel.</white>
     toggle:
       success: <aqua>Toggled settlement {field} to {state}</aqua>
       unknown-toggle: "<yellow>Unknown toggle: {toggle}.</yellow>"
-      usage: <gray>/settlement toggle <toggle> <on|off></gray>
     unclaim:
-      has-spawn: <yellow>You cannot unclaim this chunk, it contains the settlement spawn. Move the spawn first.</yellow>
+      has-spawn: <yellow>You cannot unclaim this chunk, it contains the settlement
+        spawn. Move the spawn first.</yellow>
       is-home-chunk: <yellow>You cannot unclaim the settlement's home chunk</yellow>
       not-claimed: <yellow>This chunk is not claimed</yellow>
       not-in-settlement: <yellow>This chunk does not belong to your settlement</yellow>
       success: <aqua>Unclaimed chunk at {chunk}</aqua>
     usetaxpercent:
       success: <aqua>Percentage tax for {settlement} is now {state}.</aqua>
-      usage: <gray>/settlement usetaxpercent <true|false></gray>
     withdraw:
       success: <aqua>You took {amount} from the settlement bank.</aqua>
-      usage: <gray>/settlement withdraw <amount></gray>
   settlementchunk:
     abandon:
       not-owner: <yellow>You are not the owner of this plot.</yellow>
@@ -325,19 +364,17 @@ player:
       success: <aqua>You evicted the current owner of this plot.</aqua>
     forsale:
       cleared: <aqua>This plot is no longer for sale.</aqua>
-      has-owner: <yellow>This plot is already owned by {owner}. Evict the current owner before putting this plot up for sale.</yellow>
-      success: <aqua>This plot is now for sale for {price}. Use [<yellow>/plot forsale clear</yellow>] to cancel the sale.</aqua>
-      usage: <gray>/settlement forsale <price></gray>
+      has-owner: <yellow>This plot is already owned by {owner}. Evict the current
+        owner before putting this plot up for sale.</yellow>
+      success: <aqua>This plot is now for sale for {price}. Use [<yellow>/plot forsale
+        clear</yellow>] to cancel the sale.</aqua>
     permission:
       success: <aqua>Plot permission {permission} for {membership} set to {state}</aqua>
-      usage: <gray>/plot permission <permission> <group> <on|off></gray>
     settype:
-      success: (missing)
+      success: "<aqua>Set plot to {type}.</aqua>"
       too-many-of-type: <yellow>The settlement can only have {max} plots of type {type}.</yellow>
       unknown-type: "<yellow>Unknown type: {type}.</yellow>"
-      usage: <gray>/plot settype <type></gray>
     toggle:
       success: <aqua>Toggled plot {field} to {state}</aqua>
-      usage: <gray>/plot toggle <toggle> <on|off></gray>
 prefix: <bold><red>U</red><white>L</white> <dark_gray>» </dark_gray></bold>
 reload: <green>Plugin reloaded.</green>

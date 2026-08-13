@@ -151,3 +151,76 @@ settlement-chunks:
     map-icon: "F"
     map-icon-color: "§f"
     max-per-settlement: 1
+
+
+
+base_vanilla_potions_low_tier:
+  timelimit: 7200
+  random-descriptions:
+    - ""
+  order-items:
+    terrain:
+      materials:
+        - POTION:SWIFTNESS
+        - POTION:SLOWNESS
+        - POTION:POISON
+        - POTION:WEAKNESS
+      unitsize: 1
+      units: 4-27
+      
+base_custom_potions_low_tier:
+  timelimit: 7200
+  random-descriptions:
+    - ""
+  order-items:
+    terrain:
+      materials:
+        - "hunger1"
+        - "withering1"
+        - "luck1"
+        - "glowing1"
+      unitsize: 1
+      units: 4-27
+      
+splash_vanilla_potions_low_tier:
+  timelimit: 7200
+  random-descriptions:
+    - ""
+  order-items:
+    terrain:
+      materials:
+        - SPLASH_POTION:SWIFTNESS
+        - SPLASH_POTION:SLOWNESS
+        - SPLASH_POTION:POISON
+        - SPLASH_POTION:WEAKNESS
+      unitsize: 1
+      units: 4-27
+      
+splash_custom_potions_low_tier:
+  timelimit: 7200
+  random-descriptions:
+    - ""
+  order-items:
+    terrain:
+      materials:
+        - "hunger4"
+        - "withering4"
+        - "luck3"
+        - "glowing3"
+      unitsize: 1
+      units: 4-27
+      
+strong_potions_low_tier:
+  timelimit: 7200
+  random-descriptions:
+    - ""
+  order-items:
+    terrain:
+      materials:
+        - POTION:STRONG_SWIFTNESS
+        - POTION:STRONG_SLOWNESS
+        - POTION:STRONG_POISON
+        - "hunger2"
+        - "withering2"
+      unitsize: 1
+      units: 4-27

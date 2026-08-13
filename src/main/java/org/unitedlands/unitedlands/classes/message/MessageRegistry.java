@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.interfaces.MessageKey;
 import org.unitedlands.utils.Logger;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -39,9 +40,9 @@ public class MessageRegistry {
         }
     }
 
-    public <E extends Enum<E> & IMessageKey> void sync(Class<E> enumClass) {
+    public <E extends Enum<E> & MessageKey> void sync(Class<E> enumClass) {
         boolean changed = false;
-        for (IMessageKey key : (IMessageKey[]) enumClass.getEnumConstants()) {
+        for (MessageKey key : (MessageKey[]) enumClass.getEnumConstants()) {
             if (!config.isSet(key.path())) {
                 config.set(key.path(), key.defaultValue());
                 Logger.debug("Added missing message key: " + key.path());
@@ -58,9 +59,9 @@ public class MessageRegistry {
         }
     }
 
-    private <E extends Enum<E> & IMessageKey> void reportOrphans(Class<E> enumClass) {
-        Set<String> valid = Arrays.stream((IMessageKey[]) enumClass.getEnumConstants())
-                .map(IMessageKey::path)
+    private <E extends Enum<E> & MessageKey> void reportOrphans(Class<E> enumClass) {
+        Set<String> valid = Arrays.stream((MessageKey[]) enumClass.getEnumConstants())
+                .map(MessageKey::path)
                 .collect(Collectors.toSet());
         Set<String> present = new HashSet<>();
         collectLeafPaths(config, "", present);
@@ -101,7 +102,7 @@ public class MessageRegistry {
         return sorted;
     }
 
-    public String getRaw(IMessageKey key) {
+    public String getRaw(MessageKey key) {
         return config.getString(key.path(), key.defaultValue());
     }
 
