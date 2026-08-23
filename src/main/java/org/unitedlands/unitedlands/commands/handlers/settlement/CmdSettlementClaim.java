@@ -94,7 +94,7 @@ public class CmdSettlementClaim extends SettlementCommandHandler {
 
         UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
 
-        UnitedLandsEconomyManager.instance().withdraw(context.settlement().getUuid(), claimCosts);
+        UnitedLandsEconomyManager.instance().withdraw(context.settlement().getUuid(), claimCosts, "Chunk claiming");
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CLAIM__SUCCESS.path()),
                 Map.of("settlement", context.settlement().getCleanName(),

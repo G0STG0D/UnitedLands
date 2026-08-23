@@ -42,14 +42,14 @@ public class NewDayTask implements Runnable {
                 if (settlement.useTaxPercent()) {
                     // Percentage tax
                     var tax = citizenBalance * settlement.getTax();
-                    UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax);
+                    UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax, "Daily taxes");
                     totalTax += tax;
                     notifyPlayer(citizen.getOfflinePlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
                 } else {
                     // Flat tax
                     var tax = settlement.getTax();
                     if (citizenBalance >= tax) {
-                        UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax);
+                        UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax, "Daily taxes");
                         totalTax += tax;
                         notifyPlayer(citizen.getOfflinePlayer().getPlayer(), Message.NEW_DAY__CITIZEN_TAX_NOTICE.path(), tax);
                     } else {
@@ -60,14 +60,14 @@ public class NewDayTask implements Runnable {
             }
 
             Logger.log("Settlement " + settlement.getName() + " collected " + UnitedLandsEconomyManager.instance().format(totalTax) + " taxes.", "UnitedLands");
-            UnitedLandsEconomyManager.instance().deposit(settlement.getUuid(), totalTax);
+            UnitedLandsEconomyManager.instance().deposit(settlement.getUuid(), totalTax, "Citizen taxes");
             notifyPlayers(settlement.getOnlinePlayers(), Message.NEW_DAY__SETTLEMENT_TAX_NOTICE.path(), totalTax);
 
             var balance = UnitedLandsEconomyManager.instance().getBalance(settlement.getUuid()).doubleValue();
             var upkeep = CostUtils.getSettlementUpkeep(settlement);
 
             if (balance >= upkeep) {
-                UnitedLandsEconomyManager.instance().withdraw(settlement.getUuid(), upkeep);
+                UnitedLandsEconomyManager.instance().withdraw(settlement.getUuid(), upkeep, "Daily upkeep");
                 Logger.log("Settlement " + settlement.getName() + " paid " + UnitedLandsEconomyManager.instance().format(upkeep) + " upkeep.", "UnitedLands");
                 notifyPlayers(settlement.getOnlinePlayers(), Message.NEW_DAY__SETTLEMENT_UPKEEP_NOTICE.path(), upkeep);
             } else {

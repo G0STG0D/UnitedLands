@@ -120,7 +120,7 @@ public class CmdSettlementCreate extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().createSettlementDbData(settlement);
 
             UnitedLandsEconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
-            UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.settlementCreateCosts);
+            UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.settlementCreateCosts, "Settlement creation payment");
 
             citizen.setSettlement(settlement);
             citizen.addSettlementRank("mayor");

@@ -95,7 +95,7 @@ public class CmdCountryCreate implements UnitedCommandExecutor {
             UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
             UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
-            UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts);
+            UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts, "Country creation costs");
 
             // TODO: Move string to config
             Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__COUNTRY__CREATE__PLAYER_MESSAGE.path()),

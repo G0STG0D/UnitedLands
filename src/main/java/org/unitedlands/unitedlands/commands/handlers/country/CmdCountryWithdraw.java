@@ -53,8 +53,8 @@ public class CmdCountryWithdraw extends CountryCommandHandler {
             return;
         }
 
-        UnitedLandsEconomyManager.instance().withdraw(context.country().getUuid(), amount);
-        UnitedLandsEconomyManager.instance().deposit(context.player().getUniqueId(), amount);
+        UnitedLandsEconomyManager.instance().withdraw(context.country().getUuid(), amount, "Withdrawn by " + context.player().getName());
+        UnitedLandsEconomyManager.instance().deposit(context.player().getUniqueId(), amount, "Withdrawn from " + context.country().getName());
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__WITHDRAW__SUCCESS.path()),
                 Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), MessageProvider.instance().get(Message.PREFIX.path()));

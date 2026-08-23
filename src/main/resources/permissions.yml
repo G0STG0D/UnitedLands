@@ -25,6 +25,7 @@ settlement:
     - settlement.joincountry
     - settlement.usetaxpercent
     - settlement.settaxes
+    - settlement.bankhistory
   co-mayor:
     - settlement.claim
     - settlement.manage.perms
@@ -35,8 +36,9 @@ settlement:
     - settlement.plot.sell
     - settlement.plot.evict
     - settlement.withdraw
+    - settlement.bankhistory
   treasurer:
-    - foo.bar
+    - settlement.bankhistory
   landlord:
     - foo.bar
   banker:

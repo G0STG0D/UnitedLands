@@ -96,7 +96,8 @@ public class CmdSettlementMerge extends SettlementCommandHandler {
             }
 
             UnitedLandsEconomyManager.instance().deposit(context.settlement().getUuid(),
-                    UnitedLandsEconomyManager.instance().getBalance(targetSettlement.getUuid()));
+                    UnitedLandsEconomyManager.instance().getBalance(targetSettlement.getUuid()),
+                    "Merging of settlement bank of " + targetSettlement.getName());
             UnitedLandsEconomyManager.instance().deleteAccount(targetSettlement.getUuid());
 
             var targetSettlementName = targetSettlement.getCleanName();

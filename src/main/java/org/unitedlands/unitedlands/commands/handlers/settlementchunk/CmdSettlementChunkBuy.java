@@ -35,7 +35,7 @@ public class CmdSettlementChunkBuy extends SettlementChunkCommandHandler {
         var context = validate(sender, null);
         if (context == null)
             return;
-        
+
         if (!context.settlementChunk().isForSale()) {
             Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__BUY__NOT_FOR_SALE.path()),
                     null, MessageProvider.instance().get(Message.PREFIX.path()));
@@ -57,9 +57,12 @@ public class CmdSettlementChunkBuy extends SettlementChunkCommandHandler {
         if (preEvent.isCancelled())
             return;
 
-        UnitedLandsEconomyManager.instance().withdraw(context.citizen().getUuid(), context.settlementChunk().getSalePrice());
+        UnitedLandsEconomyManager.instance().withdraw(context.citizen().getUuid(),
+                context.settlementChunk().getSalePrice(),
+                "Purchased plot in " + context.settlementChunk().getSettlement().getName());
         UnitedLandsEconomyManager.instance().deposit(context.settlementChunk().getSettlement().getUuid(),
-                context.settlementChunk().getSalePrice());
+                context.settlementChunk().getSalePrice(),
+                "Plot bought by " + context.player().getName());
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__BUY__SUCCESS.path()),
                 Map.of("price", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice())),

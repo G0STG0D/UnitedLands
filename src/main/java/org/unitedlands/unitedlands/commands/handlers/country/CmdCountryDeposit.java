@@ -61,8 +61,8 @@ public class CmdCountryDeposit extends CountryCommandHandler {
             return;
         }
 
-        UnitedLandsEconomyManager.instance().withdraw(player.getUniqueId(), amount);
-        UnitedLandsEconomyManager.instance().deposit(country.getUuid(), amount);
+        UnitedLandsEconomyManager.instance().withdraw(player.getUniqueId(), amount, "Deposit to " + country.getName());
+        UnitedLandsEconomyManager.instance().deposit(country.getUuid(), amount, "Deposit by " + player.getName());
 
         Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__COUNTRY__DEPOSIT__SUCCESS.path()),
                 Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)),
