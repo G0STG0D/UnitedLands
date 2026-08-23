@@ -8,8 +8,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.Location;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -22,9 +20,9 @@ import com.j256.ormlite.field.DatabaseField;
 public class Country extends GeopolObject {
 
     @DatabaseField(canBeNull = true, columnName = "stroke_color")
-    private @Nullable Integer strokeColor;
+    private Integer strokeColor;
     @DatabaseField(canBeNull = true, columnName = "fill_color")
-    private @Nullable Integer fillColor;
+    private Integer fillColor;
 
     @DatabaseField(canBeNull = true, columnName = "bonus_regions")
     private int bonusRegions = 0;
@@ -52,7 +50,7 @@ public class Country extends GeopolObject {
     private transient Set<Settlement> settlementClaimWhitelist = new HashSet<>();
     private transient Set<Country> allies = new HashSet<>();
 
-    public @Nullable Integer getStrokeColor() {
+    public Integer getStrokeColor() {
         return strokeColor;
     }
 
@@ -68,7 +66,7 @@ public class Country extends GeopolObject {
         this.strokeColor = strokeColor.getRGB();
     }
 
-    public @Nullable Integer getFillColor() {
+    public Integer getFillColor() {
         return fillColor;
     }
 

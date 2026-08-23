@@ -4,11 +4,11 @@ import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.Settlement;
+import org.unitedlands.unitedlands.classes.events.country.CountryUpkeepCalculatedEvent;
 import org.unitedlands.unitedlands.classes.events.region.RegionClaimCostCalculatedEvent;
+import org.unitedlands.unitedlands.classes.events.region.RegionUpkeepCalculatedEvent;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementClaimCostCalculatedEvent;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementUpkeepCostCalculatedEvent;
-import org.unitedlands.utils.Logger;
-
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -56,11 +56,11 @@ public class CostUtils {
 
     public static double getRegionClaimCosts(Country country, Region region) {
         var baseCosts = Settings.regionClaimBaseCosts;
-        var modifier = Settings.regionClaimCostModifier;
+        var modifier = Settings.regionClaimCostFormula;
 
         var capital = country.getCapital();
         var distance = capital.getHomeChunkCoordinates().distance(region.getHomeChunkCoordinates()) * 16;
-        Logger.log("Distance: " + String.valueOf(distance));
+
         Expression expression = new ExpressionBuilder(modifier)
                 .variables("base", "regions", "distance")
                 .build()
@@ -76,28 +76,39 @@ public class CostUtils {
         return event.getFinalCosts();
     }
 
+    public static double getRegionUpkeep(Region region, Country country) {
+
+        var regionBaseUpkeep = Settings.regionUpkeepBaseCosts;
+        var regionUpkeepFormula = Settings.regionUpkeepFormula;
+
+        var distance = region.getHomeChunkCoordinates().distance(country.getCapital().getHomeChunkCoordinates()) * 16;
+
+        Expression expression = new ExpressionBuilder(regionUpkeepFormula)
+                .variables("base", "distance")
+                .build()
+                .setVariable("base", regionBaseUpkeep)
+                .setVariable("distance", distance);
+
+        var upkeepCosts = expression.evaluate();
+
+        RegionUpkeepCalculatedEvent event = new RegionUpkeepCalculatedEvent(upkeepCosts);
+        event.callEvent();
+
+        return event.getFinalCosts();
+    }
+
     public static double getCountryUpkeep(Country country) {
 
-        // var baseUpkeepPerPlot = Settings.settlementBaseUpkeepPerPlot;
-        // var upkeepPerPlotFormula = Settings.settlementUpkeepPerPlotFormula;
+        var upkeepCosts = 0d;
 
-        // Expression expression = new ExpressionBuilder(upkeepPerPlotFormula)
-        //         .variables("base", "claims", "residents")
-        //         .build()
-        //         .setVariable("base", baseUpkeepPerPlot)
-        //         .setVariable("claims", settlement.getChunks().size())
-        //         .setVariable("residents", settlement.getCitizens().size())
-        //         .setVariable("claims", settlement.getChunks().size());
+        for (var region : country.getRegions()) {
+            upkeepCosts += getRegionUpkeep(region, country);
+        }
 
-        // var upkeepCosts = expression.evaluate();
-        // upkeepCosts *= settlement.getChunks().size();
+        CountryUpkeepCalculatedEvent event = new CountryUpkeepCalculatedEvent(upkeepCosts);
+        event.callEvent();
 
-        // SettlementUpkeepCostCalculatedEvent event = new SettlementUpkeepCostCalculatedEvent(upkeepCosts);
-        // event.callEvent();
-
-        // return event.getFinalCosts();
-
-        return 0d;
+        return event.getFinalCosts();
     }
 
 }

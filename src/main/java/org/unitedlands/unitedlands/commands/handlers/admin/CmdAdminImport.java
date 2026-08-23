@@ -79,6 +79,7 @@ public class CmdAdminImport implements UnitedCommandExecutor {
 
                 var val = entry.getValue();
                 region.setPolygon(val.vertices);
+                region.setArea(PolygonUtils.area(val.vertices));
                 
                 var center = PolygonUtils.calculatePolygonCenter(val.vertices);
                 region.setHomeChunkCoordinates(new Coordinates((int)center[0] >> 4, (int)center[1] >> 4, worldName));

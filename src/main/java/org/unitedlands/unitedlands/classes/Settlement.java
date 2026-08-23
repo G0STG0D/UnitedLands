@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import java.awt.Color;
 import java.math.BigDecimal;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
@@ -23,9 +21,9 @@ import com.j256.ormlite.field.DatabaseField;
 public class Settlement extends GeopolObject implements PermissionHolder {
 
     @DatabaseField(canBeNull = true, columnName = "stroke_color")
-    private @Nullable Integer strokeColor;
+    private Integer strokeColor;
     @DatabaseField(canBeNull = true, columnName = "fill_color")
-    private @Nullable Integer fillColor;
+    private Integer fillColor;
 
     @DatabaseField(canBeNull = true, columnName = "home_chunk_x")
     private int homeChunkCoordinatesX;
@@ -83,15 +81,15 @@ public class Settlement extends GeopolObject implements PermissionHolder {
             | LocationMembership.SETTLEMENT_RESIDENT;
 
     @DatabaseField(columnName = "allow_pvp", canBeNull = true)
-    private @Nullable Boolean allowPvp = false;
+    private Boolean allowPvp = false;
     @DatabaseField(columnName = "allow_monsters", canBeNull = true)
-    private @Nullable Boolean allowMonsters = false;
+    private Boolean allowMonsters = false;
     @DatabaseField(columnName = "allow_animals", canBeNull = true)
-    private @Nullable Boolean allowAnimals = false;
+    private Boolean allowAnimals = false;
     @DatabaseField(columnName = "allow_fire", canBeNull = true)
-    private @Nullable Boolean allowFire = false;
+    private Boolean allowFire = false;
     @DatabaseField(columnName = "allow_explosions", canBeNull = true)
-    private @Nullable Boolean allowExplosions = false;
+    private Boolean allowExplosions = false;
 
     private transient Coordinates homeChunkCoordinates;
     private transient Location spawn;
@@ -103,7 +101,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
 
     }
 
-    public @Nullable Integer getStrokeColor() {
+    public Integer getStrokeColor() {
         if (hasCountry())
             return getCountry().getStrokeColor();
         return strokeColor != null ? strokeColor : Settings.defaultSettlementStrokeColour;
@@ -121,7 +119,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
         this.strokeColor = strokeColor.getRGB();
     }
 
-    public @Nullable Integer getFillColor() {
+    public Integer getFillColor() {
         if (hasCountry())
             return getCountry().getFillColor();
         return fillColor != null ? fillColor : Settings.defaultSettlementFillColour;

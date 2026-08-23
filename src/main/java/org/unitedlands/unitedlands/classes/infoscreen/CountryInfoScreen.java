@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.unitedlands.unitedlands.classes.Country;
+import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
@@ -15,9 +16,13 @@ import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
+import org.unitedlands.unitedlands.utils.CostUtils;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Formatter;
 import org.unitedlands.utils.Messenger;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 
 public class CountryInfoScreen extends InfoScreen {
 
@@ -26,39 +31,29 @@ public class CountryInfoScreen extends InfoScreen {
         var header = buildHeader(country.getCleanName());
         addComponent("header", header);
 
-        // var board =
-        // Messenger.getMessage(MessageProvider.instance().get("info-screens.country.board"),
-        // Map.of("board",
-        // settlement.getTownBoard() != null ? settlement.getTownBoard()
-        // : "/settlement setboard [msg]"));
-        // addComponent("board", board);
+        addComponent("founded", MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__FOUNDED.path()),
+                Map.of("founded", new SimpleDateFormat("dd-MM-yyyy HH:mm").format(country.getFoundingTimestamp()),
+                        "founder", country.getFounderName() != null ? country.getFounderName() : "-"));
 
-        var foundingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(country.getFoundingTimestamp());
-        var founder = country.getFounderName() != null ? country.getFounderName() : "-";
-        var founded = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__FOUNDED.path()),
-                Map.of("founded", foundingDate, "founder", founder));
-        addComponent("founded", founded);
+        addComponent("leader", MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__LEADER.path()),
+                Map.of("leader", country.getLeader() != null ? country.getLeader().getName() : "-"));
 
-        var countryLeader = country.getLeader();
-        var leader = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__LEADER.path()),
-                Map.of("leader", countryLeader != null ? countryLeader.getName() : "-"));
-        addComponent("leader", leader);
+        addComponent("capital", MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__CAPITAL.path()),
+                Map.of("capital", country.getCapital() != null ? country.getCapital().getCleanName() : "-"));
 
-        var capitalSettlement = country.getCapital();
-        var capital = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__CAPITAL.path()),
-                Map.of("capital", capitalSettlement != null ? capitalSettlement.getCleanName() : "-"));
-        addComponent("capital", capital);
+        var areaComponent = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__AREA.path()),
+                Map.of(
+                        "regions", String.valueOf(country.getRegionCount()),
+                        "area", String.format("%,.0f", country.getArea())))
+                .hoverEvent(
+                        HoverEvent.showText(
+                                Component.text(
+                                        String.join(", ", country.getRegions().stream().map(Region::getCleanName).toList()))));
+        addComponent("area", areaComponent);
 
-
-        addComponent("area", MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__AREA.path()),
-                Map.of("area", String.format("%,.0f", country.getArea())));
-
-
-        var balance = Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__BALANCE.path()),
-                Map.of("balance", UnitedLandsEconomyManager.instance()
-                        .format(UnitedLandsEconomyManager.instance()
-                                .getBalance(country.getUuid()))));
-        addComponent("balance", balance);
+        addComponent("balance", MessageProvider.instance().get(Message.INFO_SCREENS__COUNTRY__BALANCE.path()),
+                Map.of("balance", UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance().getBalance(country.getUuid())),
+                        "upkeep", UnitedLandsEconomyManager.instance().format(CostUtils.getCountryUpkeep(country))));
 
         var ongoingClaims = UnitedLandsDataManager.instance().getRegionClaimsOngoing(country);
         if (ongoingClaims.size() > 0) {

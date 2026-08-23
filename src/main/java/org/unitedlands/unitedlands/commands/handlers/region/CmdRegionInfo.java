@@ -52,7 +52,7 @@ public class CmdRegionInfo implements UnitedCommandExecutor {
             }
         }
 
-        var infoscreen = new RegionInfoScreen(region);
+        var infoscreen = new RegionInfoScreen(region, (Player) sender);
         infoscreen.send(sender);
     }
 

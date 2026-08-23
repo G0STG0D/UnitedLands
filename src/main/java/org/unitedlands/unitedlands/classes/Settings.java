@@ -58,11 +58,13 @@ public class Settings {
     public static double settlementMinTaxAmount;
     public static double settlementMaxTaxAmount;
 
-    public static int countryCreateCosts;
-    public static int regionClaimBaseCosts;
+    public static double countryCreateCosts;
+    public static double regionUpkeepBaseCosts;
+    public static double regionClaimBaseCosts;
     public static int regionClaimTime;
     public static int regionParallelClaimsMax;
-    public static String regionClaimCostModifier;
+    public static String regionClaimCostFormula;
+    public static String regionUpkeepFormula;
 
     public static List<String> protectedContainers = new ArrayList<>();
     public static List<String> protectedUseBlocks = new ArrayList<>();
@@ -121,11 +123,13 @@ public class Settings {
         settlementMaxTaxAmount = config.getDouble("economy.settlement-tax-max-amount", 1500.0);
 
 
-        countryCreateCosts = config.getInt("economy.new-country-cost", 80000);
-        regionClaimBaseCosts = config.getInt("economy.region-claim-base-cost", 80000);
+        countryCreateCosts = config.getDouble("economy.new-country-cost", 80000.0);
+        regionClaimBaseCosts = config.getDouble("economy.region-claim-base-cost", 80000.0);
+        regionUpkeepBaseCosts = config.getDouble("economy.region-base-upkeep", 100.0);
         regionClaimTime = config.getInt("economy.region-claim-time", 3600);
         regionParallelClaimsMax = config.getInt("economy.region-parallel-claims-max", 1);
-        regionClaimCostModifier = config.getString("economy.region-claim-cost-modifier", "base + (((regions + 1) / 2) * (distance / 1000))");
+        regionClaimCostFormula = config.getString("economy.region-claim-cost-formula", "base + (base * 0.1 * (distance / 512))");
+        regionUpkeepFormula = config.getString("economy.region-upkeep-formula", "base + (base * 0.1 * (distance / 512))");
 
         protectedContainers = config.getStringList("protection.containers");
         protectedUseBlocks = config.getStringList("protection.use-blocks");

@@ -3,8 +3,6 @@ package org.unitedlands.unitedlands.commands.handlers.settlement;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
@@ -50,7 +48,6 @@ public class CmdSettlementToggle extends SettlementCommandHandler {
         if (context == null)
             return;
 
-        @Nullable
         Boolean enable = null;
         if (args[1].equalsIgnoreCase("on")) {
             enable = true;

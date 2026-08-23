@@ -101,13 +101,12 @@ info-screens:
       log-on:</bold> {lastlogon} </white></dark_gray>
     settlement-ranks: <white><bold>Settlement ranks:</bold> {settlementranks}</white>
   country:
-    area: <white><bold>Area:</bold> {area}</white>
-    balance: <white><bold>Board:</bold> {board}</white>
+    area: "<dark_gray><white><bold>Regions:</bold> [<aqua>{regions}</aqua>]</white> | <white><bold>Area:</bold> {area} blocks²</white></dark_gray>"
+    balance: "<dark_gray><white><bold>Balance:</bold> {balance}</white> | <white><bold>Upkeep:</bold> {upkeep}</white></dark_gray>"
     capital: <white><bold>Capital:</bold> {capital}</white>
-    citizens: "<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>"
-    claims: "<white>Claiming (remaining time): {claims}</white>"
-    founded: <dark_gray><white><bold>Founded:</bold> {founded}</white> | <white><bold>By:</bold>
-      {founder} </white></dark_gray>
+    citizens: '<dark_gray>[<yellow>Citizens: {citizens-count}</yellow>]</dark_gray>'
+    claims: '<white>Claiming (remaining time): {claims}</white>'
+    founded: <dark_gray><white><bold>Founded:</bold> {founded}</white> | <white><bold>By:</bold> {founder} </white></dark_gray>
     leader: <white><bold>Leader:</bold> {leader}
     metadata: <white>{metadata}</white>
   header:
@@ -122,6 +121,8 @@ info-screens:
   region:
     administrator: <white><bold>Administrator:</bold> {citizen}</white>
     area: <white><bold>Area:</bold> {area}</white>
+    costs: <white><bold>Upkeep:</bold> {upkeep}</white>
+    costs-projected: "<white><bold>Claim costs: {claim-costs} <dark_gray>|</dark_gray> Upkeep when claimed:</bold> {upkeep}</white>"
     owner: <dark_gray><white><bold>Country:</bold> {country}</white> | <white><bold>Claimed:</bold>
       {claimed} </white></dark_gray>
     perm-1: <dark_gray><white><bold>Perms:</bold></white>  <white>Break</white> {break}

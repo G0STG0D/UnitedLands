@@ -286,4 +286,24 @@ public class PolygonUtils {
         return area / 2.0;
     }
 
+    public static double area(double[] vertices) {
+        if (vertices.length < 6 || vertices.length % 2 != 0) {
+            throw new IllegalArgumentException("Need at least 3 vertices (x,y pairs)");
+        }
+
+        int n = vertices.length / 2;
+        double signedArea = 0;
+
+        for (int i = 0; i < n; i++) {
+            double x1 = vertices[2 * i];
+            double y1 = vertices[2 * i + 1];
+            int j = (i + 1) % n;
+            double x2 = vertices[2 * j];
+            double y2 = vertices[2 * j + 1];
+            signedArea += x1 * y2 - x2 * y1;
+        }
+
+        return Math.abs(signedArea) / 2.0;
+    }
+
 }

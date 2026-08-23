@@ -65,27 +65,32 @@ general:
 economy:
   new-settlement-cost: 8000
   settlement-claim-base-cost: 48
-  settlement-base-upkeep-per-plot: 6
+  settlement-base-upkeep-per-plot: 3
 
   # Available vars: base (base costs), claims (total settlement claim count).
-  settlement-claim-cost-progression: "base + ((claims - 1)^2 * 0.005)"
+  settlement-claim-cost-progression: "base"
   # Available vars: base (base costs), claims (total settlement claim count), residents (total resident count). This value will be multiplied by the number of settlement chunks.
-  settlement-upkeep-per-plot-formula: "base * (0.1 * (claims / 25) + 1.0) / (0.4 * (residents / 2.0) + 1.0)"
+  settlement-upkeep-per-plot-formula: "base * claims"
 
-  settlement-tax-min-percent: 0.0
-  settlement-tax-max-percent: 0.2
-  settlement-tax-min-amount: 0.0
-  settlement-tax-max-amount: 1500.0
+  settlement-tax-min-percent: 1.0
+  settlement-tax-max-percent: 25.0
+  settlement-tax-min-amount: 1.0
+  settlement-tax-max-amount: 10000.0
+  settlement-tax-cap: 10000.0
 
   new-country-cost: 80000
 
-  region-claim-base-cost: 80000
+  region-claim-base-cost: 10000
   # The time (in seconds) between claiming a region and incorporating it into the country
   region-claim-time: 20
   # How many regions a country can claim in parallel
   region-parallel-claims-max: 1
+  # base upkeep per region per day
+  region-base-upkeep: 100
+  # Available vars: base (base costs), modifier, regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).
+  region-claim-cost-formula: "base + (base * 0.1 * (distance / 512))"
   # Available vars: base (base costs), regions (total country region count), distance (Euclidean distance to capital home chunk in blocks).
-  region-claim-cost-modifier: "base + (base * ((regions + 1) * 0.5) * (distance / 1000) * 0.25)"
+  region-upkeep-formula: "base + (base * 0.1 * (distance / 512))"
 
 protection:
   containers:
