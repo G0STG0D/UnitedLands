@@ -1,19 +1,13 @@
 package org.unitedlands.unitedlands.managers;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.util.InternalException;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.BankRecord;
 import org.unitedlands.unitedlands.integrations.economy.IEconomyProvider;
 import org.unitedlands.unitedlands.integrations.economy.VaultEconomyProvider;
 import org.unitedlands.utils.Logger;
@@ -109,10 +103,7 @@ public class UnitedLandsEconomyManager {
         if (economyProvider == null)
             return true;
         if (economyProvider.deposit(uuid, amount)) {
-            String message = "Received " + format(amount);
-            if (reason != null)
-                message += " (" + reason + ")";
-            writeToLog(uuid, message);
+            saveBankRecord(uuid, amount, reason);
             return true;
         }
         return false;
@@ -130,10 +121,7 @@ public class UnitedLandsEconomyManager {
         if (economyProvider == null)
             return true;
         if (economyProvider.withdraw(uuid, amount)) {
-            String message = "Lost " + format(amount);
-            if (reason != null)
-                message += " (" + reason + ")";
-            writeToLog(uuid, message);
+            saveBankRecord(uuid, amount.multiply(BigDecimal.valueOf(-1)), reason);
             return true;
         }
         return false;
@@ -141,49 +129,21 @@ public class UnitedLandsEconomyManager {
 
     // Logging
 
-    private void writeToLog(UUID objectId, String message) {
-
-        var logDirectory = plugin.getDataFolder().toPath().resolve("logs");
-        if (logDirectory == null || Files.notExists(logDirectory)) {
-            try {
-                Logger.log("Creating UnitedLands economy logs directory.");
-                Files.createDirectories(logDirectory);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create log directory: " + logDirectory, e);
-            }
-        }
-
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String line = "[" + timestamp + "] " + message + System.lineSeparator();
-
-        Path logFile = logDirectory.resolve(objectId.toString() + ".log");
-
+    private void saveBankRecord(UUID objectId, BigDecimal amount, String message) {
+        var record = new BankRecord(objectId, amount.doubleValue(), message);
         try {
-            Files.writeString(logFile, line,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE);
-        } catch (IOException e) {
-            Logger.logError("Failed to write to log file: " + e.getMessage(), "UnitedLands");
+            UnitedLandsDataManager.instance().createBankRecordDbData(record);
+        } catch (Exception ex) {
+            Logger.logError("Failed to create bank record: " + ex.getMessage(), "UnitedLands");
         }
     }
 
-    public List<String> getLogLines(UUID objectId, int startIndex, int count) {
-
-        var logDirectory = plugin.getDataFolder().toPath().resolve("logs");
-        if (logDirectory == null || Files.notExists(logDirectory)) {
-            Logger.logError("Failed to load log directory: " + logDirectory);
-            return new ArrayList<>();
-        }
-
-        Path logFile = logDirectory.resolve(objectId.toString() + ".log");
-
+    public List<BankRecord> getBankRecords(UUID objectId, int startIndex, int count) {
         try {
-            var lines = new LinkedList<>(Files.readAllLines(logFile));
-            return lines.stream().skip(Math.max(lines.size() - startIndex, 0)).limit(count).toList();
-        } catch (IOException e) {
-            Logger.logError("Failed to load from log file: " + e.getMessage(), "UnitedLands");
+            return UnitedLandsDataManager.instance().getBankRecords(objectId, startIndex, count);
+        } catch (Exception ex) {
+            Logger.logError("Failed to bank records: " + ex.getMessage(), "UnitedLands");
         }
-
         return new ArrayList<>();
     }
 

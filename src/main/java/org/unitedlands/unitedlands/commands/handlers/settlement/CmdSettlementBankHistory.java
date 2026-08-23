@@ -1,5 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
@@ -31,7 +32,7 @@ public class CmdSettlementBankHistory extends SettlementCommandHandler {
         var startIndex = 0;
         if (args.length == 1) {
             try {
-                startIndex = (Integer.parseInt(args[0]) - 1) * PAGE_SIZE;
+                startIndex = (Integer.parseInt(args[0]) - 1);
             } catch (Exception ex) {
                 Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_NUMBER_FORMAT.path()),
                         Map.of("input", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
@@ -39,10 +40,19 @@ public class CmdSettlementBankHistory extends SettlementCommandHandler {
             }
         }
 
-        var lines = UnitedLandsEconomyManager.instance().getLogLines(context.settlement().getUuid(), startIndex + PAGE_SIZE, PAGE_SIZE);
+        var records = UnitedLandsEconomyManager.instance().getBankRecords(context.settlement().getUuid(), startIndex, PAGE_SIZE);
         Messenger.sendMessage(sender, "<bold>" + context.settlement().getCleanName() + " Bank History:</bold>", null, MessageProvider.instance().get(Message.PREFIX.path()));
-        for (int i = lines.size() - 1; i >= 0; i--) {
-            Messenger.sendMessage(sender, lines.get(i), null, MessageProvider.instance().get(Message.PREFIX.path()));
+        for (var record : records) {
+
+            var timeStamp = "<gray>[" + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(record.getTimestamp()) + "]</gray>";
+            var amount = record.getAmount() > 0 ?          
+                         "<green>+"  + UnitedLandsEconomyManager.instance().format(record.getAmount()) + "<green>" :
+                         "<red>"  + UnitedLandsEconomyManager.instance().format(record.getAmount()) + "<red>";
+
+            Messenger.sendMessage(sender, 
+                timeStamp + " " + amount + " <gray>(" + record.getDetails() + ")</gray>", 
+                null, 
+                MessageProvider.instance().get(Message.PREFIX.path()));
         }
     }
 

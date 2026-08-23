@@ -4,10 +4,12 @@ import java.sql.SQLException;
 
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
+import org.unitedlands.unitedlands.classes.BankRecord;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.classes.db.BankRecordService;
 import org.unitedlands.unitedlands.classes.db.CitizenService;
 import org.unitedlands.unitedlands.classes.db.CountryService;
 import org.unitedlands.unitedlands.classes.db.LoginChallengeService;
@@ -39,6 +41,7 @@ public class DatabaseManager {
     private SettlementChunkService settlementChunkService;
     private CitizenService citizenService;
     private LoginChallengeService loginChallengeService;
+    private BankRecordService bankRecordService;
 
     public DatabaseManager(UnitedLands plugin) {
         this.plugin = plugin;
@@ -103,6 +106,7 @@ public class DatabaseManager {
         this.settlementChunkService = new SettlementChunkService(getDao(SettlementChunk.class));
         this.citizenService = new CitizenService(getDao(Citizen.class));
         this.loginChallengeService = new LoginChallengeService(getDao(LoginChallenge.class));
+        this.bankRecordService = new BankRecordService(getDao(BankRecord.class));
     }
 
     private void verifySchemaVersion() throws SQLException {
@@ -147,6 +151,12 @@ public class DatabaseManager {
             versionDao.executeRaw("ALTER TABLE region ADD COLUMN attribute_modifiers_serialized MEDIUMTEXT NULL;");
             versionDao.executeRaw("ALTER TABLE country ADD COLUMN attribute_modifiers_serialized MEDIUMTEXT NULL;");
             version.setVersion(4);
+            versionDao.update(version);
+        }
+
+        if (version.getVersion() < 5) {
+            TableUtils.createTableIfNotExists(connectionSource, BankRecord.class);
+            version.setVersion(5);
             versionDao.update(version);
         }
     }
@@ -198,6 +208,10 @@ public class DatabaseManager {
 
     public LoginChallengeService getLoginChallengeService() {
         return loginChallengeService;
+    }
+
+    public BankRecordService getBankRecordService() {
+        return bankRecordService;
     }
 
     public ConnectionSource getConnectionSource() {

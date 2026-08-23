@@ -1,5 +1,6 @@
 package org.unitedlands.unitedlands.managers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.UnitedLands;
+import org.unitedlands.unitedlands.classes.BankRecord;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Country;
@@ -450,7 +452,7 @@ public class UnitedLandsDataManager {
     public void updateCountryDbData(Country country, boolean render) {
         databaseManager.getCountryService().updateAsync(country);
         if (render)
-           queueCountryRender(country);
+            queueCountryRender(country);
     }
 
     private void queueCountryRender(Country country) {
@@ -509,6 +511,23 @@ public class UnitedLandsDataManager {
         CompletableFuture<Set<Citizen>> future = CompletableFuture.supplyAsync(() -> settlements.values().stream().filter(s -> country.equals(s.getCountry()))
                 .flatMap(s -> s.getCitizens().stream()).collect(Collectors.toSet()));
         return future.join();
+    }
+
+    // **************************************************
+    // Bank Records
+    // **************************************************
+
+    public void createBankRecordDbData(BankRecord record) {
+        databaseManager.getBankRecordService().createAsync(record);
+    }
+
+    public List<BankRecord> getBankRecords(UUID objectId, long page, int pageSize) {
+        try {
+            return databaseManager.getBankRecordService().getRecordsAsync(objectId, page, pageSize).get();
+        } catch (Exception ex) {
+            Logger.logError("Could not retrieve bank records for object " + objectId, "UnitedLands");
+            return new ArrayList<>();
+        }
     }
 
     // Helper classes
