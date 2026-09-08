@@ -8,7 +8,8 @@ import org.unitedlands.registrars.command.UnitedCommandExecutor;
         name = "uladmin",
         aliases = { "ula" },
         description = "UnitedLands Admin commands",
-        usage = "/uladmin <command>"
+        usage = "/uladmin <command>",
+        permission = "united.lands.admin"
 )
 public class CmdAdmin implements UnitedCommandExecutor {
 

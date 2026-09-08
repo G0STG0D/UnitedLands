@@ -9,6 +9,7 @@ import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
+import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
@@ -33,6 +34,13 @@ public class CountryCommandHandler implements UnitedCommandExecutor {
     protected CountryCommandHandlerContext validate(CommandSender sender, String permission) {
 
         var player = (Player) sender;
+
+        if (!Settings.worlds.contains(player.getLocation().getWorld().getName())) {
+            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_WORLD.path()),
+                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            return null;
+        }
+
         var citizen = getCitizen(player);
         if (citizen == null)
             return null;

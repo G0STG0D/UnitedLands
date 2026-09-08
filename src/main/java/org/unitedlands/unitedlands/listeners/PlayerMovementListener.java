@@ -24,10 +24,7 @@ import org.unitedlands.unitedlands.managers.ChatChannelManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 
-public class PlayerBukkitListener implements Listener {
-
-    public PlayerBukkitListener() {
-    }
+public class PlayerMovementListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -198,5 +195,8 @@ public class PlayerBukkitListener implements Listener {
 
         return true;
     }
+
+
+
 
 }

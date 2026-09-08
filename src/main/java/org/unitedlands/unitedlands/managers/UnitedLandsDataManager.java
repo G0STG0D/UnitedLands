@@ -413,6 +413,10 @@ public class UnitedLandsDataManager {
         if (coordinateRegionCache.containsKey(coordinates)) {
             return coordinateRegionCache.get(coordinates);
         }
+
+        if (!Settings.worlds.contains(coordinates.getWorldName()))
+            return null;
+        
         var region = regionIndex.findRegion(coordinates.getX(), coordinates.getZ());
         coordinateRegionCache.put(coordinates, region);
         return region;

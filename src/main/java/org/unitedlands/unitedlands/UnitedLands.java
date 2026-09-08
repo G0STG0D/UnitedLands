@@ -14,7 +14,8 @@ import org.unitedlands.unitedlands.listeners.BlockListener;
 import org.unitedlands.unitedlands.listeners.ChatListener;
 import org.unitedlands.unitedlands.listeners.ExplosionListener;
 import org.unitedlands.unitedlands.listeners.MobListener;
-import org.unitedlands.unitedlands.listeners.PlayerBukkitListener;
+import org.unitedlands.unitedlands.listeners.PlayerDamageListener;
+import org.unitedlands.unitedlands.listeners.PlayerMovementListener;
 import org.unitedlands.unitedlands.listeners.PlayerListener;
 import org.unitedlands.unitedlands.listeners.RegionListener;
 import org.unitedlands.unitedlands.listeners.ServerEventListener;
@@ -131,7 +132,8 @@ public class UnitedLands extends JavaPlugin {
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerBukkitListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new ServerEventListener(), this);
         getServer().getPluginManager().registerEvents(new MobListener(), this);

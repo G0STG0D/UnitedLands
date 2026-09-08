@@ -55,6 +55,14 @@ public class CmdSettlementInvite extends SettlementCommandHandler {
         if (targetCitizen == null)
             return;
 
+        if (targetCitizen.hasSettlement())
+        {
+                        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__INVITE__ALREADY_IN_SETTLEMENT.path()),
+                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            return;
+        }
+
+
         Confirmation invite = new Confirmation("settlement-invite");
         invite.setRunnable(() -> {
 

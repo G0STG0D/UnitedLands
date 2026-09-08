@@ -70,6 +70,7 @@ admin:
 general-errors:
   citizen-not-found: <yellow>Citizen {citizen} not found.</yellow>
   country-not-found: <yellow>Country {country} not found.</yellow>
+  damage-disabled: <yellow>You cannot do any damage here.</yellow>
   no-citizen-data: <yellow>Missing citizen data for player {player}.</yellow>
   no-claim-permission: <yellow>You don't have permissions in this claim.</yellow>
   no-country-permission: <yellow>You don't have the necessary country rank do this
@@ -90,6 +91,7 @@ general-errors:
   settlement-not-found: <yellow>Settlement {settlement} not found.</yellow>
   wrong-color-format: <yellow>Wrong color format, must be hex (#000000).</yellow>
   wrong-number-format: <yellow>Invalid number format.</yellow>
+  wrong-world: <yellow>You cannot use the command in this world.</yellow>
 info-screens:
   citizen:
     balance: <white><bold>Balance:</bold> {balance}</white>
@@ -183,7 +185,7 @@ player:
       already-being-claimed: <yellow>This region is already being claimed by {country}</yellow>
       already-claimed: <yellow>This region is already claimed.</yellow>
       claimed-broadcast: <aqua><green>{country}</green> has claimed the region of
-        <red>{region}</region></aqua>
+        <red>{region}</red></aqua>
       no-region: <yellow>There is no region in this location.</yellow>
       start-broadcast: <aqua><green>{country}</green> has started claiming the region
         of <red>{region}</region>. They will take control of it in {time}.</aqua>
@@ -277,6 +279,7 @@ player:
     deposit:
       success: <aqua>You deposited {amount} into the settlement bank.</aqua>
     invite:
+      already-in-settlement: "<yellow>That player is already in a settlement.</yellow>"
       invite-message: <aqua>You have been invited to join <blue>{settlement}</blue>.</aqua>
       player-joined: <aqua>{name} has joined the town!</aqua>
       player-message: <aqua>You have joined <blue>{settlement}</blue>! Use [<yellow>/s

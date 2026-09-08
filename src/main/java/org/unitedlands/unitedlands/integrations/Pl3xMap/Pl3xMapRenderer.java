@@ -798,26 +798,6 @@ public class Pl3xMapRenderer {
     // Helpers
     // *******************************
 
-    // private SimpleLayer getOrCreateSimpleLayer(String world, String key, String
-    // name, int priority, int zindex) {
-
-    // net.pl3x.map.core.world.World mapworld =
-    // Pl3xMap.api().getWorldRegistry().get(world);
-    // SimpleLayer layer = (SimpleLayer) mapworld.getLayerRegistry().get(key);
-
-    // if (layer == null) {
-    // var options = new LayerOptions(name, true, false, priority, zindex);
-    // layer = new SimpleLayer(key, options::getName);
-    // layer.setDefaultHidden(options.isDefaultHidden());
-    // layer.setPriority(options.getLayerPriority());
-    // layer.setZIndex(options.getZIndex());
-    // layer.setShowControls(options.showControls());
-    // mapworld.getLayerRegistry().register(layer);
-    // }
-
-    // return layer;
-    // }
-
     private SimpleLayer getOrCreateSimpleLayer(String world, String key, String name, int priority, int zindex) {
 
         CompletableFuture<SimpleLayer> simpleLayerFuture = new CompletableFuture<>();

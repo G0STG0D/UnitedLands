@@ -7,7 +7,7 @@ import org.unitedlands.unitedlands.commands.handlers.admin.CmdAdmin;
 
 @UnitedSubCommand(
         parent = CmdAdmin.class,
-        name = "towns",
+        name = "towny",
         description = "Admin towny commands",
         usage = "/ula towny <command>"
 )

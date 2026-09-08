@@ -45,7 +45,7 @@ public class CitizenInfoScreen extends InfoScreen {
                         Map.of("countryranks", String.join(", ", citizen.getCountryRanks()))));
 
         addComponent("balance",
-                Message.INFO_SCREENS__CITIZEN__BALANCE.path(),
+                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__BALANCE.path()),
                 Map.of("balance", UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance().getBalance(citizen.getUuid()))));
 
         var metadata = citizen.getMetadata();

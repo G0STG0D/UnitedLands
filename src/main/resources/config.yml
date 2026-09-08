@@ -17,6 +17,10 @@ mysql:
 
 general:
 
+  # Worlds where UnitedLands commands can be used
+  worlds:
+    - world
+
   # Start a new day at regular intervals instead of a fixed real-world time.
   use-new-day-interval: true
   # The length of one day (in seconds). Only used when use-new-day-interval is true

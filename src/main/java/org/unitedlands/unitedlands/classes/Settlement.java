@@ -65,11 +65,14 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     private transient Set<Citizen> trustList;
 
     @DatabaseField(canBeNull = false, columnName = "break_permissions")
-    private int breakPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    private int breakPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
+            | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "place_permissions")
-    private int placePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    private int placePermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
+            | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "container_permissions")
-    private int containerPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED;
+    private int containerPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
+            | LocationMembership.SETTLEMENT_RESIDENT;
     @DatabaseField(canBeNull = false, columnName = "switch_permissions")
     private int switchPermissions = LocationMembership.OWNER | LocationMembership.TRUSTED
             | LocationMembership.SETTLEMENT_RESIDENT;
@@ -340,7 +343,7 @@ public class Settlement extends GeopolObject implements PermissionHolder {
     }
 
     public Set<Player> getOnlinePlayers() {
-        return getCitizens().stream().map(c -> c.getPlayer()).filter(p -> p.isOnline()).map(p -> p.getPlayer())
+        return getCitizens().stream().map(c -> c.getPlayer()).filter(p -> p != null && p.isOnline()).map(p -> p.getPlayer())
                 .collect(Collectors.toSet());
     }
 

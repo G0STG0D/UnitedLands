@@ -110,6 +110,10 @@ public class DatabaseManager {
     }
 
     private void verifySchemaVersion() throws SQLException {
+
+        if (plugin.getConfig().getBoolean("developer-mode"))
+            return;
+
         Dao<SchemaVersion, Integer> versionDao = getDao(SchemaVersion.class);
         SchemaVersion version = versionDao.queryForId(1);
 

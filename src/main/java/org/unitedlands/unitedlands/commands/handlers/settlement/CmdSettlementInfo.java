@@ -21,7 +21,7 @@ public class CmdSettlementInfo extends SettlementCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
-        if (args.length == 2)
+        if (args.length == 1)
             return UnitedLandsDataManager.instance().getSettlementNames();
         return null;
     }

@@ -45,7 +45,7 @@ public class CmdSettlementSetColor extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
         Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETCOLOR__SUCCESS.path()),
-                Map.of("color", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+                Map.of("color", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
     }
 
     @Override

@@ -38,7 +38,10 @@ settlement:
     - settlement.withdraw
     - settlement.bankhistory
   treasurer:
+    - settlement.withdraw
     - settlement.bankhistory
+    - settlement.usetaxpercent
+    - settlement.settaxes
   landlord:
     - foo.bar
   banker:

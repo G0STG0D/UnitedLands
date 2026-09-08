@@ -17,7 +17,7 @@ import org.unitedlands.unitedlands.classes.PermissionType;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
-import org.unitedlands.unitedlands.classes.events.base.SettlementPlayerActionEvent;
+import org.unitedlands.unitedlands.classes.events.base.PermissablePlayerActionEvent;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.Logger;
 
@@ -121,7 +121,7 @@ public class PermissionManager {
                 hasSettlementChunkPermission = hasLocationPermissions(settlementChunk, eventLocationMembership, type);
             }
 
-            SettlementPlayerActionEvent event = new SettlementPlayerActionEvent(settlementChunk.getSettlement(), player, eventLocation, type);
+            PermissablePlayerActionEvent event = new PermissablePlayerActionEvent(player, eventLocation, type);
             event.setCancelled(!hasSettlementChunkPermission);
             event.callEvent();
 
@@ -152,6 +152,8 @@ public class PermissionManager {
     }
 
     public boolean hasLocationPermissions(PermissionHolder holder, int membership, PermissionType type) {
+        if (membership == LocationMembership.OWNER || membership == LocationMembership.TRUSTED)
+            return true;
         return (getLocationPermissions(holder, type) & membership) != 0;
     }
 

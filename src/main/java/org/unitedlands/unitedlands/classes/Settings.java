@@ -14,6 +14,8 @@ import org.unitedlands.utils.Logger;
 
 public class Settings {
 
+    public static List<String> worlds;
+
     public static boolean useNewDayInterval;
     public static long intervalSeconds;
     public static String newDayTime;
@@ -77,6 +79,8 @@ public class Settings {
     public static Map<String, SettlementChunkType> settlementChunkTypes = new HashMap<>();
 
     public static void loadSettings(FileConfiguration config) {
+
+        worlds = config.getStringList("general.worlds");
 
         useNewDayInterval = config.getBoolean("general.use-new-day-interval", false);
         intervalSeconds = config.getLong("general.interval-seconds", 3600);
