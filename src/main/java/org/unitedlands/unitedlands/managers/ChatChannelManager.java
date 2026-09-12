@@ -175,16 +175,12 @@ public class ChatChannelManager {
         }
         viewers.add(citizen);
 
-        Logger.debug("receivers: " + viewers.size());
-        Logger.debug("viewers: " + viewers.size());
-
         playerChannels.put(player.getUniqueId(), ChatChannel.GLOBAL);
     }
 
     public void unregisterPlayer(Player player) {
         viewers.removeIf(v -> v.getUuid().equals(player.getUniqueId()));
         playerChannels.remove(player.getUniqueId());
-        Logger.debug("viewers: " + viewers.size());
     }
 
     public void sendMessage(Player player, ChatChannel channel, String message) {
@@ -195,12 +191,6 @@ public class ChatChannelManager {
         }
 
         List<Player> receivers = filterViewers(senderViewer, channel);
-        Logger.debug("receivers: " + receivers.size());
-        Logger.debug("receivers: " + receivers.stream().map(Player::getName).toList());
-
-        Logger.debug("viewers: " + viewers.size());
-        Logger.debug("viewers: " + viewers.stream().map(Citizen::getName).toList());
-
 
         if (receivers.size() <= 1) {
             Messenger.sendMessage(player, "<dark_gray>No one can hear you.</dark_gray>");
@@ -208,8 +198,6 @@ public class ChatChannelManager {
 
         var color = channel.getColor();
         var formattedMessage = getFormattedMessage(channel, message, color, player);
-
-        Logger.debug(formattedMessage.toString());
 
         Audience.audience(receivers).sendMessage(formattedMessage);
     }
@@ -247,12 +235,6 @@ public class ChatChannelManager {
         var receivers = filterViewers(senderViewer, channel);
         event.viewers().clear();
         event.viewers().addAll(receivers);
-
-        Logger.debug("receivers: " + receivers.size());
-        Logger.debug("receivers: " + receivers.stream().map(Player::getName).toList());
-
-        Logger.debug("viewers: " + viewers.size());
-        Logger.debug("viewers: " + viewers.stream().map(Citizen::getName).toList());
 
         if (receivers.size() <= 1) {
             Messenger.sendMessage(event.getPlayer(), "<dark_gray>No one can hear you.</dark_gray>");

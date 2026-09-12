@@ -1,9 +1,9 @@
 package org.unitedlands.unitedlands.listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -15,16 +15,27 @@ import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.unitedlands.utils.MessageProvider;
+import org.unitedlands.utils.Logger;
 import org.unitedlands.utils.Messenger;
 
 public class PlayerDamageListener implements Listener {
 
     @EventHandler
     private void onPlayerDamageByPlayer(EntityDamageByEntityEvent event) {
+
         if (event.getDamager() == null)
             return;
 
-        if (!(event.getDamager() instanceof Player attacker))
+        Player attacker = null;
+        if (event.getDamager() instanceof Player) {
+            attacker = (Player) event.getDamager();
+        } else if (event.getDamager() instanceof Projectile projectile) {
+            if (projectile.getShooter() instanceof Player) {
+                attacker = (Player) projectile.getShooter();
+            }
+        }
+
+        if (attacker == null)
             return;
 
         if ((event.getEntity() instanceof Player)) {
@@ -38,24 +49,23 @@ public class PlayerDamageListener implements Listener {
     }
 
     private void handlePvpAttack(EntityDamageByEntityEvent event, Player attacker) {
-        var coords = CoordinateUtils.locationToChunkCoordinates(event.getEntity().getLocation());
 
-        var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(coords);
+        var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(CoordinateUtils.locationToChunkCoordinates(event.getEntity().getLocation()));
         if (settlementChunk != null) {
+            Logger.debug("SC: " + settlementChunk.getCoordinates().toCleanString());
+            Logger.debug("SC PVP: " + settlementChunk.allowPvp());
             if (!settlementChunk.allowPvp()) {
                 cancelAttack(event, attacker, DamageType.PVP);
                 return;
             }
-            if (!settlementChunk.getSettlement().allowPvp()) {
-                cancelAttack(event, attacker, DamageType.PVP);
-                return;
+        } else {
+            var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(event.getEntity().getLocation()));
+            if (region != null) {
+                if (!region.allowPvp()) {
+                    cancelAttack(event, attacker, DamageType.PVP);
+                    return;
+                }
             }
-        }
-
-        var region = UnitedLandsDataManager.instance().getRegion(coords);
-        if (region != null && !region.allowPvp()) {
-            cancelAttack(event, attacker, DamageType.PVP);
-            return;
         }
     }
 
@@ -94,7 +104,7 @@ public class PlayerDamageListener implements Listener {
         damageEvent.callEvent();
 
         if (damageEvent.isCancelled()) {
-            Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__DAMAGE_DISABLED.path()),
+            Messenger.sendMessage(attacker, MessageProvider.instance().get(Message.GENERAL_ERRORS__DAMAGE_DISABLED.path()),
                     null, MessageProvider.instance().get(Message.PREFIX.path()));
             event.setCancelled(true);
         }

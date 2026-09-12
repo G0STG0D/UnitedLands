@@ -48,5 +48,9 @@ public class GeopolAttribute {
     public void setDailyChange(double dailaChange) {
         this.dailyChange = dailaChange;
     }
+    
+    public GeopolAttribute clone() {
+        return new GeopolAttribute(currentValue, minValue, maxValue, dailyChange);
+    }
 
 }

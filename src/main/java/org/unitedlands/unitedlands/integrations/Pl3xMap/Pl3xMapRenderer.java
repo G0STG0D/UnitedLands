@@ -269,7 +269,6 @@ public class Pl3xMapRenderer {
         if (vassals.size() > 0) {
             strokeWidth *= 1.5;
             for (var vassal : vassals) {
-                Logger.debug("Vassal: " + vassal.getName());
                 var vassalPolygone = vassal.getRegions().stream().map(Region::getPolygon).collect(Collectors.toList());
                 countryPolygons.addAll(vassalPolygone);
             }

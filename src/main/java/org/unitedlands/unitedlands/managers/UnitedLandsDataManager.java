@@ -19,7 +19,6 @@ import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Coordinates;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.GeopolAttribute;
-import org.unitedlands.unitedlands.classes.GeopolAttributeType;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.RegionIndex;
 import org.unitedlands.unitedlands.classes.Settings;
@@ -168,17 +167,17 @@ public class UnitedLandsDataManager {
 
         for (var country : countries.values()) {
             boolean changed = false;
-            if (country.getAttribute(GeopolAttributeType.MOBILISATION) == null) {
+            if (country.getAttribute("MOBILIZATION") == null) {
                 changed = true;
-                country.addAttribute(GeopolAttributeType.MOBILISATION, new GeopolAttribute(0, 0, 100, 1));
+                country.addAttribute("MOBILIZATION", new GeopolAttribute(0, 0, 100, 1));
             }
-            if (country.getAttribute(GeopolAttributeType.DIPLOMACY) == null) {
+            if (country.getAttribute("DIPLOMACY") == null) {
                 changed = true;
-                country.addAttribute(GeopolAttributeType.DIPLOMACY, new GeopolAttribute(100, 0, 100, 0));
+                country.addAttribute("DIPLOMACY", new GeopolAttribute(100, 0, 100, 0));
             }
-            if (country.getAttribute(GeopolAttributeType.MAX_CLAIM) == null) {
+            if (country.getAttribute("MAX_REGION_CLAIMS") == null) {
                 changed = true;
-                country.addAttribute(GeopolAttributeType.MAX_CLAIM, new GeopolAttribute(1, 0, 1, 0));
+                country.addAttribute("MAX_REGION_CLAIMS", new GeopolAttribute(1, 0, 1, 0));
             }
 
             if (changed)

@@ -14,7 +14,6 @@ public class GeopolAttributeSerializer implements JsonSerializer<GeopolAttribute
     @Override
     public JsonElement serialize(GeopolAttribute src, Type typeOfSrc, JsonSerializationContext context) {
         var jsonAttribute = new JsonObject();
-        jsonAttribute.addProperty("key", src.getCurrentValue());
         jsonAttribute.addProperty("currentValue", src.getCurrentValue());
         jsonAttribute.addProperty("minValue", src.getMinValue());
         jsonAttribute.addProperty("maxValue", src.getMaxValue());

@@ -14,8 +14,9 @@ public class GeopolAttributeModifierSerializer implements JsonSerializer<GeopolA
     @Override
     public JsonElement serialize(GeopolAttributeModifier src, Type typeOfSrc, JsonSerializationContext context) {
         var jsonAttributeModifier = new JsonObject();
-        jsonAttributeModifier.addProperty("type", src.getType().toString());
-        jsonAttributeModifier.addProperty("key", src.getKey());
+        jsonAttributeModifier.addProperty("attributeKey", src.getAttributeKey());
+        jsonAttributeModifier.addProperty("modifierKey", src.getModifierKey());
+        jsonAttributeModifier.addProperty("mode", src.getMode().toString());
         jsonAttributeModifier.addProperty("valueModifier", src.getValueModifier());
         jsonAttributeModifier.addProperty("minValueModifier", src.getMinValueModifier());
         jsonAttributeModifier.addProperty("maxValueModifier", src.getMaxValueModifier());

@@ -2,8 +2,13 @@ package org.unitedlands.unitedlands.classes;
 
 public class GeopolAttributeModifier {
 
-    private GeopolAttributeType type;
-    private String key;
+    public static enum Mode {
+        ADD, MULTIPLY
+    }
+
+    private String attributeKey;
+    private String modifierKey;
+    private Mode mode;
     private double valueModifier;
     private double minValueModifier;
     private double maxValueModifier;
@@ -12,30 +17,39 @@ public class GeopolAttributeModifier {
     public GeopolAttributeModifier() {
     }
 
-    public GeopolAttributeModifier(GeopolAttributeType type, String key, double valueModifier, double minValueModifier, double maxValueModifier,
+    public GeopolAttributeModifier(String attributeKey, String modifierKey, Mode mode, double valueModifier, double minValueModifier, double maxValueModifier,
             double dailyChangeModifier) {
-        this.type = type;
-        this.key = key;
+        this.attributeKey = attributeKey;
+        this.modifierKey = modifierKey;
+        this.mode = mode;
         this.valueModifier = valueModifier;
         this.minValueModifier = minValueModifier;
         this.maxValueModifier = maxValueModifier;
         this.dailyChangeModifier = dailyChangeModifier;
     }
 
-    public GeopolAttributeType getType() {
-        return type;
+    public String getAttributeKey() {
+        return attributeKey;
     }
 
-    public void setType(GeopolAttributeType type) {
-        this.type = type;
+    public void setAttributeKey(String key) {
+        this.attributeKey = key;
     }
 
-    public String getKey() {
-        return key;
+    public String getModifierKey() {
+        return modifierKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setModifierKey(String modifierKey) {
+        this.modifierKey = modifierKey;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     public double getValueModifier() {

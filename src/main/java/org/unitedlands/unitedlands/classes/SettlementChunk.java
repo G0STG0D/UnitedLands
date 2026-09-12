@@ -9,6 +9,8 @@ import org.unitedlands.unitedlands.classes.db.Identifiable;
 import org.unitedlands.unitedlands.classes.interfaces.CoordinateHolder;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.SerializationUtils;
+import org.unitedlands.utils.Logger;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -336,6 +338,7 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
     }
 
     public Boolean allowPvp() {
+        Logger.debug(String.valueOf(allowPvp));
         if (allowPvp == null) {
             if (settlement != null) {
                 return settlement.allowPvp();

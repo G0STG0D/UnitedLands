@@ -131,19 +131,12 @@ public class PermissionManager {
             // CoordinateUtils.locationToRegionCoordinates(eventLocation);
             var region = UnitedLandsDataManager.instance().getRegion(CoordinateUtils.locationToChunkCenterCoordinates(eventLocation));
 
-            Logger.debug("Checking region...");
-
             if (region != null) {
-
-                Logger.debug("Region");
-
                 var playerCache = PlayerCacheManager.instance().getPlayerCache(player);
                 if (region.equals(playerCache.getCachedRegion())) {
-                    Logger.debug("playerCache.getRegionMembership(): " + playerCache.getRegionMembership());
                     return hasLocationPermissions(region, playerCache.getRegionMembership(), type);
                 } else {
                     var eventLocationMembership = calculateRegionMembership(region, player);
-                    Logger.debug("eventLocationMembership: " + eventLocationMembership);
                     return hasLocationPermissions(region, eventLocationMembership, type);
                 }
             }

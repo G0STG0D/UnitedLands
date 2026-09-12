@@ -19,7 +19,6 @@ public class BankRecordService extends BaseDbService<BankRecord> {
 
     public CompletableFuture<List<BankRecord>> getRecordsAsync(UUID id, long page, int pageSize) {
 
-        Logger.debug(id + " " + page + " " + pageSize);
         return CompletableFuture.supplyAsync(() -> {
             try {
                 QueryBuilder<BankRecord, UUID> queryBuilder = dao.queryBuilder();
