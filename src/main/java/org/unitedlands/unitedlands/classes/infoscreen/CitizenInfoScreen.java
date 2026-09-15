@@ -16,6 +16,7 @@ import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 public class CitizenInfoScreen extends InfoScreen {
 
@@ -40,6 +41,7 @@ public class CitizenInfoScreen extends InfoScreen {
                 MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__SETTLEMENT_RANKS.path()),
                 Map.of("settlementranks", String.join(", ", citizen.getSettlementRanks())));
 
+                
         addComponent("country-ranks",
                 Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__COUNTRY_RANKS.path()),
                         Map.of("countryranks", String.join(", ", citizen.getCountryRanks()))));
@@ -83,6 +85,8 @@ public class CitizenInfoScreen extends InfoScreen {
                 var metadataComponent = Messenger.getMessage(finalMetaDataString);
                 addComponent("metadata", metadataComponent);
             }
+
+
         }
     }
 

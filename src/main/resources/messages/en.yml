@@ -188,7 +188,7 @@ player:
         <red>{region}</red></aqua>
       no-region: <yellow>There is no region in this location.</yellow>
       start-broadcast: <aqua><green>{country}</green> has started claiming the region
-        of <red>{region}</region>. They will take control of it in {time}.</aqua>
+        of <red>{region}</red>. They will take control of it in {time}.</aqua>
       too-many-claiming: <yellow>You cannot claim more than {max} region(s) at the
         same time.</yellow>
     create:

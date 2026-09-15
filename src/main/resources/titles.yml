@@ -1,0 +1,56 @@
+titles:
+  Kingdom_of_France:
+    display-name: "Kingdom of France"
+    description: "Lorem ipsum dolor sit amet."
+    effects-description: "<gray><aqua><i>Imperial Ambitions</i></aqua>: Gives <green>+5%</green> daily mobilization and <green>+1</green> parallel region claims."
+    primary-regions:
+    - Ile-de-France
+    - Orleans
+    - Gascogne
+    - Provence
+    secondary-regions:
+    - Champagne
+    - Bourgogne
+    - Hauts-de-France
+    - Normandie
+    - Bretagne
+    - Poitiers
+    - Anjou
+    - Limousin
+    - Occitanie
+    required-secondary-regions: 2
+    effects:
+      country-title-unlocks:
+      - Kingdom
+      cosmetic-unlocks: []
+      modifiers:
+        mod1:
+          attribute-key: MAX_REGION_CLAIMS
+          mode: ADD
+          value-modifier: 1
+          min-value-modifier: 0
+          max-value-modifier: 0
+          daily-change-modifier: 0
+        mod2:
+          attribute-key: MOBILIZATION
+          mode: MULTIPLY
+          value-modifier: 1
+          min-value-modifier: 1
+          max-value-modifier: 1
+          daily-change-modifier: 1.2
+  Crown_of_Aragon:
+    display-name: "Crown of Aragon"
+    description: "Lorem ipsum dolor sit amet."
+    primary-regions:
+    - Aragon
+    - Catalonia
+    - Napoli
+    secondary-regions:
+    - Valencia
+    - Bari
+    - Lecce
+    - Calabria
+    - Molise
+    - Messina
+    - Palermo
+    required-secondary-regions: 2

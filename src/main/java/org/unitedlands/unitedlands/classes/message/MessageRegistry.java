@@ -15,7 +15,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.interfaces.MessageKey;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -45,7 +45,6 @@ public class MessageRegistry {
         for (MessageKey key : (MessageKey[]) enumClass.getEnumConstants()) {
             if (!config.isSet(key.path())) {
                 config.set(key.path(), key.defaultValue());
-                Logger.debug("Added missing message key: " + key.path());
                 changed = true;
             }
         }
@@ -66,7 +65,7 @@ public class MessageRegistry {
         Set<String> present = new HashSet<>();
         collectLeafPaths(config, "", present);
         present.removeAll(valid);
-        present.forEach(orphan -> Logger.logWarning("Orphaned message key (no enum matches it): " + orphan));
+        present.forEach(orphan -> United.logger().warning("Orphaned message key (no enum matches it): " + orphan));
     }
 
     private void collectLeafPaths(ConfigurationSection section, String prefix, Set<String> out) {

@@ -11,8 +11,8 @@ import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHa
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Logger;
 import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountryModifiers.class,
@@ -50,7 +50,7 @@ public class CmdAdminCountryModifiersAdd extends CountryAdminCommandHandler {
         try {
             mode = Mode.valueOf(args[3]);
         } catch (Exception ex) {
-            Logger.logWarning("Not a valid attribute modifier mode: " + args[3]);
+            United.logger().warning("Not a valid attribute modifier mode: " + args[3]);
             return;
         }
 
@@ -58,7 +58,7 @@ public class CmdAdminCountryModifiersAdd extends CountryAdminCommandHandler {
         try {
             valueMod = Double.parseDouble(args[4]);
         } catch (Exception ex) {
-            Logger.logWarning("Invalid number: " + args[4]);
+            United.logger().warning("Invalid number: " + args[4]);
             return;
         }
 
@@ -66,7 +66,7 @@ public class CmdAdminCountryModifiersAdd extends CountryAdminCommandHandler {
         try {
             maxValueMod = Double.parseDouble(args[5]);
         } catch (Exception ex) {
-            Logger.logWarning("Invalid number: " + args[5]);
+            United.logger().warning("Invalid number: " + args[5]);
             return;
         }
 
@@ -74,7 +74,7 @@ public class CmdAdminCountryModifiersAdd extends CountryAdminCommandHandler {
         try {
             minValueMod = Double.parseDouble(args[6]);
         } catch (Exception ex) {
-            Logger.logWarning("Invalid number: " + args[6]);
+            United.logger().warning("Invalid number: " + args[6]);
             return;
         }
 
@@ -82,7 +82,7 @@ public class CmdAdminCountryModifiersAdd extends CountryAdminCommandHandler {
         try {
             dailyChangeMod = Double.parseDouble(args[7]);
         } catch (Exception ex) {
-            Logger.logWarning("Invalid number: " + args[7]);
+            United.logger().warning("Invalid number: " + args[7]);
             return;
         }
 

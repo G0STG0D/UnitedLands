@@ -9,6 +9,7 @@ import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
+import org.unitedlands.unitedlands.classes.configs.GeneralConfig;
 import org.unitedlands.unitedlands.classes.db.BankRecordService;
 import org.unitedlands.unitedlands.classes.db.CitizenService;
 import org.unitedlands.unitedlands.classes.db.CountryService;
@@ -51,13 +52,11 @@ public class DatabaseManager {
 
         // instance = this;
 
-        var fileConfig = plugin.getConfig();
-
-        String host = fileConfig.getString("mysql.host");
-        int port = fileConfig.getInt("mysql.port");
-        String database = fileConfig.getString("mysql.database");
-        String username = fileConfig.getString("mysql.username");
-        String password = fileConfig.getString("mysql.password");
+        String host = GeneralConfig.get().mysql().host();
+        int port = GeneralConfig.get().mysql().port();
+        String database = GeneralConfig.get().mysql().database();
+        String username = GeneralConfig.get().mysql().username();
+        String password = GeneralConfig.get().mysql().password();
 
         String jdbcUrl = String.format(
                 "jdbc:mysql://%s:%d/%s?useSSL=%s&serverTimezone=UTC&allowPublicKeyRetrieval=true",

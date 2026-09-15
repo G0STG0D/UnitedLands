@@ -6,8 +6,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.unitedlands.unitedlands.classes.BankRecord;
-import org.unitedlands.utils.Logger;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 

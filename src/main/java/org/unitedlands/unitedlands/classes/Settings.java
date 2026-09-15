@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class Settings {
 
@@ -144,7 +144,7 @@ public class Settings {
             if (tag != null) {
                 protectedSwitchTags.add(tag);
             } else {
-                Logger.logWarning("Unknown block tag: " + strTag, "UnitedLands");
+                United.logger().warning("Unknown block tag: " + strTag, "UnitedLands");
             }
         }
         protectedInteractEntities = config.getStringList("protection.interact");

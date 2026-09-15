@@ -7,7 +7,7 @@ import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.schedulers.NewDayScheduler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class ServerEventListener implements Listener {
 
@@ -24,7 +24,7 @@ public class ServerEventListener implements Listener {
 
         UnitedLandsEconomyManager.instance().loadEconomy();
         if (!UnitedLandsEconomyManager.instance().hasEconomy()) {
-            Logger.logWarning(
+            United.logger().warning(
                     "No valid economy provider detected, falling back to mockup economy. All economic transactions will be executed as if all economic actors had unlimited funds.", "UnitedLands");
         }
     }

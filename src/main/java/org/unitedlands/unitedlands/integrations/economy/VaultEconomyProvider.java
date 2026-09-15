@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.util.InternalException;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 import net.milkbowl.vault2.economy.Economy;
 import net.milkbowl.vault2.economy.EconomyResponse.ResponseType;
@@ -59,7 +59,7 @@ public class VaultEconomyProvider implements IEconomyProvider {
     public boolean deposit(UUID uuid, BigDecimal amount) {
         var response = economy.deposit("UnitedLands", uuid, amount);
         if (response.type != ResponseType.SUCCESS) {
-            Logger.logWarning("Error depositing to " + uuid.toString() + ": " + response.errorMessage, "UnitedLands");
+            United.logger().warning("Error depositing to " + uuid.toString() + ": " + response.errorMessage, "UnitedLands");
         }
         return true;
     }
@@ -68,7 +68,7 @@ public class VaultEconomyProvider implements IEconomyProvider {
     public boolean withdraw(UUID uuid, BigDecimal amount) {
         var response = economy.withdraw("UnitedLands", uuid, amount);
         if (response.type != ResponseType.SUCCESS) {
-            Logger.logWarning("Error withdrawing from " + uuid.toString() + ": " + response.errorMessage,
+            United.logger().warning("Error withdrawing from " + uuid.toString() + ": " + response.errorMessage,
                     "UnitedLands");
         }
         return true;

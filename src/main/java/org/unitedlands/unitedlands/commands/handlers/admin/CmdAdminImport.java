@@ -86,7 +86,7 @@ public class CmdAdminImport implements UnitedCommandExecutor {
 
                 if (val.color != null) {
                     region.setDebugStrokeColor(ColorUtils.hexToColor(val.color).getRGB());
-                    region.setDebugFillColor(ColorUtils.hexToColor(val.color + "40").getRGB());
+                    region.setDebugFillColor(ColorUtils.hexToColor(val.color + "10").getRGB());
                 }
                 region.setWorld(world);
 

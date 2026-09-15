@@ -7,6 +7,8 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
+import org.unitedlands.unitedlands.classes.configs.GeneralConfig;
+import org.unitedlands.unitedlands.classes.configs.TitlesConfig;
 import org.unitedlands.unitedlands.classes.message.Message;
 import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.utils.Messenger;
@@ -21,6 +23,10 @@ public class CmdAdminReload implements UnitedCommandExecutor {
 
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
+
+        GeneralConfig.get().reload();
+        TitlesConfig.get().reload();
+        
         UnitedLands.instance().reloadConfig();
         UnitedLands.instance().getMessageConfig().reload();
         UnitedLands.instance().getPermissionConfig().reload();
