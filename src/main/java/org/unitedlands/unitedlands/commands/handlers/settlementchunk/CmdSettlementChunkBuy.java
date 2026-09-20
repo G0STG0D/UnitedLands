@@ -2,18 +2,15 @@ package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPrePurchaseEvent;
 import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPurchaseEvent;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementChunk.class,
@@ -37,8 +34,7 @@ public class CmdSettlementChunkBuy extends SettlementChunkCommandHandler {
             return;
 
         if (!context.settlementChunk().isForSale()) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__BUY__NOT_FOR_SALE.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlementchunk.buy.not_for_sale");
             return;
         }
 
@@ -46,9 +42,7 @@ public class CmdSettlementChunkBuy extends SettlementChunkCommandHandler {
 
         if (!UnitedLandsEconomyManager.instance().has(context.citizen().getUuid(),
                 new BigDecimal(context.settlementChunk().getSalePrice()))) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
-                    Map.of("amount", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice())),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.no-funds-player", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice()));
             return;
         }
 
@@ -64,9 +58,7 @@ public class CmdSettlementChunkBuy extends SettlementChunkCommandHandler {
                 context.settlementChunk().getSalePrice(),
                 "Plot bought by " + context.player().getName());
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__BUY__SUCCESS.path()),
-                Map.of("price", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice())),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlementchunk.buy.success", UnitedLandsEconomyManager.instance().format(context.settlementChunk().getSalePrice()));
 
         context.settlementChunk().setSalePrice(null);
         context.settlementChunk().setOwner(context.citizen());

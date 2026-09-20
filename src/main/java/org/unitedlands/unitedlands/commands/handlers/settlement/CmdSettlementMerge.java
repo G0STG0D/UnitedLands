@@ -8,12 +8,11 @@ import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -47,28 +46,24 @@ public class CmdSettlementMerge extends SettlementCommandHandler {
 
         var targetSettlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
         if (targetSettlement == null) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.GENERAL_ERRORS__SETTLEMENT_NOT_FOUND.path()),
-                    Map.of("settlement", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "general-errors.settlement-not-found", args[0]);
             return;
         }
 
         var targetMayor = targetSettlement.getMayor();
         if (!targetMayor.getPlayer().isOnline()) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__MERGE__MAYOR_NOT_ONLINE.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "player.settlement.merge.mayor-not-online");
             return;
         }
 
         if (context.settlement().hasCountry()) {
             if (!context.settlement().getCountry().equals(targetSettlement.getCountry())) {
-                Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__MERGE__TARGET_NOT_IN_COUNTRY.path()),
-                        Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(sender, "player.settlement.merge.target-not-in-country", context.settlement().getCleanName());
                 return;
             }
         } else {
             if (targetSettlement.hasCountry()) {
-                Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__MERGE__TARGET_HAS_COUNTRY.path()),
-                        Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(sender, "player.settlement.merge.target-has-country", context.settlement().getCleanName());
                 return;
             }
         }
@@ -105,13 +100,9 @@ public class CmdSettlementMerge extends SettlementCommandHandler {
 
             Pl3xMapRenderer.instance().removeSettlement(targetSettlement);
 
-            Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__MERGE__BROADCAST.path()),
-                    Map.of(
-                            "settlement", context.settlement().getCleanName(),
-                            "targetsettlement", targetSettlementName),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(Bukkit.getServer(), "player.settlement.merge.broadcast", context.settlement().getCleanName(), targetSettlementName);
         })
-                .setTitle(MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__MERGE__CONFIRM.path()))
+                .setTitle("player.settlement.merge.CONFIRM")
                 .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
                 .setSender((Player) sender)
                 .setReceiver(targetMayor.getPlayer())

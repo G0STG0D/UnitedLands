@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.towny;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -15,7 +14,7 @@ import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
@@ -25,8 +24,7 @@ import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
@@ -84,8 +82,7 @@ public class CmdAdminTownyImport implements UnitedCommandExecutor {
                 importTown(player, town);
             }
 
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__FINISHED.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.towny.import.finished");
         }
 
     }
@@ -211,9 +208,7 @@ public class CmdAdminTownyImport implements UnitedCommandExecutor {
                 }
             }
 
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_SETTLEMENT.path()),
-                    Map.of("settlement", settlement.getName(), "plots", plots.size() + ""),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.towny.import.success-settlement", settlement.getName(), plots.size() + "");
 
             if (town.hasNation() && town.isCapital() && region != null && !region.hasCountry()) {
                 var nation = town.getNation();
@@ -243,14 +238,12 @@ public class CmdAdminTownyImport implements UnitedCommandExecutor {
                     UnitedLandsDataManager.instance().updateRegionDbData(region, true);
                     UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
-                    Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__SUCCESS_COUNTRY.path()),
-                            Map.of("country", country.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+                    United.messenger().send(player, "admin.towny.import.success-country", country.getName());
                 }
             }
 
         } catch (Exception ex) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__TOWNY__IMPORT__ERROR.path()),
-                    Map.of("message", ex.getMessage()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.towny.import.error", ex.getMessage());
         }
     }
 

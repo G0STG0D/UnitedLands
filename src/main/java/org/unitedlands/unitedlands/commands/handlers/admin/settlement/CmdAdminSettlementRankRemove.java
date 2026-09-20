@@ -1,18 +1,16 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementRank.class,
@@ -58,24 +56,19 @@ public class CmdAdminSettlementRankRemove extends SettlementAdminCommandHandler 
         }
 
         if (!citizen.hasSettlement() || !settlement.equals(citizen.getSettlement())) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__CITIZEN_NOT_IN_SETTLEMENT.path()),
-                    Map.of("citizen", citizen.getName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.settlement.citizen-not-in-settlement", citizen.getName());
             return;
         }
 
         if (!PermissionManager.instance().getSettlementRanks().contains(args[2])) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()), Map.of("rank", args[2]),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.settlement.unknown-rank", args[2]);
             return;
         }
 
         citizen.removeSettlementRank(args[2]);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__REMOVERANK__SUCCESS.path()),
-                Map.of("rank", args[2], "citizen", citizen.getName(), "settlement", settlement.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.settlement.removerank.success", args[2], citizen.getName(), settlement.getName());
 
     }
 

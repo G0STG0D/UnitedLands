@@ -8,7 +8,7 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 import org.unitedlands.unitedlands.classes.configs.TitlesConfig;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdCountryTitle.class,
@@ -52,7 +52,7 @@ public class CmdCountryTitleClaim extends CountryCommandHandler {
         }
 
         if (missingRegions.size() > 0) {
-            Messenger.sendMessage(sender, "<yellow>Your country doesn't own the following required region(s): " + String.join(", ", missingRegions));
+            United.messenger().sendRaw(sender, "<yellow>Your country doesn't own the following required region(s): " + String.join(", ", missingRegions));
             return;
         }
 

@@ -2,11 +2,12 @@ package org.unitedlands.unitedlands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.classes.ConfigFile;
+import org.unitedlands.services.UnitedLanguageService;
 import org.unitedlands.unitedlands.classes.Settings;
-import org.unitedlands.unitedlands.classes.message.Message;
-import org.unitedlands.unitedlands.classes.message.MessageRegistry;
+
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.integrations.Towny.TownyProvider;
 import org.unitedlands.unitedlands.integrations.papi.PlaceholderAPIIntegration;
@@ -24,11 +25,11 @@ import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.DisplayManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.schedulers.NewDayScheduler;
+import org.unitedlands.unitedlands.utils.UnitedLanguageServiceImplementation;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 import com.j256.ormlite.logger.LoggerFactory;
 import com.j256.ormlite.logger.NullLogBackend;
@@ -40,9 +41,6 @@ public class UnitedLands extends JavaPlugin {
 
     private ConfigFile messageConfig;
     private ConfigFile permissionConfig;
-
-    private MessageProvider messageProvider;
-    private MessageRegistry messageRegistry;
 
     UnitedLandsDataManager globalDataManager;
     UnitedLandsEconomyManager economyManager;
@@ -62,6 +60,8 @@ public class UnitedLands extends JavaPlugin {
     private boolean useFloodgate;
     private boolean usePAPI;
 
+    private UnitedLanguageService languageProvider;
+
     @Override
     public void onEnable() {
 
@@ -71,13 +71,10 @@ public class UnitedLands extends JavaPlugin {
 
         saveDefaultConfig();
 
-        messageRegistry = new MessageRegistry(this, "messages/en.yml");
-        messageRegistry.sync(Message.class);
-
-        messageConfig = new ConfigFile(this, messageRegistry.getFilePath());
+        // messageConfig = new ConfigFile(this, "messages/en.yml");
         permissionConfig = new ConfigFile(this, "permissions.yml");
 
-        messageProvider = new MessageProvider(messageConfig.get());
+        // messageProvider = new MessageProvider(messageConfig.get());
 
         Settings.loadSettings(getConfig());
 
@@ -86,6 +83,9 @@ public class UnitedLands extends JavaPlugin {
         registerListeners();
 
         webServices = new UnitedLandsWebServices(this);
+
+        languageProvider = new UnitedLanguageServiceImplementation();
+        Bukkit.getServicesManager().register(UnitedLanguageService.class, languageProvider, this, ServicePriority.Highest);
 
         getLogger().info("UnitedLands initialized.");
     }
@@ -106,7 +106,7 @@ public class UnitedLands extends JavaPlugin {
         confirmationManager = new ConfirmationManager(this);
         playerCacheManager = new PlayerCacheManager(this);
         economyManager = new UnitedLandsEconomyManager(this);
-        chatChannelManager = new ChatChannelManager(this, messageProvider);
+        chatChannelManager = new ChatChannelManager(this);
 
         newDayScheduler = new NewDayScheduler();
     }
@@ -115,16 +115,16 @@ public class UnitedLands extends JavaPlugin {
         var towny = getServer().getPluginManager().getPlugin("Towny");
         if (towny != null && towny.isEnabled()) {
             townyProvider = new TownyProvider(this);
-            Logger.log("Found Towny, enabling integration...", "UnitedLands");
+            United.logger().info("Found Towny, enabling integration...", "UnitedLands");
         }
         Plugin floodgate = Bukkit.getPluginManager().getPlugin("floodgate");
         if (floodgate != null && floodgate.isEnabled()) {
-            Logger.log("Enabling floodgate integrations.", "UnitedLands");
+            United.logger().info("Enabling floodgate integrations.", "UnitedLands");
             useFloodgate = true;
         }
         Plugin papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
         if (papi != null && papi.isEnabled()) {
-            Logger.log("Enabling floodgate integrations.", "UnitedLands");
+            United.logger().info("Enabling floodgate integrations.", "UnitedLands");
             new PlaceholderAPIIntegration();
             usePAPI = true;
         }
@@ -138,16 +138,12 @@ public class UnitedLands extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ServerEventListener(), this);
         getServer().getPluginManager().registerEvents(new MobListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
-        getServer().getPluginManager().registerEvents(new RegionListener(messageProvider), this);
+        getServer().getPluginManager().registerEvents(new RegionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
 
     public static UnitedLands instance() {
         return instance;
-    }
-
-    public MessageProvider getMessageProvider() {
-        return messageProvider;
     }
 
     public static Settings getSettings() {
@@ -184,6 +180,10 @@ public class UnitedLands extends JavaPlugin {
 
     public NewDayScheduler getNewDayScheduler() {
         return newDayScheduler;
+    }
+
+    public UnitedLanguageService getLanguageProvider() {
+        return languageProvider;
     }
 
 }

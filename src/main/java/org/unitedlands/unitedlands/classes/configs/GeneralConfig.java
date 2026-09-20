@@ -5,7 +5,6 @@ import org.unitedlands.annotations.UnitedSection;
 import org.unitedlands.annotations.UnitedSetting;
 import org.unitedlands.registrars.config.UnitedConfigHandler;
 import org.unitedlands.registrars.config.UnitedConfigs;
-import org.unitedlands.registrars.config.UnitedDynamicSection;
 
 @UnitedConfig(file = "config.yml") // file property möglich, wenn config z.B. "settings.yml" heißen soll
 public interface GeneralConfig extends UnitedConfigHandler {

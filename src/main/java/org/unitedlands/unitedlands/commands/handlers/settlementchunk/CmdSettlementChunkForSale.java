@@ -1,16 +1,13 @@
 package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementChunk.class,
@@ -39,9 +36,7 @@ public class CmdSettlementChunkForSale extends SettlementChunkCommandHandler {
             return;
 
         if (context.settlementChunk().hasOwner()) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__FORSALE__HAS_OWNER.path()),
-                    Map.of("owner", context.settlementChunk().getOwner().getName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlementchunk.forsale.has-owner", context.settlementChunk().getOwner().getName());
             return;
         }
 
@@ -49,21 +44,18 @@ public class CmdSettlementChunkForSale extends SettlementChunkCommandHandler {
         if (args[0].equalsIgnoreCase("clear")) {
             context.settlementChunk().setSalePrice(null);
             UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__FORSALE__CLEARED.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlementchunk.forsale.cleared");
         } else {
             try {
                 price = Integer.parseInt(args[0]);
             } catch (Exception ex) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_NUMBER_FORMAT.path()),
-                        Map.of("input", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "general-errors.wrong-number-format", args[0]);
                 return;
             }
             context.settlementChunk().setSalePrice(price);
             UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
 
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__FORSALE__SUCCESS.path()),
-                    Map.of("price", UnitedLandsEconomyManager.instance().format(price)), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlementchunk.forsale.success", UnitedLandsEconomyManager.instance().format(price));
         }
     }
 

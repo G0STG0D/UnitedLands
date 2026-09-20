@@ -11,20 +11,19 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
-    parent          = CmdCountryRank.class,
-    name            = "add",
-    description     = "Adds a country rank to a citizen",
-    usage           = "/country rank add <player> <rank>",
-    playerOnly      = true,
-    catchAll        = true
+        parent = CmdCountryRank.class,
+        name = "add",
+        description = "Adds a country rank to a citizen",
+        usage = "/country rank add <player> <rank>",
+        playerOnly = true,
+        catchAll = true
 )
 public class CmdCountryRankAdd extends CountryCommandHandler {
 
@@ -63,8 +62,7 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found");
             return;
         }
 
@@ -73,21 +71,17 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
             return;
 
         if (!context.country().equals(targetCitizen.getCountry())) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__NOT_IN_COUNTRY.path()),
-                    Map.of("citizen", args[0], "country", context.country().getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.country.not-in-country", args[0], context.country().getName());
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.ADMIN__COUNTRY__UNKNOWN_RANK.path()),
-                    Map.of("rank", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "admin.country.unknown-rank", args[1]);
             return;
         }
 
         if (targetCitizen.getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__ADDRANK__RANK_ALREADY_OWNED.path()),
-                    Map.of("rank", args[1], "citizen", targetCitizen.getName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.country.addrank.rank-already-owned", args[1], targetCitizen.getName());
             return;
         }
 
@@ -109,13 +103,12 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
                 UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
                 if (currentLeader.getPlayer().isOnline()) {
-                    Messenger.sendMessage(currentLeader.getPlayer(),
-                            MessageProvider.instance().get(Message.PLAYER__COUNTRY__REMOVERANK__RANK_LOST.path()),
-                            Map.of("rank", "leader"), MessageProvider.instance().get(Message.PREFIX.path()));
+                    United.messenger().send(currentLeader.getPlayer(),
+                            "player.country.removerank.rank-lost",
+                            Map.of("rank", "leader"));
                 }
                 if (targetPlayer.isOnline()) {
-                    Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__COUNTRY__ADDRANK__RANK_RECEIVED.path()),
-                            Map.of("rank", "leader"), MessageProvider.instance().get(Message.PREFIX.path()));
+                    United.messenger().send(targetPlayer, "player.country.addrank.rank-received", "leader");
                 }
 
             })
@@ -136,15 +129,12 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__COUNTRY__ADDRANK__RANK_RECEIVED.path()),
-                        Map.of("rank", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(targetPlayer, "player.country.addrank.rank-received", args[1]);
             }
 
         }
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__ADDRANK__SUCCESS.path()),
-                Map.of("rank", args[1], "name", targetCitizen.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.country.addrank.success", args[1], targetCitizen.getName());
 
     }
 

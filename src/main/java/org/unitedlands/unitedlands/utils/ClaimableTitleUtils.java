@@ -1,6 +1,5 @@
 package org.unitedlands.unitedlands.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.unitedlands.unitedlands.classes.Country;

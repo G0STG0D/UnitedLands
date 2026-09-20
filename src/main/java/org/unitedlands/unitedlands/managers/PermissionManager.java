@@ -19,7 +19,7 @@ import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.events.base.PermissablePlayerActionEvent;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class PermissionManager {
 
@@ -83,7 +83,7 @@ public class PermissionManager {
             }
         }
 
-        Logger.log("Permissions loaded.", "UnitedLands");
+        United.logger().info("Permissions loaded.", "UnitedLands");
     }
 
     public boolean hasRankPermission(String permission, Citizen citizen) {
@@ -173,7 +173,7 @@ public class PermissionManager {
 
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Logger.logError("CRITICAL: Could not retrieve citizen data of player " + player.getName());
+            United.logger().error("CRITICAL: Could not retrieve citizen data of player " + player.getName());
             return 0;
         }
 
@@ -224,7 +224,7 @@ public class PermissionManager {
 
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Logger.logError("CRITICAL: Could not retrieve citizen data of player " + player.getName());
+            United.logger().error("CRITICAL: Could not retrieve citizen data of player " + player.getName());
             return 0;
         }
 

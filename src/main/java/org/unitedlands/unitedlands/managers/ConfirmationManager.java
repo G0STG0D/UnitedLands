@@ -4,8 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Confirmation;
-import org.unitedlands.utils.Logger;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 public class ConfirmationManager {
 
@@ -29,7 +28,7 @@ public class ConfirmationManager {
 
         var key = confirmation.getKey();
         if (key == null || key.isBlank() || key.isEmpty()) {
-            Logger.logError("Cannot process confirmation without key.", "UnitedLands");
+            United.logger().error("Cannot process confirmation without key.", "UnitedLands");
             return;
         }
 
@@ -37,7 +36,7 @@ public class ConfirmationManager {
 
         // TODO: move strings to config
         if (!confirmation.getSender().equals(confirmation.getReceiver()))
-            Messenger.sendMessage(confirmation.getSender(), "Your request has been sent.");
+            United.messenger().sendRaw(confirmation.getSender(), "Your request has been sent.");
 
     }
 
@@ -52,7 +51,7 @@ public class ConfirmationManager {
 
         // TODO: Move string to config
         if (!confirmation.getSender().equals(confirmation.getReceiver()))
-            Messenger.sendMessage(confirmation.getSender(), "<red>Your request was rejected.</red>");
+            United.messenger().sendRaw(confirmation.getSender(), "<red>Your request was rejected.</red>");
 
         confirmations.remove(confirmation);
     }

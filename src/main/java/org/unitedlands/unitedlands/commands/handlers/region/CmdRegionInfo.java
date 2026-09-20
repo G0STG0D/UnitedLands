@@ -1,19 +1,16 @@
 package org.unitedlands.unitedlands.commands.handlers.region;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.registrars.command.UnitedCommandExecutor;
 import org.unitedlands.unitedlands.classes.Region;
 import org.unitedlands.unitedlands.classes.infoscreen.RegionInfoScreen;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
     parent          = CmdRegion.class,
@@ -39,15 +36,13 @@ public class CmdRegionInfo implements UnitedCommandExecutor {
             var playerCache = PlayerCacheManager.instance().getPlayerCache((Player) sender);
             region = playerCache.getCachedRegion();
             if (region == null) {
-                Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__REGION__INFO__NOT_IN_REGION.path()),
-                        null, MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(sender, "player.region.info.not-in-region");
                 return;
             }
         } else {
             region = UnitedLandsDataManager.instance().getRegion(args[0]);
             if (region == null) {
-                Messenger.sendMessage(sender, MessageProvider.instance().get(Message.GENERAL_ERRORS__REGION_NOT_FOUND.path()),
-                        Map.of("region", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(sender, "general-errors.region-not-found", args[0]);
                 return;
             }
         }

@@ -8,10 +8,8 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.GeopolAttributeModifier;
 import org.unitedlands.unitedlands.classes.GeopolAttributeModifier.Mode;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -91,8 +89,7 @@ public class CmdAdminCountryModifiersAdd extends CountryAdminCommandHandler {
         country.saveAttributeModifiers();
 
         // TODO: Move strings to config
-        Messenger.sendMessage(sender, "<green>Attribute modifier added to " + country.getCleanName(), null,
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().sendRaw(sender, "<green>Attribute modifier added to " + country.getCleanName());
 
     }
 

@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement.rank;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -11,12 +10,11 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementRank.class,
@@ -64,8 +62,7 @@ public class CmdSettlementRankAdd extends SettlementCommandHandler {
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found");
             return;
         }
 
@@ -74,21 +71,17 @@ public class CmdSettlementRankAdd extends SettlementCommandHandler {
             return;
 
         if (!context.settlement().equals(targetCitizen.getSettlement())) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__NOT_IN_SETTLEMENT.path()),
-                    Map.of("citizen", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.not-in-settlement", args[0]);
             return;
         }
 
         if (!PermissionManager.instance().getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__UNKNOWN_RANK.path()),
-                    Map.of("rank", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "admin.settlement.unknown-rank", args[1]);
             return;
         }
 
         if (targetCitizen.getSettlementRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_ALREADY_OWNED.path()),
-                    Map.of("citizen", context.citizen().getName(), "rank", args[1], "name", targetCitizen.getName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.addrank.rank-already-owned", context.citizen().getName(), args[1], targetCitizen.getName());
             return;
         }
 
@@ -109,13 +102,11 @@ public class CmdSettlementRankAdd extends SettlementCommandHandler {
                 UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
                 if (currentMayor.getPlayer().isOnline()) {
-                    Messenger.sendMessage(currentMayor.getPlayer(),
-                            MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__REMOVERANK__LOST.path()),
-                            Map.of("rank", "mayor"), MessageProvider.instance().get(Message.PREFIX.path()));
+                    United.messenger().send(currentMayor.getPlayer(),
+                            "player.settlement.removerank.lost", "mayor");
                 }
                 if (targetPlayer.isOnline()) {
-                    Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_RECEIVED.path()),
-                            Map.of("rank", "mayor"), MessageProvider.instance().get(Message.PREFIX.path()));
+                    United.messenger().send(targetPlayer, "player.settlement.addrank.rank-received","mayor");
                 }
 
             })
@@ -136,15 +127,12 @@ public class CmdSettlementRankAdd extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDRANK__RANK_RECEIVED.path()),
-                        Map.of("rank", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(targetPlayer, "player.settlement.addrank.rank-received", args[1]);
             }
 
         }
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDRANK__SUCCESS.path()),
-                Map.of("rank", args[1], "name", targetCitizen.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.addrank.success", args[1], targetCitizen.getName());
 
     }
 

@@ -9,8 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.tasks.NewDayTask;
-import org.unitedlands.utils.Formatter;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class NewDayScheduler {
 
@@ -51,12 +50,12 @@ public class NewDayScheduler {
             scheduleTask = Bukkit.getScheduler().runTaskLater(UnitedLands.instance(), () -> {
                 scheduleNewDay();
             }, newScheduleSeconds * 20L);
-            Logger.log("Rescheduling new day in " + Formatter.formatDuration(newScheduleSeconds * 1000), "UnitedLands");
+            United.logger().info("Rescheduling new day in " + United.formatter().formatDuration(newScheduleSeconds * 1000), "UnitedLands");
         } else {
             if (scheduleTask != null)
                 scheduleTask.cancel();
             newDayTask = Bukkit.getScheduler().runTaskLater(UnitedLands.instance(), new NewDayTask(), secondsToNewDay * 20L);
-            Logger.log("Scheduling new day in " + Formatter.formatDuration(secondsToNewDay * 1000), "UnitedLands");
+            United.logger().info("Scheduling new day in " + United.formatter().formatDuration(secondsToNewDay * 1000), "UnitedLands");
         }
 
     }
@@ -73,7 +72,7 @@ public class NewDayScheduler {
             scheduleTask.cancel();
         if (newDayTask != null)
             newDayTask.cancel();
-        Logger.log("New day scheduler stoped", "UnitedLands");
+        United.logger().info("New day scheduler stoped", "UnitedLands");
     }
 
     public long getSecondsUntilTime(String time) {

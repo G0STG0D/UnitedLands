@@ -3,9 +3,8 @@ package org.unitedlands.unitedlands.commands.handlers.admin.settlement.attribute
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementAttributes.class,
@@ -29,7 +28,7 @@ public class CmdAdminSetttlementAttributesList extends SettlementAdminCommandHan
             var v = set.getValue();
             String entry = "<bold>" + set.getKey() + "</bold> - Current value: " + v.getCurrentValue() + " | Min value: " + v.getMinValue() + " | Max value: " + v.getMaxValue() + " | Daily change: "
                     + v.getDailyChange();
-            Messenger.sendMessage(sender, entry, null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().sendRaw(sender, entry);
         }
     }
 

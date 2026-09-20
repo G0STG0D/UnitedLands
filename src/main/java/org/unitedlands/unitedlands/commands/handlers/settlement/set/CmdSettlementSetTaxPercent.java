@@ -1,17 +1,14 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement.set;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementSet.class,
@@ -41,38 +38,27 @@ public class CmdSettlementSetTaxPercent extends SettlementCommandHandler {
         var currTax = context.settlement().getTax();
         if (context.settlement().useTaxPercent()) {
             if (currTax < Settings.settlementMinTaxPercent) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETTAX__BELOW_MIN.path()),
-                        Map.of("min", String.format("%.2f%%", Settings.settlementMinTaxPercent * 100)),
-                        MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlement.settax.below-min", String.format("%.2f%%", Settings.settlementMinTaxPercent * 100));
                 context.settlement().setTax(Settings.settlementMinTaxPercent);
             } else if (currTax > Settings.settlementMaxTaxPercent) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETTAX__ABOVE_MAX.path()),
-                        Map.of("max", String.format("%.2f%%", Settings.settlementMaxTaxPercent * 100)),
-                        MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlement.settax.above-max", String.format("%.2f%%", Settings.settlementMaxTaxPercent * 100));
                 context.settlement().setTax(Settings.settlementMaxTaxPercent);
 
             }
         } else {
             if (currTax < Settings.settlementMinTaxAmount) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETTAX__BELOW_MIN.path()),
-                        Map.of("min", UnitedLandsEconomyManager.instance().format(Settings.settlementMinTaxAmount)),
-                        MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlement.settax.below-min", UnitedLandsEconomyManager.instance().format(Settings.settlementMinTaxAmount));
                 context.settlement().setTax((float) Settings.settlementMinTaxAmount);
 
             } else if (currTax > Settings.settlementMaxTaxAmount) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETTAX__ABOVE_MAX.path()),
-                        Map.of("max", UnitedLandsEconomyManager.instance().format(Settings.settlementMaxTaxAmount)),
-                        MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlement.settax.above-max", UnitedLandsEconomyManager.instance().format(Settings.settlementMaxTaxAmount));
                 context.settlement().setTax((float) Settings.settlementMaxTaxAmount);
             }
         }
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__USETAXPERCENT__SUCCESS.path()),
-                Map.of("settlement", context.settlement().getCleanName(),
-                        "state", value == true ? "<green>on</green>" : "<red>off</red>"),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.usetaxpercent.success", context.settlement().getCleanName(), value == true ? "<green>on</green>" : "<red>off</red>");
     }
 
     @Override

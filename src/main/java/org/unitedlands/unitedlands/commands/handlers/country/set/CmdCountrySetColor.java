@@ -1,22 +1,19 @@
 package org.unitedlands.unitedlands.commands.handlers.country.set;
 
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
-    parent          = CmdCountrySet.class,
-    name            = "color",
-    description     = "Sets the country color",
-    usage           = "/country set color <#hexcolor>",
-    playerOnly      = true
+        parent = CmdCountrySet.class,
+        name = "color",
+        description = "Sets the country color",
+        usage = "/country set color <#hexcolor>",
+        playerOnly = true
 )
 public class CmdCountrySetColor extends CountryCommandHandler {
 
@@ -33,8 +30,7 @@ public class CmdCountrySetColor extends CountryCommandHandler {
             return;
 
         if (!(args[0].length() == 7) || !ColorUtils.isValidHexColor(args[0])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_COLOR_FORMAT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.wrong-color-format");
             return;
         }
 
@@ -43,8 +39,7 @@ public class CmdCountrySetColor extends CountryCommandHandler {
 
         UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__SETCOLOR__SUCCESS.path()),
-                Map.of("color", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.country.setcolor.success", args[0]);
     }
 
 }

@@ -35,7 +35,7 @@ import org.unitedlands.unitedlands.classes.map.LayerOptions;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.unitedlands.utils.PolygonUtils;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
@@ -108,7 +108,7 @@ public class Pl3xMapRenderer {
         try {
             img = ImageIO.read(imageFile);
         } catch (Exception ex) {
-            Logger.logError("Failed to read image " + filename, "UnitedLands");
+            United.logger().error("Failed to read image " + filename, "UnitedLands");
             return;
         }
 
@@ -145,7 +145,7 @@ public class Pl3xMapRenderer {
         if (settlementQueue.size() == 0 && regionQueue.size() == 0 && countryQueue.size() == 0) {
             queueCheckTask.cancel();
             queueCheckTask = null;
-            Logger.log("Stopped map rendering task.", "UnitedLands");
+            United.logger().info("Stopped map rendering task.", "UnitedLands");
         }
 
     }
@@ -191,7 +191,7 @@ public class Pl3xMapRenderer {
 
     private void startQueueMonitor() {
         if (queueCheckTask == null) {
-            Logger.log("Started map rendering task.", "UnitedLands");
+            United.logger().info("Started map rendering task.", "UnitedLands");
             queueCheckTask = Bukkit.getScheduler().runTaskTimer(UnitedLands.instance(), () -> {
                 checkQueue();
             }, FREQUENCY, FREQUENCY);
@@ -231,10 +231,10 @@ public class Pl3xMapRenderer {
 
     private void renderCountries(Collection<Country> countries) {
 
-        Logger.log("Starting country map rendering...", "UnitedLands");
+        United.logger().info("Starting country map rendering...", "UnitedLands");
 
         if (countries == null || countries.isEmpty()) {
-            Logger.log("No countries to render.", "UnitedLands");
+            United.logger().info("No countries to render.", "UnitedLands");
             return;
         }
 
@@ -243,9 +243,9 @@ public class Pl3xMapRenderer {
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
             var executionTime = System.currentTimeMillis() - startTime;
-            Logger.log("Created " + countries.size() + " countries in map overlay in " + executionTime + "ms");
+            United.logger().info("Created " + countries.size() + " countries in map overlay in " + executionTime + "ms");
         }).exceptionally(ex -> {
-            Logger.logError("Error rendering countries: " + ex.getMessage(), "UnitedLands");
+            United.logger().error("Error rendering countries: " + ex.getMessage(), "UnitedLands");
             ex.printStackTrace();
             return null;
         });
@@ -328,10 +328,10 @@ public class Pl3xMapRenderer {
 
     private void renderPolyRegions(Collection<Region> regions, boolean debug) {
 
-        Logger.log("Starting region map rendering...", "UnitedLands");
+        United.logger().info("Starting region map rendering...", "UnitedLands");
 
         if (regions == null || regions.isEmpty()) {
-            Logger.log("No regions to render.", "UnitedLands");
+            United.logger().info("No regions to render.", "UnitedLands");
             return;
         }
 
@@ -340,9 +340,9 @@ public class Pl3xMapRenderer {
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
             var executionTime = System.currentTimeMillis() - startTime;
-            Logger.log("Created " + regions.size() + " regions in map overlay in " + executionTime + "ms");
+            United.logger().info("Created " + regions.size() + " regions in map overlay in " + executionTime + "ms");
         }).exceptionally(ex -> {
-            Logger.logError("Error rendering regions: " + ex.getMessage(), "UnitedLands");
+            United.logger().error("Error rendering regions: " + ex.getMessage(), "UnitedLands");
             return null;
         });
 
@@ -444,10 +444,10 @@ public class Pl3xMapRenderer {
 
     private void renderSettlements(Collection<Settlement> settlements) {
 
-        Logger.log("Starting settlement map rendering...", "UnitedLands");
+        United.logger().info("Starting settlement map rendering...", "UnitedLands");
 
         if (settlements == null || settlements.isEmpty()) {
-            Logger.log("No settlements to render.", "UnitedLands");
+            United.logger().info("No settlements to render.", "UnitedLands");
             return;
         }
 
@@ -457,9 +457,9 @@ public class Pl3xMapRenderer {
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
             var executionTime = System.currentTimeMillis() - startTime;
-            Logger.log("Created " + settlements.size() + " settlements in map overlay in " + executionTime + "ms");
+            United.logger().info("Created " + settlements.size() + " settlements in map overlay in " + executionTime + "ms");
         }).exceptionally(ex -> {
-            Logger.logError("Error rendering settlements: " + ex.getMessage(), "UnitedLands");
+            United.logger().error("Error rendering settlements: " + ex.getMessage(), "UnitedLands");
             return null;
         });
     }
@@ -469,7 +469,7 @@ public class Pl3xMapRenderer {
         SimpleLayer layer = getOrCreateSimpleLayer(settlement.getWorldName(), "settlements", "Settlements", 1, 1000);
 
         String uuid = settlement.getUuid().toString();
-        Logger.log("Rendering settlement " + uuid + "...");
+        United.logger().info("Rendering settlement " + uuid + "...");
         String key = "settlement-" + uuid;
         // if (layer.hasMarker(key))
         // layer.removeMarker(key);
@@ -654,7 +654,7 @@ public class Pl3xMapRenderer {
                     }
                 }
             } catch (Exception ex) {
-                Logger.logError("Could not parse x, y for key " + key + ": " + ex.getMessage(), "UnitedLands");
+                United.logger().error("Could not parse x, y for key " + key + ": " + ex.getMessage(), "UnitedLands");
             }
         }
 

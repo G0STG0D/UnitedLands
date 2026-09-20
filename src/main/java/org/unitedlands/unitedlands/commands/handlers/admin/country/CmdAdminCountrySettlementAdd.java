@@ -6,10 +6,9 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountrySettlement.class,
@@ -39,8 +38,8 @@ public class CmdAdminCountrySettlementAdd extends CountryAdminCommandHandler {
         }
 
         if (settlement.hasCountry()) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__ADDSETTLEMENT__SETTLEMENT_HAS_COUNTRY.path()),
-                    Map.of("settlement", settlement.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.country.addsettlement.settlement-has-country",
+                    Map.of("settlement", settlement.getName()));
             return;
         }
 
@@ -49,9 +48,7 @@ public class CmdAdminCountrySettlementAdd extends CountryAdminCommandHandler {
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__ADDSETTLEMENT__SUCCESS.path()),
-                Map.of("country", country.getName(), "settlement", settlement.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.country.addsettlement.success", country.getName(), settlement.getName());
     }
 
     @Override

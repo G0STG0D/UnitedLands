@@ -3,10 +3,8 @@ package org.unitedlands.unitedlands.classes.infoscreen;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import org.unitedlands.unitedlands.classes.Citizen;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.classes.metadata.BooleanMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.DoubleMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.FloatMetaDataField;
@@ -14,9 +12,9 @@ import org.unitedlands.unitedlands.classes.metadata.IntegerMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.LongMetaDataField;
 import org.unitedlands.unitedlands.classes.metadata.StringMetaDataField;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
 import org.unitedlands.utils.United;
+
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class CitizenInfoScreen extends InfoScreen {
 
@@ -29,32 +27,30 @@ public class CitizenInfoScreen extends InfoScreen {
         var logonDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(citizen.getLastLogon());
 
         addComponent("registered",
-                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__REGISTERED.path()),
-                Map.of("registered", joinDate, "lastlogon", logonDate));
+                "info-screens.citizen.registered", joinDate, logonDate);
 
         addComponent("settlement-country",
-                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__COUNTRY.path()),
-                Map.of("settlement", citizen.getSettlement() != null ? citizen.getSettlement().getCleanName() : "-",
-                        "country", citizen.getCountry() != null ? citizen.getCountry().getCleanName() : "-"));
+                "info-screens.citizen.country",
+                citizen.getSettlement() != null ? citizen.getSettlement().getCleanName() : "-",
+                citizen.getCountry() != null ? citizen.getCountry().getCleanName() : "-");
 
         addComponent("settlement-ranks",
-                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__SETTLEMENT_RANKS.path()),
-                Map.of("settlementranks", String.join(", ", citizen.getSettlementRanks())));
+                "info-screens.citizen.settlement-ranks",
+                citizen.getSettlementRanks());
 
-                
         addComponent("country-ranks",
-                Messenger.getMessage(MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__COUNTRY_RANKS.path()),
-                        Map.of("countryranks", String.join(", ", citizen.getCountryRanks()))));
+                "info-screens.citizen.country-ranks",
+                String.join(", ", citizen.getCountryRanks()));
 
         addComponent("balance",
-                MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__BALANCE.path()),
-                Map.of("balance", UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance().getBalance(citizen.getUuid()))));
+                "info-screens.citizen.balance",
+                UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance().getBalance(citizen.getUuid())));
 
         var metadata = citizen.getMetadata();
 
         if (metadata != null && !metadata.isEmpty()) {
 
-            var metaDataWrapper = MessageProvider.instance().get(Message.INFO_SCREENS__CITIZEN__METADATA.path());
+            var metaDataWrapper = United.messenger().get("info-screens.citizen.metadata");
 
             List<String> fields = new ArrayList<>();
             for (var m : metadata.values()) {
@@ -82,10 +78,9 @@ public class CitizenInfoScreen extends InfoScreen {
             if (!fields.isEmpty()) {
                 var finalMetaDataString = metaDataWrapper.replace("{metadata}",
                         String.join("<dark_gray> | </dark_gray>", fields));
-                var metadataComponent = Messenger.getMessage(finalMetaDataString);
+                var metadataComponent = MiniMessage.miniMessage().deserialize(finalMetaDataString);
                 addComponent("metadata", metadataComponent);
             }
-
 
         }
     }

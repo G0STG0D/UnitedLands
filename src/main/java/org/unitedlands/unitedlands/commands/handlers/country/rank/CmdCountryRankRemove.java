@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.country.rank;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -10,11 +9,10 @@ import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdCountryRank.class,
@@ -67,8 +65,7 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found");
             return;
         }
 
@@ -77,21 +74,17 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
             return;
 
         if (!context.country().equals(targetCitizen.getCountry())) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__NOT_IN_COUNTRY.path()),
-                    Map.of("name", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.country.not-in-country", args[0]);
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.ADMIN__COUNTRY__UNKNOWN_RANK.path()),
-                    Map.of("rank", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "admin.country.unknown-rank",args[1]);
             return;
         }
 
         if (!targetCitizen.getCountryRanks().contains(args[1])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__REMOVERANK__RANK_NOT_OWNED.path()),
-                    Map.of("rank", args[1], "name", targetCitizen.getName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.country.removerank.rank-not-owned", args[1], targetCitizen.getName());
             return;
         }
 
@@ -100,8 +93,7 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
             if (!hasPermission("country.manage.ranks.leader", context.citizen()))
                 return;
 
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__REMOVERANK__CANNOT_REMOVE_LEADER.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.country.removerank.cannot-remove-leader");
             return;
 
         } else {
@@ -113,15 +105,12 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
             if (targetPlayer.isOnline()) {
-                Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__COUNTRY__REMOVERANK__RANK_LOST.path()),
-                        Map.of("rank", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(targetPlayer, "player.country.removerank.rank-lost", args[1]);
             }
 
         }
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__REMOVERANK__RANK_REMOVED.path()),
-                Map.of("rank", args[1], "name", targetCitizen.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.country.removerank.rank-removed", args[1], targetCitizen.getName());
 
     }
 

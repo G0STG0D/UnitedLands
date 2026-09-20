@@ -1,8 +1,6 @@
 package org.unitedlands.unitedlands.classes.commandhandlers;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.registrars.command.UnitedCommandExecutor;
@@ -10,10 +8,9 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.Settlement;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 public class SettlementCommandHandler implements UnitedCommandExecutor {
 
@@ -36,8 +33,7 @@ public class SettlementCommandHandler implements UnitedCommandExecutor {
         var player = (Player) sender;
         
         if (!Settings.worlds.contains(player.getLocation().getWorld().getName())) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_WORLD.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.wrong-world");
             return null;
         }
         
@@ -58,8 +54,7 @@ public class SettlementCommandHandler implements UnitedCommandExecutor {
     protected Citizen getCitizen(Player player) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.no-citizen-data");
             return null;
         }
         return citizen;
@@ -67,8 +62,7 @@ public class SettlementCommandHandler implements UnitedCommandExecutor {
 
     protected Settlement getCitizenSettlement(Citizen citizen) {
         if (citizen.getSettlement() == null) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NOT_IN_SETTLEMENT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send((Player) citizen.getPlayer(), "general-errors.not-in-settlement");
             return null;
         }
         return citizen.getSettlement();
@@ -76,8 +70,7 @@ public class SettlementCommandHandler implements UnitedCommandExecutor {
 
     protected boolean hasPermission(String permission, Citizen citizen) {
         if (!UnitedLands.instance().getPermissionManager().hasRankPermission(permission, citizen)) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_SETTLEMENT_PERMISSION.path()),
-                    Map.of("perm", permission), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send((Player) citizen.getPlayer(), "general-errors.no-settlement-permission", permission);
             return false;
         }
         return true;

@@ -1,17 +1,15 @@
 package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementChunk.class,
@@ -43,8 +41,7 @@ public class CmdSettlementChunkType extends SettlementChunkCommandHandler {
 
         var type = args[0];
         if (!Settings.settlementChunkTypes.containsKey(type)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__UNKNOWN_TYPE.path()),
-                    Map.of("type", type), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlementchunk.settype.unknown-type", type);
             return;
         }
 
@@ -52,9 +49,7 @@ public class CmdSettlementChunkType extends SettlementChunkCommandHandler {
         if (typeSettings.maxPerSettlement != -1) {
             var chunksOfType = context.settlementChunk().getSettlement().getChunksOfType(type);
             if (chunksOfType.size() >= typeSettings.maxPerSettlement) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__TOO_MANY_OF_TYPE.path()),
-                        Map.of("type", type, "max", String.valueOf(typeSettings.maxPerSettlement)),
-                        MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlementchunk.settype.too-many-of-type", type, String.valueOf(typeSettings.maxPerSettlement));
                 return;
             }
         }
@@ -62,8 +57,7 @@ public class CmdSettlementChunkType extends SettlementChunkCommandHandler {
         context.settlementChunk().setChunkType(type);
         UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__SETTYPE__SUCCESS.path()),
-                Map.of("type", type), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlementchunk.settype.success", type);
 
     }
 

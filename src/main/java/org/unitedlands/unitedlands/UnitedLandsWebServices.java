@@ -14,7 +14,7 @@ import org.unitedlands.unitedlands.classes.webservices.handlers.CountriesListHan
 import org.unitedlands.unitedlands.classes.webservices.handlers.SettlementsGetHandler;
 import org.unitedlands.unitedlands.classes.webservices.handlers.SettlementsListHandler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -54,7 +54,7 @@ public class UnitedLandsWebServices {
             }
 
         } catch (Exception ex) {
-            Logger.logError("Error cleaning login challenges: " + ex.getMessage());
+            United.logger().error("Error cleaning login challenges: " + ex.getMessage());
         }
 
     }
@@ -73,9 +73,9 @@ public class UnitedLandsWebServices {
         try {
             server = buildServer(host, port, webDir);
             server.start();
-            Logger.log("Web server started on " + host + ":" + port, "UnitedLands");
+            United.logger().info("Web server started on " + host + ":" + port, "UnitedLands");
         } catch (Exception e) {
-            Logger.logError("Failed to start web server: " + e.getMessage(), "UnitedLands");
+            United.logger().error("Failed to start web server: " + e.getMessage(), "UnitedLands");
         }
     }
 

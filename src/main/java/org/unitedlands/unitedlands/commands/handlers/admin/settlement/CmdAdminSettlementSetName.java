@@ -1,15 +1,12 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementSet.class,
@@ -26,7 +23,7 @@ public class CmdAdminSettlementSetName extends SettlementAdminCommandHandler {
             sendUsage(sender);
             return;
         }
-  
+
         var settlement = getSettlement(sender, args[0]);
         if (settlement == null) {
             return;
@@ -36,8 +33,7 @@ public class CmdAdminSettlementSetName extends SettlementAdminCommandHandler {
 
         settlement.setName(args[1]);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__SETNAME__SUCCESS.path()),
-                Map.of("oldname", oldname, "newname", settlement.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.settlement.setname.success", oldname, settlement.getName());
     }
 
     @Override

@@ -1,16 +1,13 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.country;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountry.class,
@@ -33,14 +30,12 @@ public class CmdAdminCountryUnclaim extends CountryAdminCommandHandler {
 
         var region = UnitedLandsDataManager.instance().getRegion(args[0]);
         if (region == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__COUNTRY__CLAIM__NO_REGION.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.country.claim.no-region");
             return;
         } else {
             if (region.getCountry() == null) {
-                Messenger.sendMessage(player,
-                        MessageProvider.instance().get(Message.ADMIN__COUNTRY__UNCLAIM__NOT_CLAIMED.path()),
-                        null, MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(player,
+                        "admin.country.unclaim.not-claimed");
                 return;
             }
         }
@@ -61,10 +56,7 @@ public class CmdAdminCountryUnclaim extends CountryAdminCommandHandler {
         country.removeRegion(region);
         UnitedLandsDataManager.instance().updateCountryDbData(country, true);
 
-        Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__COUNTRY__UNCLAIM__SUCCESS.path()),
-                Map.of("country", country.getCleanName(),
-                        "region", region.getCleanName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(player, "admin.country.unclaim.success", country.getCleanName(), region.getCleanName());
     }
 
     @Override

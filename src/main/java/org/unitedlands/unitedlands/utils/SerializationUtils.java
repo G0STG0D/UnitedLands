@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.unitedlands.unitedlands.classes.db.Identifiable;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class SerializationUtils {
 
@@ -38,7 +38,7 @@ public class SerializationUtils {
                     Float.parseFloat(ls[4]),
                     Float.parseFloat(ls[5]));
         } catch (Exception ex) {
-            Logger.logError("Parsing error in location: " + ex.getMessage());
+            United.logger().error("Parsing error in location: " + ex.getMessage());
             return null;
         }
     }
@@ -50,7 +50,7 @@ public class SerializationUtils {
                         .map(c -> c.getUuid().toString())
                         .collect(Collectors.joining("#"));
             } catch (Exception ex) {
-                Logger.logError("Serialization error in serializeIdentifiableList: " + ex.getMessage());
+                United.logger().error("Serialization error in serializeIdentifiableList: " + ex.getMessage());
                 return null;
             }
         }
@@ -64,7 +64,7 @@ public class SerializationUtils {
                         .map(c -> supplier.get().toString())
                         .collect(Collectors.joining("#"));
             } catch (Exception ex) {
-                Logger.logError("Serialization error in serializeUuidList: " + ex.getMessage());
+                United.logger().error("Serialization error in serializeUuidList: " + ex.getMessage());
                 return null;
             }
         }
@@ -78,7 +78,7 @@ public class SerializationUtils {
                         .map(c -> supplier.apply(UUID.fromString(c)))
                         .collect(Collectors.toSet());
             } catch (Exception ex) {
-                Logger.logError("Deserialization error in deserializeUuidListToSet: " + ex.getMessage());
+                United.logger().error("Deserialization error in deserializeUuidListToSet: " + ex.getMessage());
                 return new HashSet<T>();
             }
         } else {
@@ -93,7 +93,7 @@ public class SerializationUtils {
                         .map(entry -> entry.getKey() + ":" + (entry.getValue() == null ? "null" : entry.getValue()))
                         .collect(Collectors.joining("#"));
             } catch (Exception ex) {
-                Logger.logError("Serialization error in serializeStringIntegerMap: " + ex.getMessage());
+                United.logger().error("Serialization error in serializeStringIntegerMap: " + ex.getMessage());
                 return null;
             }
         }
@@ -111,7 +111,7 @@ public class SerializationUtils {
                         .forEach(parts -> values.put(parts[0], "null".equalsIgnoreCase(parts[1]) ? null : Integer.parseInt(parts[1])));
                 return values;
             } catch (Exception ex) {
-                Logger.logError("Deserialization error in serializeStringIntegerMap: " + ex.getMessage());
+                United.logger().error("Deserialization error in serializeStringIntegerMap: " + ex.getMessage());
                 return new HashMap<>();
             }
         } else {

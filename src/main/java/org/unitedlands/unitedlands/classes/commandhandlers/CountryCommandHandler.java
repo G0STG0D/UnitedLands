@@ -10,10 +10,9 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 public class CountryCommandHandler implements UnitedCommandExecutor {
 
@@ -36,8 +35,7 @@ public class CountryCommandHandler implements UnitedCommandExecutor {
         var player = (Player) sender;
 
         if (!Settings.worlds.contains(player.getLocation().getWorld().getName())) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_WORLD.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.wrong-world");
             return null;
         }
 
@@ -58,8 +56,7 @@ public class CountryCommandHandler implements UnitedCommandExecutor {
     protected Citizen getCitizen(Player player) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.no-citizen-data");
             return null;
         }
         return citizen;
@@ -67,8 +64,7 @@ public class CountryCommandHandler implements UnitedCommandExecutor {
 
     protected Country getCitizenCountry(Citizen citizen) {
         if (citizen.getCountry() == null) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_IN_COUNTRY.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send((Player) citizen.getPlayer(), "general-errors.player-not-in-country");
             return null;
         }
         return citizen.getCountry();
@@ -76,8 +72,8 @@ public class CountryCommandHandler implements UnitedCommandExecutor {
 
     protected boolean hasPermission(String permission, Citizen citizen) {
         if (!UnitedLands.instance().getPermissionManager().hasRankPermission(permission, citizen)) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_COUNTRY_PERMISSION.path()),
-                    Map.of("perm", permission), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send((Player) citizen.getPlayer(), "general-errors.no-country-permission",
+                    Map.of("perm", permission));
             return false;
         }
         return true;

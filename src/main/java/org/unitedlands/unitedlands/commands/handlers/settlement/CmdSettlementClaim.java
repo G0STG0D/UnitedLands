@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -10,13 +9,12 @@ import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPreClaimEvent;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.unitedlands.utils.CostUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
     parent          = CmdSettlement.class,
@@ -43,8 +41,7 @@ public class CmdSettlementClaim extends SettlementCommandHandler {
 
         var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CLAIM__ALREADY_CLAIMED.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.claim.already-claimed");
             return;
         }
 
@@ -52,8 +49,7 @@ public class CmdSettlementClaim extends SettlementCommandHandler {
                 .getRegion(CoordinateUtils.locationToChunkCenterCoordinates(context.player().getLocation()));
         if (region != null) {
             if (!region.equals(context.settlement().getRegion()) && !Settings.allowTownClaimsOutsideHomeRegion) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CLAIM__OUTSIDE_OF_REGION.path()),
-                        null, MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlement.claim.outside-of-region");
                 return;
             }
 
@@ -61,8 +57,7 @@ public class CmdSettlementClaim extends SettlementCommandHandler {
                 // If trying to claim in another country's region, check the claim whitelist
                 if (!region.getCountry().equals(context.settlement().getCountry())) {
                     if (!region.getCountry().getSettlementClaimWhitelist().contains(context.settlement())) {
-                        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CLAIM__HAS_COUNTRY.path()),
-                                Map.of("country", region.getCountry().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+                        United.messenger().send(context.player(), "player.settlement.claim.has-country", region.getCountry().getCleanName());
                         return;
                     }
                 }
@@ -71,9 +66,7 @@ public class CmdSettlementClaim extends SettlementCommandHandler {
 
         var claimCosts = CostUtils.getSettlementClaimCosts(context.settlement());
         if (!UnitedLandsEconomyManager.instance().has(context.settlement().getUuid(), claimCosts)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_FUNDS_SETTLEMENT.path()),
-                    Map.of("amount", UnitedLandsEconomyManager.instance().format(claimCosts)),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.no-funds-settlement", UnitedLandsEconomyManager.instance().format(claimCosts));
             return;
         }
 
@@ -96,11 +89,7 @@ public class CmdSettlementClaim extends SettlementCommandHandler {
 
         UnitedLandsEconomyManager.instance().withdraw(context.settlement().getUuid(), claimCosts, "Chunk claiming");
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__CLAIM__SUCCESS.path()),
-                Map.of("settlement", context.settlement().getCleanName(),
-                        "chunk", chunkCoords.toString(),
-                        "costs", UnitedLandsEconomyManager.instance().format(claimCosts)),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.claim.success", context.settlement().getCleanName(), chunkCoords.toString(), UnitedLandsEconomyManager.instance().format(claimCosts));
     }
 
 }

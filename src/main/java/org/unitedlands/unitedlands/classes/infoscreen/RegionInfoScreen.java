@@ -1,16 +1,13 @@
 package org.unitedlands.unitedlands.classes.infoscreen;
 
 import java.text.SimpleDateFormat;
-import java.util.Map;
-
 import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Region;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.utils.CostUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 
 public class RegionInfoScreen extends InfoScreen {
 
@@ -19,27 +16,27 @@ public class RegionInfoScreen extends InfoScreen {
         var header = buildHeader(region.getCleanName());
         addComponent("header", header);
 
-        addComponent("owner", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__OWNER.path()), Map.of("country",
-                region.getCountry() != null ? region.getCountry().getCleanName() : "-", "claimed",
-                region.getClaimedTime() != null ? new SimpleDateFormat("dd-MM-yyyy HH:mm").format(region.getClaimedTime()) : "-"));
+        addComponent("owner", "info-screens.region.owner", 
+                region.getCountry() != null ? region.getCountry().getCleanName() : "-", 
+                region.getClaimedTime() != null ? new SimpleDateFormat("dd-MM-yyyy HH:mm").format(region.getClaimedTime()) : "-");
 
         if (region.hasCountry()) {
-            addComponent("upkeep", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__COSTS.path()),
-                    Map.of("upkeep", UnitedLandsEconomyManager.instance().format(CostUtils.getRegionUpkeep(region, region.getCountry()))));
+            addComponent("upkeep", "info-screens.region.costs",
+                    UnitedLandsEconomyManager.instance().format(CostUtils.getRegionUpkeep(region, region.getCountry())));
         } else {
             var citizen = UnitedLandsDataManager.instance().getCitizen(player);
             if (citizen != null && citizen.hasCountry()) {
-                addComponent("upkeep", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__COSTS_PROJECTED.path()),
-                        Map.of("upkeep", UnitedLandsEconomyManager.instance().format(CostUtils.getRegionUpkeep(region, citizen.getCountry())),
-                                "claim-costs", UnitedLandsEconomyManager.instance().format(CostUtils.getRegionClaimCosts(citizen.getCountry(), region))));
+                addComponent("upkeep", "info-screens.region.costs-projected",
+                        UnitedLandsEconomyManager.instance().format(CostUtils.getRegionUpkeep(region, citizen.getCountry())),
+                        UnitedLandsEconomyManager.instance().format(CostUtils.getRegionClaimCosts(citizen.getCountry(), region)));
             }
         }
 
-        addComponent("administrator", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__ADMINISTRATOR.path()),
-                Map.of("citizen", region.getAdministrator() != null ? region.getAdministrator().getName() : "-"));
+        addComponent("administrator", "info-screens.region.administrator",
+                region.getAdministrator() != null ? region.getAdministrator().getName() : "-");
 
-        addComponent("area", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__AREA.path()),
-                Map.of("area", String.format("%,.0f", region.getArea())));
+        addComponent("area", "info-screens.region.area",
+                String.format("%,.0f", region.getArea()));
 
         var pvp = region.allowPvp() ? "<green>PVP</green>" : "<red>PVP</red>";
         var mobs = region.allowMonsters() ? "<green>Monsters</green>" : "<red>Monsters</red>";
@@ -47,18 +44,18 @@ public class RegionInfoScreen extends InfoScreen {
         var fire = region.allowFire() ? "<green>Fire</green>" : "<red>Fire</red>";
         var explosions = region.allowExplosions() ? "<green>Explosions</green>" : "<red>Explosions</red>";
 
-        addComponent("toggles", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__TOGGLES.path()),
-                Map.of("pvp", pvp, "mobs", mobs, "animals", animals, "fire", fire, "explosions", explosions));
+        addComponent("toggles", "info-screens.region.toggles",
+                pvp, mobs, animals, fire, explosions);
 
-        addComponent("perm1", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__PERM_1.path()),
-                Map.of("break", LocationMembership.toInfoScreenString(region.getBreakPermissions()), "place",
-                        LocationMembership.toInfoScreenString(region.getPlacePermissions()), "open",
-                        LocationMembership.toInfoScreenString(region.getContainerPermissions())));
+        addComponent("perm1", "info-screens.region.perm-1",
+                LocationMembership.toInfoScreenString(region.getBreakPermissions()),
+                LocationMembership.toInfoScreenString(region.getPlacePermissions()),
+                LocationMembership.toInfoScreenString(region.getContainerPermissions()));
 
-        addComponent("perm2", MessageProvider.instance().get(Message.INFO_SCREENS__REGION__PERM_2.path()),
-                Map.of("switch", LocationMembership.toInfoScreenString(region.getSwitchPermissions()), "use",
-                        LocationMembership.toInfoScreenString(region.getBlockUsePermissions()), "interact",
-                        LocationMembership.toInfoScreenString(region.getInteractPermissions())));
+        addComponent("perm2", "info-screens.region.perm-2",
+                LocationMembership.toInfoScreenString(region.getSwitchPermissions()), 
+                LocationMembership.toInfoScreenString(region.getBlockUsePermissions()), 
+                LocationMembership.toInfoScreenString(region.getInteractPermissions()));
 
     }
 

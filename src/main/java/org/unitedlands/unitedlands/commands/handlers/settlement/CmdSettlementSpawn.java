@@ -1,8 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -12,11 +10,10 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -51,14 +48,12 @@ public class CmdSettlementSpawn extends SettlementCommandHandler {
         } else {
             var settlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
             if (settlement == null) {
-                Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__SETTLEMENT_NOT_FOUND.path()),
-                        Map.of("settlement", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(player, "general-errors.settlement-not-found", args[0]);
                 return;
             }
 
             if (!settlement.isPublic() && !PermissionManager.instance().hasGlobalOverrides(player)) {
-                Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SPAWN__NOT_PUBLIC.path()), null,
-                        MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(sender, "player.settlement.spawn.not-public");
                 return;
             }
 
@@ -66,8 +61,7 @@ public class CmdSettlementSpawn extends SettlementCommandHandler {
         }
 
         if (targetSettlement.getSpawn() == null) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SPAWN__NO_SPAWN.path()), null,
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "player.settlement.spawn.no-spawn");
             return;
         }
 
@@ -78,8 +72,7 @@ public class CmdSettlementSpawn extends SettlementCommandHandler {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         } else {
 
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SPAWN__TP_START.path()), null,
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "player.settlement.spawn.tp-start");
 
             new BukkitRunnable() {
                 int counter = 0;
@@ -92,13 +85,11 @@ public class CmdSettlementSpawn extends SettlementCommandHandler {
                     counter++;
 
                     if (counter <= maxExecutions) {
-                        Messenger.sendMessage(sender, (maxExecutions - counter + 1) + "...", null,
-                                MessageProvider.instance().get(Message.PREFIX.path()));
+                        United.messenger().sendRaw(sender, (maxExecutions - counter + 1) + "...");
                     }
 
                     if (!player.getLocation().getBlock().getLocation().equals(startBlock)) {
-                        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SPAWN__TP_CANCEL.path()), null,
-                                MessageProvider.instance().get(Message.PREFIX.path()));
+                        United.messenger().send(sender, "player.settlement.spawn.tp-cancel");
                         this.cancel();
                     }
 
