@@ -9,9 +9,8 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.configs.GeneralConfig;
 import org.unitedlands.unitedlands.classes.configs.TitlesConfig;
-import org.unitedlands.unitedlands.classes.message.Message;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdmin.class,
@@ -26,17 +25,16 @@ public class CmdAdminReload implements UnitedCommandExecutor {
 
         GeneralConfig.get().reload();
         TitlesConfig.get().reload();
-        
+
         UnitedLands.instance().reloadConfig();
         UnitedLands.instance().getMessageConfig().reload();
         UnitedLands.instance().getPermissionConfig().reload();
-        UnitedLands.instance().getMessageProvider().reload(UnitedLands.instance().getMessageConfig().get());
         UnitedLands.instance().getPermissionManager().reloadRankPermissions();
         UnitedLands.instance().getWebServices().reloadConfig();
-        
+
         Settings.loadSettings(UnitedLands.instance().getConfig());
-        
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.RELOAD.path()), null, MessageProvider.instance().get(Message.PREFIX.path()));
+
+        United.messenger().send(sender, "reload");
     }
 
     @Override

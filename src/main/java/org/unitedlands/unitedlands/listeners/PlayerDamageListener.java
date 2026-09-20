@@ -10,13 +10,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.unitedlands.unitedlands.classes.PermissionType;
 import org.unitedlands.unitedlands.classes.events.base.PermissablePlayerDamageEvent;
 import org.unitedlands.unitedlands.classes.events.base.PermissablePlayerDamageEvent.DamageType;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Logger;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 public class PlayerDamageListener implements Listener {
 
@@ -52,8 +50,8 @@ public class PlayerDamageListener implements Listener {
 
         var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(CoordinateUtils.locationToChunkCoordinates(event.getEntity().getLocation()));
         if (settlementChunk != null) {
-            Logger.debug("SC: " + settlementChunk.getCoordinates().toCleanString());
-            Logger.debug("SC PVP: " + settlementChunk.allowPvp());
+            United.logger().debug("SC: " + settlementChunk.getCoordinates().toCleanString());
+            United.logger().debug("SC PVP: " + settlementChunk.allowPvp());
             if (!settlementChunk.allowPvp()) {
                 cancelAttack(event, attacker, DamageType.PVP);
                 return;
@@ -104,8 +102,7 @@ public class PlayerDamageListener implements Listener {
         damageEvent.callEvent();
 
         if (damageEvent.isCancelled()) {
-            Messenger.sendMessage(attacker, MessageProvider.instance().get(Message.GENERAL_ERRORS__DAMAGE_DISABLED.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(attacker, "general-errors.damage-disabled");
             event.setCancelled(true);
         }
 

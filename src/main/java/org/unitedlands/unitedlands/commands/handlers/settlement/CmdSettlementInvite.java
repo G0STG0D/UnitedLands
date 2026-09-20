@@ -10,10 +10,9 @@ import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -46,8 +45,7 @@ public class CmdSettlementInvite extends SettlementCommandHandler {
 
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found");
             return;
         }
 
@@ -57,8 +55,7 @@ public class CmdSettlementInvite extends SettlementCommandHandler {
 
         if (targetCitizen.hasSettlement())
         {
-                        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__INVITE__ALREADY_IN_SETTLEMENT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.invite.already-in-settlement");
             return;
         }
 
@@ -72,14 +69,10 @@ public class CmdSettlementInvite extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
             UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
-            Messenger.sendMessage(context.settlement().getOnlinePlayers(),
-                    MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__INVITE__PLAYER_JOINED.path()),
-                    Map.of("name", targetPlayer.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
-            Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__INVITE__PLAYER_MESSAGE.path()),
-                    Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
-
+            United.messenger().send(context.settlement().getOnlinePlayers(),"player.settlement.invite.player-joined", targetPlayer.getName());
+            United.messenger().send(targetPlayer, "player.settlement.invite.player-message", context.settlement().getCleanName());
         })
-                .setTitle(MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__INVITE__INVITE_MESSAGE.path()))
+                .setTitle("player.settlement.invite.invite-message")
                 .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
                 .setSender(context.player())
                 .setReceiver(targetPlayer)

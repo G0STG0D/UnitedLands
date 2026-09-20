@@ -23,7 +23,6 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.ChatChannelManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.utils.United;
 
 public class PlayerMovementListener implements Listener {
 

@@ -6,10 +6,9 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.RegionCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
     parent          = CmdRegion.class,
@@ -71,18 +70,13 @@ public class CmdRegionToggle extends RegionCommandHandler {
             context.region().setAllowExplosions(enable);
             break;
         default:
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__REGION__TOGGLE__UNKNOWN_TOGGLE.path()),
-                    Map.of("toggle", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.region.toggle.unknown-toggle", args[0]);
             return;
         }
 
         UnitedLandsDataManager.instance().updateRegionDbData(context.region(), false);
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__REGION__TOGGLE__SUCCESS.path()), Map.of(
-                "field", args[0],
-                "state",
-                enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>"),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.region.toggle.success", Map.of(args[0], enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>"));
     }
 
 }

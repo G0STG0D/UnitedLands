@@ -1,17 +1,14 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.country;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountry.class,
@@ -53,8 +50,7 @@ public class CmdAdminCountryDelete extends CountryAdminCommandHandler {
 
         Pl3xMapRenderer.instance().removeCountry(country);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__DELETE__SUCCESS.path()),
-                Map.of("country", country.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.country.delete.success", country.getName());
     }
 
     @Override

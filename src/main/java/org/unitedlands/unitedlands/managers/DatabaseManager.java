@@ -19,7 +19,7 @@ import org.unitedlands.unitedlands.classes.db.SchemaVersion;
 import org.unitedlands.unitedlands.classes.db.SettlementChunkService;
 import org.unitedlands.unitedlands.classes.db.SettlementService;
 import org.unitedlands.unitedlands.classes.webservices.LoginChallenge;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -86,12 +86,12 @@ public class DatabaseManager {
             hikariDataSource = new HikariDataSource(config);
             connectionSource = new DataSourceConnectionSource(hikariDataSource, jdbcUrl);
 
-            Logger.log("Connected to MySQL database with HikariCP.", "UnitedLands");
+            United.logger().info("Connected to MySQL database with HikariCP.", "UnitedLands");
 
             verifySchemaVersion();
             registerServices();
 
-            Logger.log("DatabaseManager initialized successfully.", "UnitedLands");
+            United.logger().info("DatabaseManager initialized successfully.", "UnitedLands");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -178,11 +178,11 @@ public class DatabaseManager {
         try {
             if (connectionSource != null) {
                 connectionSource.close();
-                Logger.log("Disconnected from MySQL database.", "UnitedLands");
+                United.logger().info("Disconnected from MySQL database.", "UnitedLands");
             }
             if (hikariDataSource != null) {
                 hikariDataSource.close();
-                Logger.log("HikariCP connection closed.", "UnitedLands");
+                United.logger().info("HikariCP connection closed.", "UnitedLands");
             }
         } catch (Exception e) {
             e.printStackTrace();

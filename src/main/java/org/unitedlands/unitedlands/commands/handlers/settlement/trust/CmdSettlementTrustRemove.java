@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement.trust;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -9,10 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementTrust.class,
@@ -45,8 +43,7 @@ public class CmdSettlementTrustRemove extends SettlementCommandHandler {
 
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    Map.of("name", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found", args[0]);
             return;
         }
         var targetCitizen = getCitizen(targetPlayer);
@@ -54,8 +51,7 @@ public class CmdSettlementTrustRemove extends SettlementCommandHandler {
             return;
 
         if (!context.settlement().getTrustList().contains(targetCitizen)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__REMOVETRUST__NOT_TRUSTED.path()),
-                    Map.of("citizen", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.removetrust.not-trusted", args[0]);
             return;
         }
 
@@ -63,12 +59,10 @@ public class CmdSettlementTrustRemove extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
         if (targetPlayer.isOnline()) {
-            Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__REMOVETRUST__UNTRUSTED.path()),
-                    Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(targetPlayer, "player.settlement.removetrust.untrusted", context.settlement().getCleanName());
         }
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__REMOVETRUST__SUCCESS.path()),
-                Map.of("citizen", targetPlayer.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.removetrust.success", targetPlayer.getName());
     }
 
 }

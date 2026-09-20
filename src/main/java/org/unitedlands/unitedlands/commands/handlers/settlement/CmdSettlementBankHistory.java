@@ -6,10 +6,9 @@ import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -34,14 +33,14 @@ public class CmdSettlementBankHistory extends SettlementCommandHandler {
             try {
                 startIndex = (Integer.parseInt(args[0]) - 1);
             } catch (Exception ex) {
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_NUMBER_FORMAT.path()),
-                        Map.of("input", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "general-errors.wrong-number-format",
+                        Map.of("input", args[0]));
                 return;
             }
         }
 
         var records = UnitedLandsEconomyManager.instance().getBankRecords(context.settlement().getUuid(), startIndex, PAGE_SIZE);
-        Messenger.sendMessage(sender, "<bold>" + context.settlement().getCleanName() + " Bank History:</bold>", null, MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().sendRaw(sender, "<bold>" + context.settlement().getCleanName() + " Bank History:</bold>");
         for (var record : records) {
 
             var timeStamp = "<gray>[" + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(record.getTimestamp()) + "]</gray>";
@@ -49,10 +48,8 @@ public class CmdSettlementBankHistory extends SettlementCommandHandler {
                          "<green>+"  + UnitedLandsEconomyManager.instance().format(record.getAmount()) + "<green>" :
                          "<red>"  + UnitedLandsEconomyManager.instance().format(record.getAmount()) + "<red>";
 
-            Messenger.sendMessage(sender, 
-                timeStamp + " " + amount + " <gray>(" + record.getDetails() + ")</gray>", 
-                null, 
-                MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().sendRaw(sender, 
+                timeStamp + " " + amount + " <gray>(" + record.getDetails() + ")</gray>");
         }
     }
 

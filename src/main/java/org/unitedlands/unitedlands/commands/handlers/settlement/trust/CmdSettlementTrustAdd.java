@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement.trust;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -9,10 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementTrust.class,
@@ -45,14 +43,12 @@ public class CmdSettlementTrustAdd extends SettlementCommandHandler {
 
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    Map.of("name", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found", args[0]);
             return;
         }
 
         if (context.player().equals(targetPlayer)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDTRUST__CANNOT_TRUST_YOURSELF.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.addtrust.cannot-trust-yourself");
             return;
         }
 
@@ -64,12 +60,10 @@ public class CmdSettlementTrustAdd extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
         if (targetPlayer.isOnline()) {
-            Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDTRUST__TRUSTED.path()),
-                    Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(targetPlayer, "player.settlement.addtrust.trusted", context.settlement().getCleanName());
         }
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__ADDTRUST__SUCCESS.path()),
-                Map.of("citizen", targetPlayer.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.addtrust.success", targetPlayer.getName());
     }
 
 }

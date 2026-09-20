@@ -2,24 +2,21 @@ package org.unitedlands.unitedlands.commands.handlers.country;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
-    parent          = CmdCountry.class,
-    name            = "deposit",
-    description     = "Deposits money in the country bank account",
-    usage           = "/country deposit <amount>",
-    playerOnly      = true
+        parent = CmdCountry.class,
+        name = "deposit",
+        description = "Deposits money in the country bank account",
+        usage = "/country deposit <amount>",
+        playerOnly = true
 )
 public class CmdCountryDeposit extends CountryCommandHandler {
 
@@ -39,8 +36,7 @@ public class CmdCountryDeposit extends CountryCommandHandler {
         var player = (Player) sender;
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null || citizen.getCountry() == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NOT_IN_COUNTRY.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.not-in-country");
             return;
         }
 
@@ -50,23 +46,19 @@ public class CmdCountryDeposit extends CountryCommandHandler {
         try {
             amount = new BigDecimal(args[0]);
         } catch (Exception ex) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_NUMBER_FORMAT.path()),
-                    Map.of("input", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.wrong-number-format", args[1]);
             return;
         }
 
         if (!UnitedLandsEconomyManager.instance().has(player.getUniqueId(), amount)) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_FUNDS_PLAYER.path()),
-                    Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.no-funds-player", UnitedLandsEconomyManager.instance().format(amount));
             return;
         }
 
         UnitedLandsEconomyManager.instance().withdraw(player.getUniqueId(), amount, "Deposit to " + country.getName());
         UnitedLandsEconomyManager.instance().deposit(country.getUuid(), amount, "Deposit by " + player.getName());
 
-        Messenger.sendMessage(player, MessageProvider.instance().get(Message.PLAYER__COUNTRY__DEPOSIT__SUCCESS.path()),
-                Map.of("amount", UnitedLandsEconomyManager.instance().format(amount)),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(player, "player.country.deposit.success", UnitedLandsEconomyManager.instance().format(amount));
     }
 
 }

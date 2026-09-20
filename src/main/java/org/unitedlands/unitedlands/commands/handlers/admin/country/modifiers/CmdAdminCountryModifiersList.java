@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountryModifiers.class,
@@ -33,14 +33,14 @@ public class CmdAdminCountryModifiersList extends CountryAdminCommandHandler {
             return;
         }
 
-        Messenger.sendMessage(sender, "<aqua><bold>" + country.getCleanName() + " Modifiers</bold></aqua>");
+        United.messenger().sendRaw(sender, "<aqua><bold>" + country.getCleanName() + " Modifiers</bold></aqua>");
 
         var modifiers = country.getAttributeModifiers();
         for (var mod : modifiers) {
             String entry = "<bold>" + mod.getAttributeKey() + "</bold> - Modifier key: " + mod.getModifierKey() + " | Mode: " + mod.getMode() +
                     " | Value modifier: " + mod.getValueModifier() + " | Max value modifier: " + mod.getMaxValueModifier() + " | Min value modifier: "
                     + mod.getMinValueModifier() + " | Daily change modifier: " + mod.getDailyChangeModifier();
-            Messenger.sendMessage(sender, entry);
+            United.messenger().sendRaw(sender, entry);
         }
     }
 

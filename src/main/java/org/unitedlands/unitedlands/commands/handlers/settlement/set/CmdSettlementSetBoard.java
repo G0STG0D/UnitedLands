@@ -5,10 +5,9 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementSet.class,
@@ -35,16 +34,15 @@ public class CmdSettlementSetBoard extends SettlementCommandHandler {
         String message = "";
         if (args[0].equalsIgnoreCase("EMPTY")) {
             context.settlement().setTownBoard(null);
-            message = MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETBOARD__CLEARED.path());
+            message = "player.settlement.setboard.cleared";
         } else {
             context.settlement().setTownBoard(String.join(" ", args));
-            message = MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETBOARD__SUCCESS.path());
+            message = "player.settlement.setboard.success";
         }
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
-        Messenger.sendMessage(context.player(), message,
-                null, MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), message);
     }
 
     @Override

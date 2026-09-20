@@ -8,12 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
     parent          = CmdSettlement.class,
@@ -37,8 +36,7 @@ public class CmdSettlementDelete extends SettlementCommandHandler {
             return;
         
         if (context.settlement().hasCountry() && context.settlement().getCountry().getCapital().equals(context.settlement())) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__DELETE__IS_CAPITAL.path()), null,
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.delete.is-capital");
             return;
         }
 
@@ -68,11 +66,9 @@ public class CmdSettlementDelete extends SettlementCommandHandler {
 
             Pl3xMapRenderer.instance().removeSettlement(context.settlement());
 
-            Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__DELETE__BROADCAST_MESSAGE.path()),
-                    Map.of("settlement", context.settlement().getCleanName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(Bukkit.getServer(), "player.settlement.delete.broadcast-message", context.settlement().getCleanName());
         })
-                .setTitle(MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__DELETE__CONFIRM.path()))
+                .setTitle("player.settlement.delete.CONFIRM")
                 .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
                 .setSender(context.player())
                 .setReceiver(context.player())

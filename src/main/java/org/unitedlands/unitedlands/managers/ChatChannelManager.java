@@ -13,11 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.ChatChannel;
 import org.unitedlands.unitedlands.classes.Citizen;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.integrations.papi.PlaceholderAPIIntegration;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Logger;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -43,15 +41,13 @@ public class ChatChannelManager {
     }
 
     private final UnitedLands plugin;
-    private final MessageProvider messageProvider;
 
     private Set<Citizen> viewers = new HashSet<>();
     private Map<UUID, ChatChannel> playerChannels = new HashMap<>();
 
-    public ChatChannelManager(UnitedLands plugin, MessageProvider messageProvider) {
+    public ChatChannelManager(UnitedLands plugin) {
         instance = this;
         this.plugin = plugin;
-        this.messageProvider = messageProvider;
 
         registerCommands();
     }
@@ -136,21 +132,18 @@ public class ChatChannelManager {
         switch (channel) {
         case COUNTRY:
             if (!senderViewer.hasCountry()) {
-                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NOT_IN_COUNTRY.path()), null,
-                        messageProvider.get(Message.PREFIX.path()));
+                United.messenger().send(player, "general-errors.not-in-country");
                 return;
             }
             break;
         case SETTLEMENT:
             if (!senderViewer.hasSettlement()) {
-                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NOT_IN_SETTLEMENT.path()), null,
-                        messageProvider.get(Message.PREFIX.path()));
+                United.messenger().send(player, "general-errors.not-in-settlement");
                 return;
             }
         case STAFF:
             if (!player.hasPermission("united.lands.admin")) {
-                Messenger.sendMessage(player, messageProvider.get(Message.GENERAL_ERRORS__NO_PERMISSION.path()), null,
-                        messageProvider.get(Message.PREFIX.path()));
+                United.messenger().send(player, "general-errors.no-permission");
                 return;
             }
         default:
@@ -159,7 +152,7 @@ public class ChatChannelManager {
         }
 
         playerChannels.put(player.getUniqueId(), channel);
-        Messenger.sendMessage(player, "Now talking in <" + channel.getColor() + ">" + channel + "</" + channel.getColor() + ">");
+        United.messenger().sendRaw(player, "Now talking in <" + channel.getColor() + ">" + channel + "</" + channel.getColor() + ">");
     }
 
     public ChatChannel getPlayerChannel(Player player) {
@@ -170,7 +163,7 @@ public class ChatChannelManager {
 
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Logger.logError("Could not add player " + player.getName() + " to chat because citizen data is missing.", "UnitedLands");
+            United.logger().error("Could not add player " + player.getName() + " to chat because citizen data is missing.", "UnitedLands");
             return;
         }
         viewers.add(citizen);
@@ -193,7 +186,7 @@ public class ChatChannelManager {
         List<Player> receivers = filterViewers(senderViewer, channel);
 
         if (receivers.size() <= 1) {
-            Messenger.sendMessage(player, "<dark_gray>No one can hear you.</dark_gray>");
+            United.messenger().sendRaw(player, "<dark_gray>No one can hear you.</dark_gray>");
         }
 
         var color = channel.getColor();
@@ -237,7 +230,7 @@ public class ChatChannelManager {
         event.viewers().addAll(receivers);
 
         if (receivers.size() <= 1) {
-            Messenger.sendMessage(event.getPlayer(), "<dark_gray>No one can hear you.</dark_gray>");
+            United.messenger().sendRaw(event.getPlayer(), "<dark_gray>No one can hear you.</dark_gray>");
         }
 
         var text = PlainTextComponentSerializer.plainText().serialize(event.message());

@@ -1,17 +1,15 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.country;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountrySettlement.class,
@@ -41,9 +39,8 @@ public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler 
         }
 
         if (!settlement.hasCountry() || !country.equals(settlement.getCountry())) {
-            Messenger.sendMessage(sender,
-                    MessageProvider.instance().get(Message.ADMIN__COUNTRY__REMOVESETTLEMENT__NOT_IN_COUNTRY.path()),
-                    Map.of("settlement", settlement.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender,
+                    "admin.country.removesettlement.not-in-country", settlement.getName());
             return;
         }
 
@@ -53,9 +50,7 @@ public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler 
 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__REMOVESETTLEMENT__SUCCESS.path()),
-                Map.of("country", country.getName(), "settlement", settlement.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.country.removesettlement.success", country.getName(), settlement.getName());
     }
 
     @Override

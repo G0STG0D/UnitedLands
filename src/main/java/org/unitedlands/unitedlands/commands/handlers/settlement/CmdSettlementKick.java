@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -11,10 +10,9 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -54,14 +52,12 @@ public class CmdSettlementKick extends SettlementCommandHandler {
 
         var targetPlayer = Bukkit.getPlayerExact(args[0]);
         if (targetPlayer == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__PLAYER_NOT_FOUND.path()),
-                    Map.of("citizen", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.player-not-found", args[0]);
             return;
         }
 
         if (context.player().equals(targetPlayer)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__KICK__CANNOT_KICK_YOURSELF.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.kick.cannot-kick-yourself");
             return;
         }
 
@@ -70,14 +66,12 @@ public class CmdSettlementKick extends SettlementCommandHandler {
             return;
 
         if (!context.settlement().getCitizens().contains(targetCitizen)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__KICK__NOT_IN_SETTLEMENT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.kick.not-in-settlement");
             return;
         }
 
         if (targetCitizen.hasCountryRank("leader")) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__KICK__IS_LEADER.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.kick.is-leader");
             return;
         }
 
@@ -90,12 +84,10 @@ public class CmdSettlementKick extends SettlementCommandHandler {
         UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
         if (targetPlayer.isOnline()) {
-            Messenger.sendMessage(targetPlayer, MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__KICK__KICKED.path()),
-                    Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(targetPlayer, "player.settlement.kick.kicked", context.settlement().getCleanName());
         }
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__KICK__SUCCESS.path()),
-                Map.of("citizen", targetPlayer.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.kick.success", targetPlayer.getName());
     }
 
 }

@@ -1,27 +1,24 @@
 package org.unitedlands.unitedlands.commands.handlers.region.set;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.RegionCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
-    parent          = CmdRegionSet.class,
-    name            = "administrator",
-    description     = "Sets the administratator of a region",
-    usage           = "/region set administrator <citizen_name>",
-    playerOnly      = true
+        parent = CmdRegionSet.class,
+        name = "administrator",
+        description = "Sets the administratator of a region",
+        usage = "/region set administrator <citizen_name>",
+        playerOnly = true
 )
 public class CmdRegionSetAdministrator extends RegionCommandHandler {
-    
+
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
         if (args.length == 1) {
@@ -42,15 +39,13 @@ public class CmdRegionSetAdministrator extends RegionCommandHandler {
 
         var targetCitizen = UnitedLandsDataManager.instance().getCitizen(args[0]);
         if (targetCitizen == null) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__CITIZEN_NOT_FOUND.path()),
-                    Map.of("citizen", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.citizen-not-found", args[0]);
             return;
         }
 
         context.region().setAdministrator(targetCitizen);
         UnitedLandsDataManager.instance().updateRegionDbData(context.region(), true);
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__REGION__SETADMINISTRATOR__SUCCESS.path()),
-                Map.of("citizen", args[0], "region", context.region().getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.region.setadministrator.success", args[0], context.region().getName());
 
     }
 

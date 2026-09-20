@@ -5,11 +5,10 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementSet.class,
@@ -29,8 +28,7 @@ public class CmdSettlementSetSpawn extends SettlementCommandHandler {
 
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(context.player().getLocation());
         if (!context.settlement().hasChunkAtCoordinates(chunkCoordinates)) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETSPAWN__NOT_IN_CLAIMS.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.setspawn.not-in-claims");
             return;
         }
 
@@ -38,8 +36,7 @@ public class CmdSettlementSetSpawn extends SettlementCommandHandler {
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETSPAWN__SUCCESS.path()),
-                null, MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.setspawn.success");
     }
 
     @Override

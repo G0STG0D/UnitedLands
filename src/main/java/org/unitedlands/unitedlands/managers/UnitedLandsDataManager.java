@@ -26,7 +26,7 @@ import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class UnitedLandsDataManager {
 
@@ -76,7 +76,7 @@ public class UnitedLandsDataManager {
                     buildSettlements(settlementFuture.get(), settlementChunkFuture.get());
                     buildCitizens(citizenFuture.get());
                 } catch (Exception ex) {
-                    Logger.logError("GeopolObject building failed: " + ex.getMessage(), "UnitedLands");
+                    United.logger().error("GeopolObject building failed: " + ex.getMessage(), "UnitedLands");
                     throw new RuntimeException("App init failed", ex);
                 }
 
@@ -90,7 +90,7 @@ public class UnitedLandsDataManager {
             Pl3xMapRenderer.instance().addCountriesToRenderQueue(getCountries());
 
         } catch (Exception ex) {
-            Logger.logError("Initialization failed: " + ex.getMessage(), "UnitedLands");
+            United.logger().error("Initialization failed: " + ex.getMessage(), "UnitedLands");
             throw new RuntimeException("App init failed", ex);
         }
 
@@ -100,7 +100,7 @@ public class UnitedLandsDataManager {
         for (Citizen citizen : loadedCitizens) {
             citizens.put(citizen.getUuid(), citizen);
         }
-        Logger.log("Loaded " + loadedCitizens.size() + " citizens to memory.", "UnitedLands");
+        United.logger().info("Loaded " + loadedCitizens.size() + " citizens to memory.", "UnitedLands");
     }
 
     public void buildSettlements(List<Settlement> loadedSettlements, List<SettlementChunk> loadedSettlementChunks) {
@@ -114,13 +114,13 @@ public class UnitedLandsDataManager {
                 settlement.getCountry().addSettlement(settlement);
             }
         }
-        Logger.log("Loaded " + loadedSettlements.size() + " settlements to memory.", "UnitedLands");
+        United.logger().info("Loaded " + loadedSettlements.size() + " settlements to memory.", "UnitedLands");
 
         for (var settlementChunk : loadedSettlementChunks) {
             settlementChunks.put(settlementChunk.getCoordinates(), settlementChunk);
             settlements.get(settlementChunk.getSettlementUuid()).addChunk(settlementChunk);
         }
-        Logger.log("Loaded " + loadedSettlementChunks.size() + " settlement chunks to memory.", "UnitedLands");
+        United.logger().info("Loaded " + loadedSettlementChunks.size() + " settlement chunks to memory.", "UnitedLands");
     }
 
     public void buildRegions(List<Region> loadedRegions) {
@@ -137,7 +137,7 @@ public class UnitedLandsDataManager {
 
         buildRegionIndex();
 
-        Logger.log("Loaded " + regions.size() + " regions to memory.", "UnitedLands");
+        United.logger().info("Loaded " + regions.size() + " regions to memory.", "UnitedLands");
     }
 
     public void buildRegionIndex() {
@@ -149,7 +149,7 @@ public class UnitedLandsDataManager {
         var worldZMin = Settings.importOffsetY * -1d;
         var worldZMax = Settings.importOffsetY;
 
-        Logger.log("Using world bounds " + worldXMin + " | " + worldZMin + " - " + worldXMax + " | " + worldZMax, "UnitedLands");
+        United.logger().info("Using world bounds " + worldXMin + " | " + worldZMin + " - " + worldXMax + " | " + worldZMax, "UnitedLands");
 
         regionIndex.build(regions.values(), worldXMin, worldZMin, worldXMax, worldZMax);
     }
@@ -158,7 +158,7 @@ public class UnitedLandsDataManager {
         for (var country : loadedCountries) {
             countries.put(country.getUuid(), country);
         }
-        Logger.log("Loaded " + countries.size() + " countries to memory.", "UnitedLands");
+        United.logger().info("Loaded " + countries.size() + " countries to memory.", "UnitedLands");
     }
 
     private void validateGeopolAttributes() {
@@ -528,7 +528,7 @@ public class UnitedLandsDataManager {
         try {
             return databaseManager.getBankRecordService().getRecordsAsync(objectId, page, pageSize).get();
         } catch (Exception ex) {
-            Logger.logError("Could not retrieve bank records for object " + objectId, "UnitedLands");
+            United.logger().error("Could not retrieve bank records for object " + objectId, "UnitedLands");
             return new ArrayList<>();
         }
     }

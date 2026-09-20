@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
@@ -9,10 +8,9 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementCitizen.class,
@@ -42,8 +40,7 @@ public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandl
         }
 
         if (citizen.getSettlement() == null || !citizen.getSettlement().equals(settlement)) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__CITIZEN_NOT_IN_SETTLEMENT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.settlement.citizen-not-in-settlement");
             return;
         }
 
@@ -58,8 +55,7 @@ public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandl
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__REMOVECITIZEN__SUCCESS.path()),
-                Map.of("settlement", args[0], "name", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.settlement.removecitizen.success", args[0], args[1]);
     }
 
     @Override

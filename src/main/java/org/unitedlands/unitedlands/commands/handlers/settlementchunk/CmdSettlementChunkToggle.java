@@ -1,15 +1,12 @@
 package org.unitedlands.unitedlands.commands.handlers.settlementchunk;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementChunk.class,
@@ -72,18 +69,13 @@ public class CmdSettlementChunkToggle extends SettlementChunkCommandHandler {
                 context.settlementChunk().setAllowExplosions(enable);
                 break;
             default:
-                Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__TOGGLE__UNKNOWN_TOGGLE.path()),
-                        Map.of("toggle", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(context.player(), "player.settlement.toggle.unknown-toggle", args[0]);
                 return;
         }
 
         UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENTCHUNK__TOGGLE__SUCCESS.path()), Map.of(
-                "field", args[0],
-                "state",
-                enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>"),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlementchunk.toggle.success", args[0], enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>");
     }
 
 }

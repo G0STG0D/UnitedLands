@@ -8,10 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -36,20 +35,17 @@ public class CmdSettlementJoinCountry extends SettlementCommandHandler {
             return;
         
         if (context.settlement().hasCountry()) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__JOINCOUNTRY__ALREADY_IN_COUNTRY.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.joincountry.already-in-country");
             return;
         }
         if (!context.settlement().hasRegion()) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__JOINCOUNTRY__NO_REGION.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.joincountry.no-region");
             return;
         }
 
         var region = context.settlement().getRegion();
         if (!region.hasCountry()) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__JOINCOUNTRY__NO_COUNTRY.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.joincountry.no-country");
             return;
         }
 
@@ -63,11 +59,9 @@ public class CmdSettlementJoinCountry extends SettlementCommandHandler {
 
             UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
-            Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__JOINCOUNTRY__BROADCAST_MESSAGE.path()),
-                    Map.of("settlement", context.settlement().getCleanName(), "country", country.getCleanName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(Bukkit.getServer(), "player.settlement.joincountry.broadcast-message", context.settlement().getCleanName(), country.getCleanName());
         })
-                .setTitle(MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__JOINCOUNTRY__CONFIRM.path()))
+                .setTitle("player.settlement.joincountry.confirm")
                 .setReplacements(Map.of("country", country.getCleanName()))
                 .setSender(context.player())
                 .setReceiver(context.player())

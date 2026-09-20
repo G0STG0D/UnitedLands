@@ -28,6 +28,7 @@ import net.kyori.adventure.bossbar.BossBar.Overlay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+
 public class DisplayManager {
 
     private static DisplayManager instance;

@@ -1,12 +1,7 @@
 package org.unitedlands.unitedlands.classes.infoscreen;
 
 import java.util.LinkedList;
-import java.util.Map;
-
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.unitedlands.unitedlands.UnitedLands;
-import org.unitedlands.unitedlands.classes.message.Message;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -24,18 +19,17 @@ public abstract class InfoScreen {
         components.add(new InfoScreenComponent(id, content));
     }
 
-    public void addComponent(String id, String content, Map<String, String> replacements) {
-        components.add(new InfoScreenComponent(id, Messenger.getMessage(content, replacements)));
-    }
-
     public void addComponent(int index, String id, Component content) {
         components.add(index, new InfoScreenComponent(id, content));
     }
 
-    public void addComponent(int index, String id, String content, Map<String, String> replacements) {
-        components.add(index, new InfoScreenComponent(id, Messenger.getMessage(content, replacements)));
+    public void addComponent(String id, String path, Object... values) {
+        components.add(new InfoScreenComponent(id, MiniMessage.miniMessage().deserialize(United.messenger().get(path, values))));
     }
 
+    public void addComponent(int index, String id, String path, Object... values) {
+        components.add(index, new InfoScreenComponent(id, MiniMessage.miniMessage().deserialize(United.messenger().get(path, values))));
+    }
 
     public void addComponent(String afterKey, String id, Component content) {
         int index = 0;
@@ -65,28 +59,24 @@ public abstract class InfoScreen {
         var components = getComponents();
         if (components != null && !components.isEmpty()) {
             for (var component : components) {
-                Messenger.send(receiver, component.getContent());
+                United.messenger().send(receiver, component.getContent());
             }
         }
     }
 
     public Component buildHeader(String name) {
-        return buildHeader(name, UnitedLands.instance().getMessageConfig().get());
-    }
-
-    public Component buildHeader(String name, YamlConfiguration messageConfig) {
 
         var header = "";
 
-        var maxWidth = messageConfig.getInt(Message.INFO_SCREENS__HEADER__MAX_CHARS.path());
+        var maxWidth = 55;
 
-        var fillerStart = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER_START.path());
-        var filler = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER.path());
-        var fillerEnd = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER_END.path());
-        var fillerColor = messageConfig.getString(Message.INFO_SCREENS__HEADER__FILLER_COLOR.path());
-        var titleColor = messageConfig.getString(Message.INFO_SCREENS__HEADER__TITLE_COLOR.path());
-        var titleStart = messageConfig.getString(Message.INFO_SCREENS__HEADER__TITLE_START.path());
-        var titleEnd = messageConfig.getString(Message.INFO_SCREENS__HEADER__TITLE_END.path());
+        var fillerStart = United.messenger().get("info-screens.header.filler-start");
+        var filler = United.messenger().get("info-screens.header.filler");
+        var fillerEnd = United.messenger().get("info-screens.header.filler-end");
+        var fillerColor = United.messenger().get("info-screens.header.filler-color");
+        var titleColor = United.messenger().get("info-screens.header.title-color");
+        var titleStart = United.messenger().get("info-screens.header.title-start");
+        var titleEnd = United.messenger().get("info-screens.header.title-end");
 
         var nameLength = name.length();
         var fillerStartLength = fillerStart.length();

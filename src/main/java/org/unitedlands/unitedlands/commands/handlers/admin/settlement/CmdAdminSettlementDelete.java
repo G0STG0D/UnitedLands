@@ -1,18 +1,15 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlement.class,
@@ -45,8 +42,7 @@ public class CmdAdminSettlementDelete extends SettlementAdminCommandHandler {
             var country = settlement.getCountry();
 
             if (country.getCapital().equals(settlement)) {
-                Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__DELETE__IS_CAPITAL.path()),
-                        null, MessageProvider.instance().get(Message.PREFIX.path()));
+                United.messenger().send(Bukkit.getServer(), "admin.settlement.delete.is-capital");
                 return;
             }
 
@@ -66,9 +62,7 @@ public class CmdAdminSettlementDelete extends SettlementAdminCommandHandler {
 
         Pl3xMapRenderer.instance().removeSettlement(settlement);
 
-        Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__DELETE__SUCCESS.path()),
-                Map.of("settlement", settlement.getCleanName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(Bukkit.getServer(), "admin.settlement.delete.success", settlement.getCleanName());
     }
 
     @Override

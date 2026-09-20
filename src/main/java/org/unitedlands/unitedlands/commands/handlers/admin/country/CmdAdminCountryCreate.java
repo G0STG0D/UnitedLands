@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.country;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,10 +8,9 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountry.class,
@@ -45,14 +43,12 @@ public class CmdAdminCountryCreate extends CountryAdminCommandHandler {
         var region = settlement.getRegion();
 
         if (region == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__COUNTRY__CREATE__NO_REGION.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.country.create.no-region");
             return;
         }
 
         if (region.getCountry() != null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__COUNTRY__CREATE__REGION_OCCUPIED.path()),
-                    Map.of("country", region.getCountry().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.country.create.region-occupied", region.getCountry().getCleanName());
             return;
         }
 
@@ -76,9 +72,7 @@ public class CmdAdminCountryCreate extends CountryAdminCommandHandler {
         UnitedLandsDataManager.instance().updateRegionDbData(region, true);
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
-        Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__COUNTRY__CREATE__SUCCESS.path()),
-                Map.of("country", country.getCleanName(), "settlement", settlement.getName(), "region", region.getName()),
-                MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(player, "admin.country.create.success", country.getCleanName(), settlement.getName(), region.getName());
 
     }
 

@@ -1,14 +1,11 @@
 package org.unitedlands.unitedlands.commands.handlers.country.set;
 
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
     parent          = CmdCountrySet.class,
@@ -35,8 +32,7 @@ public class CmdCountrySetName extends CountryCommandHandler {
 
         UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__SETNAME__SUCCESS.path()),
-                Map.of("country", context.country().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.country.setname.success", context.country().getCleanName());
     }
 
 }

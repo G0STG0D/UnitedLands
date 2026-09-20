@@ -1,18 +1,16 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.country;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.PermissionManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountryRank.class,
@@ -58,23 +56,19 @@ public class CmdAdminCountryRankRemove extends CountryAdminCommandHandler {
         }
 
         if (!citizen.hasCountry() || !country.equals(citizen.getCountry())) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__CITZEN_NOT_IN_COUNTRY.path()),
-                    Map.of("citizen", citizen.getName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.country..citizen-not-in-country", citizen.getName());
             return;
         }
 
         if (!PermissionManager.instance().getCountryRanks().contains(args[2])) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__UNKNOWN_RANK.path()), Map.of("rank", args[2]),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.country.unknown-rank", args[2]);
             return;
         }
 
         citizen.removeCountryRank(args[2]);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__REMOVERANK__SUCCESS.path()),
-                Map.of("rank", args[2], "citizen", citizen.getName(), "country", country.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.country.removerank.success", args[2], citizen.getName(), country.getName());
 
     }
 

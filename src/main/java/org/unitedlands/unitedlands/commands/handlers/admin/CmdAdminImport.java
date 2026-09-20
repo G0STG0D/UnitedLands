@@ -16,14 +16,14 @@ import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.unitedlands.utils.PolygonUtils;
 import org.unitedlands.unitedlands.utils.SvgUtils;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdmin.class,
         name = "import",
         description = "Admin regions import",
         usage = "/ula import <world> <filename>",
-        catchAll = true 
+        catchAll = true
 )
 public class CmdAdminImport implements UnitedCommandExecutor {
 
@@ -50,7 +50,7 @@ public class CmdAdminImport implements UnitedCommandExecutor {
         File importFolder = new File(UnitedLands.instance().getDataFolder(), "import");
         File imageFile = new File(importFolder, file + ".svg");
         if (!imageFile.exists()) {
-            Logger.logError("Image not found: " + file, "UnitedLands");
+            United.logger().error("Image not found: " + file, "UnitedLands");
             return;
         }
 
@@ -66,23 +66,23 @@ public class CmdAdminImport implements UnitedCommandExecutor {
 
                 var region = UnitedLandsDataManager.instance().getRegion(entry.getKey());
                 if (region == null) {
-                    Logger.log("Region " + entry.getKey() + " not found, creating...");
+                    United.logger().info("Region " + entry.getKey() + " not found, creating...");
                     create = true;
                     region = new Region();
                     region.setUuid(UUID.randomUUID());
                     region.setName(entry.getKey());
                     region.setDefaultName(entry.getKey());
                 } else {
-                    Logger.log("Region " + entry.getKey() + " found, updating default name and polygon...");
+                    United.logger().info("Region " + entry.getKey() + " found, updating default name and polygon...");
                     region.setDefaultName(entry.getKey());
                 }
 
                 var val = entry.getValue();
                 region.setPolygon(val.vertices);
                 region.setArea(PolygonUtils.area(val.vertices));
-                
+
                 var center = PolygonUtils.calculatePolygonCenter(val.vertices);
-                region.setHomeChunkCoordinates(new Coordinates((int)center[0] >> 4, (int)center[1] >> 4, worldName));
+                region.setHomeChunkCoordinates(new Coordinates((int) center[0] >> 4, (int) center[1] >> 4, worldName));
 
                 if (val.color != null) {
                     region.setDebugStrokeColor(ColorUtils.hexToColor(val.color).getRGB());
@@ -92,11 +92,11 @@ public class CmdAdminImport implements UnitedCommandExecutor {
 
                 if (create) {
                     UnitedLandsDataManager.instance().createRegionDbData(region);
-                    Logger.log("Registered new region " + region.getName() + " (" + counter + "/" +
+                    United.logger().info("Registered new region " + region.getName() + " (" + counter + "/" +
                             parsed.size() + ")");
                 } else {
                     UnitedLandsDataManager.instance().updateRegionDbData(region, true);
-                    Logger.log("Updated region " + region.getName() + " (" + counter + "/" +
+                    United.logger().info("Updated region " + region.getName() + " (" + counter + "/" +
                             parsed.size() + ")");
                 }
 
@@ -106,7 +106,7 @@ public class CmdAdminImport implements UnitedCommandExecutor {
             UnitedLandsDataManager.instance().buildRegionIndex();
 
         } catch (Exception ex) {
-            Logger.logError("Error parsing " + file + ": " + ex.getMessage(), "UnitedLands");
+            United.logger().warning("Error parsing " + file + ": " + ex.getMessage(), "UnitedLands");
             ex.printStackTrace();
             return;
         }

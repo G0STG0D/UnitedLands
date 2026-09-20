@@ -10,7 +10,7 @@ import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.BankRecord;
 import org.unitedlands.unitedlands.integrations.economy.IEconomyProvider;
 import org.unitedlands.unitedlands.integrations.economy.VaultEconomyProvider;
-import org.unitedlands.utils.Logger;
+import org.unitedlands.utils.United;
 
 public class UnitedLandsEconomyManager {
 
@@ -37,10 +37,10 @@ public class UnitedLandsEconomyManager {
         if (plugin.getServer().getPluginManager().getPlugin("Vault") != null) {
             try {
                 economyProvider = new VaultEconomyProvider(plugin);
-                Logger.log("Found Vault, enabling economy...", "UnitedLands");
+                United.logger().info("Found Vault, enabling economy...", "UnitedLands");
             } catch (InternalException ex) {
                 economyProvider = null;
-                Logger.logError("Error creating Vault economy provider.", "UnitedLands");
+                United.logger().error("Error creating Vault economy provider.", "UnitedLands");
             }
         }
     }
@@ -134,7 +134,7 @@ public class UnitedLandsEconomyManager {
         try {
             UnitedLandsDataManager.instance().createBankRecordDbData(record);
         } catch (Exception ex) {
-            Logger.logError("Failed to create bank record: " + ex.getMessage(), "UnitedLands");
+            United.logger().error("Failed to create bank record: " + ex.getMessage(), "UnitedLands");
         }
     }
 
@@ -142,7 +142,7 @@ public class UnitedLandsEconomyManager {
         try {
             return UnitedLandsDataManager.instance().getBankRecords(objectId, startIndex, count);
         } catch (Exception ex) {
-            Logger.logError("Failed to bank records: " + ex.getMessage(), "UnitedLands");
+            United.logger().error("Failed to bank records: " + ex.getMessage(), "UnitedLands");
         }
         return new ArrayList<>();
     }

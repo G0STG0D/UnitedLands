@@ -7,10 +7,9 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlement.class,
@@ -34,14 +33,12 @@ public class CmdSettlementLeave extends SettlementCommandHandler {
             return;
         
         if (context.citizen().hasSettlementRank("mayor")) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__LEAVE__IS_MAYOR.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.leave.is_mayor");
             return;
         }
 
         if (context.citizen().hasCountryRank("leader")) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__LEAVE__IS_LEADER.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "player.settlement.leave.is-leader");
             return;
         }
 
@@ -57,13 +54,11 @@ public class CmdSettlementLeave extends SettlementCommandHandler {
             UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
             UnitedLandsDataManager.instance().updateCitizenDbData(context.citizen());
 
-            Messenger.sendMessage(context.settlement().getOnlinePlayers(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__PLAYER_LEFT.path()),
-                    Map.of("name", context.player().getName()), MessageProvider.instance().get(Message.PREFIX.path()));
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__LEAVE__SETTLEMENT_LEFT.path()),
-                    Map.of("settlement", context.settlement().getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.settlement().getOnlinePlayers(), "player.settlement.player-left", context.player().getName());
+            United.messenger().send(context.player(), "player.settlement.leave.settlement-left", context.settlement().getCleanName());
 
         })
-                .setTitle(MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__LEAVE__CONFIRM.path()))
+                .setTitle("player.settlement.leave.confirm")
                 .setReplacements(Map.of("settlement", context.settlement().getCleanName()))
                 .setSender(context.player())
                 .setReceiver(context.player())

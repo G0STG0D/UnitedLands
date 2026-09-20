@@ -1,26 +1,23 @@
 package org.unitedlands.unitedlands.commands.handlers.country;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.integrations.Pl3xMap.Pl3xMapRenderer;
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
-    parent          = CmdCountry.class,
-    name            = "delete",
-    description     = "Deletes a country",
-    usage           = "/country delete",
-    playerOnly      = true
+        parent = CmdCountry.class,
+        name = "delete",
+        description = "Deletes a country",
+        usage = "/country delete",
+        playerOnly = true
 )
 public class CmdCountryDelete extends CountryCommandHandler {
 
@@ -61,9 +58,7 @@ public class CmdCountryDelete extends CountryCommandHandler {
 
             Pl3xMapRenderer.instance().removeCountry(context.country());
 
-            Messenger.sendMessage(Bukkit.getServer(), MessageProvider.instance().get(Message.PLAYER__COUNTRY__DELETE__BROADCAST_MESSAGE.path()),
-                    Map.of("country", context.country().getCleanName()),
-                    MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(Bukkit.getServer(), "player.country.delete.broadcast-message", context.country().getCleanName());
 
         })
                 .setTitle("<red>Are you sure you want to delete <green>" + context.country().getCleanName()

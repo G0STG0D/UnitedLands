@@ -10,13 +10,12 @@ import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.unitedlands.managers.PlayerCacheManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 public class SettlementChunkCommandHandler implements UnitedCommandExecutor {
 
@@ -39,8 +38,7 @@ public class SettlementChunkCommandHandler implements UnitedCommandExecutor {
         var player = (Player) sender;
         
         if (!Settings.worlds.contains(player.getLocation().getWorld().getName())) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_WORLD.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.wrong-world");
             return null;
         }
         
@@ -61,8 +59,7 @@ public class SettlementChunkCommandHandler implements UnitedCommandExecutor {
     protected Citizen getCitizen(Player player) {
         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
         if (citizen == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_CITIZEN_DATA.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.no-citizen-data");
             return null;
         }
         return citizen;
@@ -72,8 +69,7 @@ public class SettlementChunkCommandHandler implements UnitedCommandExecutor {
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
         var settlementChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoordinates);
         if (settlementChunk == null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NOT_IN_CLAIM.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.not-in-claim");
             return null;
         }
         return settlementChunk;
@@ -81,13 +77,12 @@ public class SettlementChunkCommandHandler implements UnitedCommandExecutor {
 
     protected boolean hasPermission(String permission, Citizen citizen, SettlementChunk settlementChunk) {
         if (!settlementChunk.getSettlement().equals(citizen.getSettlement())) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_CLAIM_PERMISSION.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send((Player) citizen.getPlayer(), "general-errors.no-claim-permission");
             return false;
         }
         if (!PermissionManager.instance().hasRankPermission(permission, citizen)) {
-            Messenger.sendMessage((Player) citizen.getPlayer(), MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_SETTLEMENT_PERMISSION.path()),
-                    Map.of("perm", permission), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send((Player) citizen.getPlayer(), "general-errors.no-settlement-permission",
+                    Map.of("perm", permission));
             return false;
         }
         return true;
@@ -101,8 +96,7 @@ public class SettlementChunkCommandHandler implements UnitedCommandExecutor {
         if (membership == LocationMembership.OWNER || membership == LocationMembership.TRUSTED) {
             return true;
         } else {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.GENERAL_ERRORS__NO_CLAIM_PERMISSION.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "general-errors.no-claim-permission");
             return false;
         }
     }

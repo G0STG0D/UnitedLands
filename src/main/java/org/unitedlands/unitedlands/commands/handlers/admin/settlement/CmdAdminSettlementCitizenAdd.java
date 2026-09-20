@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -9,10 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementCitizen.class,
@@ -42,8 +40,7 @@ public class CmdAdminSettlementCitizenAdd extends SettlementAdminCommandHandler 
         }
 
         if (citizen.getSettlement() != null) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__ALREADY_IN_SETTLEMENT.path()),
-                    Map.of("citizen", citizen.getName(), "settlement", settlement.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "admin.settlement.addcitizen.already-in-settlement", citizen.getName(), settlement.getName());
             return;
         }
 
@@ -53,8 +50,7 @@ public class CmdAdminSettlementCitizenAdd extends SettlementAdminCommandHandler 
         UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
         UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__ADDCITIZEN__SUCCESS.path()),
-                Map.of("citizen", citizen.getName(), "settlement", settlement.getName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.settlement.addcitizen.success", citizen.getName(), settlement.getName());
     }
 
     @Override

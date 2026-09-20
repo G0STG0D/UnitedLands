@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+
 public class Confirmation {
 
     private Runnable runnable;
@@ -95,7 +96,7 @@ public class Confirmation {
         if (sender == null || receiver == null)
             return;
 
-        // Messenger.sendMessage(receiver, "<aqua>" + getTitle() + " [<yellow>" +
+        // United.messenger().send(receiver, "<aqua>" + getTitle() + " [<yellow>" +
         // getAcceptCommand() + "</yellow>]</aqua>", replacements);
 
         ConfirmationManager.instance().queueConfirmation(this);

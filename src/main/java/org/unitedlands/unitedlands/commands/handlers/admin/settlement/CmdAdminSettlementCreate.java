@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -10,12 +9,11 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.SettlementChunk;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlement.class,
@@ -44,8 +42,7 @@ public class CmdAdminSettlementCreate extends SettlementAdminCommandHandler {
         var chunkCoords = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
         var existingChunk = UnitedLandsDataManager.instance().getSettlementChunk(chunkCoords);
         if (existingChunk != null) {
-            Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__CREATE__ALREADY_CLAIMED.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(player, "admin.settlement.create.already-claimed");
             return;
         }
 
@@ -81,8 +78,7 @@ public class CmdAdminSettlementCreate extends SettlementAdminCommandHandler {
 
         UnitedLandsEconomyManager.instance().createAccount(settlement.getUuid(), settlement.getName());
 
-        Messenger.sendMessage(player, MessageProvider.instance().get(Message.ADMIN__SETTLEMENT__CREATE__SUCCESS.path()),
-                Map.of("settlement", settlement.getCleanName()), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(player, "admin.settlement.create.success", settlement.getCleanName());
 
     }
 

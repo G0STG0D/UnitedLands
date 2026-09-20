@@ -1,16 +1,13 @@
 package org.unitedlands.unitedlands.commands.handlers.settlement.set;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdSettlementSet.class,
@@ -34,8 +31,7 @@ public class CmdSettlementSetColor extends SettlementCommandHandler {
             return;
 
         if (!(args[0].length() == 7) || !ColorUtils.isValidHexColor(args[0])) {
-            Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_COLOR_FORMAT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(context.player(), "general-errors.wrong-color-format");
             return;
         }
 
@@ -44,8 +40,7 @@ public class CmdSettlementSetColor extends SettlementCommandHandler {
 
         UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
 
-        Messenger.sendMessage(context.player(), MessageProvider.instance().get(Message.PLAYER__SETTLEMENT__SETCOLOR__SUCCESS.path()),
-                Map.of("color", args[0]), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(context.player(), "player.settlement.setcolor.success", args[0]);
     }
 
     @Override

@@ -1,16 +1,13 @@
 package org.unitedlands.unitedlands.commands.handlers.admin.country;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.message.Message;
+
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
-import org.unitedlands.unitedlands.utils.MessageProvider;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountrySet.class,
@@ -35,8 +32,7 @@ public class CmdAdminCountrySetColor extends CountryAdminCommandHandler {
         }
 
         if (!(args[1].length() == 7) || !ColorUtils.isValidHexColor(args[1])) {
-            Messenger.sendMessage(sender, MessageProvider.instance().get(Message.GENERAL_ERRORS__WRONG_COLOR_FORMAT.path()),
-                    null, MessageProvider.instance().get(Message.PREFIX.path()));
+            United.messenger().send(sender, "general-errors.wrong-color-format");
             return;
         }
 
@@ -45,8 +41,7 @@ public class CmdAdminCountrySetColor extends CountryAdminCommandHandler {
 
         UnitedLandsDataManager.instance().updateCountryDbData(country, true);
 
-        Messenger.sendMessage(sender, MessageProvider.instance().get(Message.ADMIN__COUNTRY__SETCOLOR__SUCCESS.path()),
-                Map.of("country", country.getName(), "color", args[1]), MessageProvider.instance().get(Message.PREFIX.path()));
+        United.messenger().send(sender, "admin.country.setcolor.success", country.getName(), args[1]);
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.GeopolAttribute;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
-import org.unitedlands.utils.Messenger;
+import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountryAttributes.class,
@@ -37,9 +37,9 @@ public class CmdAdminCountryAttributesList extends CountryAdminCommandHandler {
         var showBase = args.length == 2 && args[1].equalsIgnoreCase("--base");
 
         if (showBase) {
-            Messenger.sendMessage(sender, "<aqua><bold>" + country.getCleanName() + " Attributes (base values)</bold></aqua>");
+            United.messenger().sendRaw(sender, "<aqua><bold>" + country.getCleanName() + " Attributes (base values)</bold></aqua>");
         } else {
-            Messenger.sendMessage(sender, "<aqua><bold>" + country.getCleanName() + " Attributes (final values)</bold></aqua>");
+            United.messenger().sendRaw(sender, "<aqua><bold>" + country.getCleanName() + " Attributes (final values)</bold></aqua>");
         }
 
         var attributeKeys = country.getAttributeKeys();
@@ -55,7 +55,7 @@ public class CmdAdminCountryAttributesList extends CountryAdminCommandHandler {
             String entry = "<bold>" + key + "</bold> - Current value: " + v.getCurrentValue() + " | Min value: " + v.getMinValue() + " | Max value: "
                     + v.getMaxValue() + " | Daily change: "
                     + v.getDailyChange();
-            Messenger.sendMessage(sender, entry);
+            United.messenger().sendRaw(sender, entry);
         }
     }
 
