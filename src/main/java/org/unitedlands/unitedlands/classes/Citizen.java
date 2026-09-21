@@ -286,8 +286,7 @@ public class Citizen implements Identifiable, MetadataHolder {
         metadataSerialized = JsonUtils.serialize(metadata.values());
     }
 
-    @Override
-    public void saveMetadata() {
+    public void save() {
         UnitedLandsDataManager.instance().updateCitizenDbData(this);
     }
 

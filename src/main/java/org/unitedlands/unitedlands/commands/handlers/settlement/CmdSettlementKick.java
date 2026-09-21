@@ -11,7 +11,6 @@ import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -78,10 +77,9 @@ public class CmdSettlementKick extends SettlementCommandHandler {
         context.settlement().removeCitizen(targetCitizen);
         targetCitizen.removeSettlementRanks();
         targetCitizen.removeSettlement();
+        targetCitizen.save();
 
         (new SettlementPlayerLeaveEvent(context.settlement(), targetPlayer)).callEvent();
-
-        UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
 
         if (targetPlayer.isOnline()) {
             United.messenger().send(targetPlayer, "player.settlement.kick.kicked", context.settlement().getCleanName());

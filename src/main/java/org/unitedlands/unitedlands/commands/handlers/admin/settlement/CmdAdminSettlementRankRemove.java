@@ -66,7 +66,7 @@ public class CmdAdminSettlementRankRemove extends SettlementAdminCommandHandler 
         }
 
         citizen.removeSettlementRank(args[2]);
-        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+        citizen.save();
 
         United.messenger().send(sender, "admin.settlement.removerank.success", args[2], citizen.getName(), settlement.getName());
 

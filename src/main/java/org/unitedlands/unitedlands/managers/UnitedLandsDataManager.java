@@ -338,8 +338,6 @@ public class UnitedLandsDataManager {
 
     public void updateSettlementChunkDbData(SettlementChunk settlementChunk) {
         databaseManager.getSettlementChunkService().updateAsync(settlementChunk);
-
-        Pl3xMapRenderer.instance().addToRenderQueue(settlementChunk.getSettlement());
     }
 
     public void removeSettlementChunkDbData(SettlementChunk settlementChunk) {

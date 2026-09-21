@@ -449,19 +449,12 @@ public class Region extends GeopolObject implements PermissionHolder {
         return PolygonUtils.isPointInPolygon(regionPolygon, px, py);
     }
 
-    @Override
-    public void saveMetadata() {
+    public void save() {
         UnitedLandsDataManager.instance().updateRegionDbData(this, false);
     }
 
-    @Override
-    public void saveAttributes() {
-        UnitedLandsDataManager.instance().updateRegionDbData(this, false);
-    }
-
-    @Override
-    public void saveAttributeModifiers() {
-        UnitedLandsDataManager.instance().updateRegionDbData(this, false);
+    public void saveAndRender() {
+        UnitedLandsDataManager.instance().updateRegionDbData(this, true);
     }
 
     public void startClaimTask() {
@@ -484,8 +477,9 @@ public class Region extends GeopolObject implements PermissionHolder {
             setClaimStartTime(null);
             setClaimEndTime(null);
 
-            UnitedLandsDataManager.instance().updateRegionDbData(this, true);
-            UnitedLandsDataManager.instance().updateCountryDbData(getCountry(), true);
+            this.saveAndRender();
+            
+            getCountry().saveAndRender();
 
             RegionClaimedEvent claimedEvent = new RegionClaimedEvent(this, country);
             claimedEvent.callEvent();

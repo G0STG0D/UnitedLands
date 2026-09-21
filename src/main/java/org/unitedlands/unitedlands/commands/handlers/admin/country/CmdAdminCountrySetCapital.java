@@ -60,8 +60,7 @@ public class CmdAdminCountrySetCapital extends CountryAdminCommandHandler {
         }
 
         country.setCapital(settlement);
-
-        UnitedLandsDataManager.instance().updateCountryDbData(country, true);
+        country.saveAndRender();
 
         United.messenger().send(sender, "admin.country.setcapital.success", country.getName(),  settlement.getName());
     }

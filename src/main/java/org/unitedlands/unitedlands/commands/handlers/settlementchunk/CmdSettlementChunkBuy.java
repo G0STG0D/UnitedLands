@@ -9,7 +9,6 @@ import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChun
 import org.unitedlands.unitedlands.classes.events.settlementChunk.SettlementChunkPurchaseEvent;
 
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -65,7 +64,7 @@ public class CmdSettlementChunkBuy extends SettlementChunkCommandHandler {
 
         (new SettlementChunkPurchaseEvent(context.settlementChunk().getSettlement(), context.settlementChunk(), context.citizen())).callEvent();
 
-        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+        context.settlementChunk().save();
     }
 
 }

@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -73,7 +72,7 @@ public class CmdSettlementChunkToggle extends SettlementChunkCommandHandler {
                 return;
         }
 
-        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+        context.settlementChunk().save();
 
         United.messenger().send(context.player(), "player.settlementchunk.toggle.success", args[0], enable != null ? (enable == true ? "<green>on</green>" : "<red>off</red>") : "<yellow>unset</yellow>");
     }

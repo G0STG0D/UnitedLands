@@ -6,7 +6,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -43,7 +42,8 @@ public class CmdSettlementChunkForSale extends SettlementChunkCommandHandler {
         Integer price = null;
         if (args[0].equalsIgnoreCase("clear")) {
             context.settlementChunk().setSalePrice(null);
-            UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+            context.settlementChunk().save();
+
             United.messenger().send(context.player(), "player.settlementchunk.forsale.cleared");
         } else {
             try {
@@ -53,7 +53,7 @@ public class CmdSettlementChunkForSale extends SettlementChunkCommandHandler {
                 return;
             }
             context.settlementChunk().setSalePrice(price);
-            UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+            context.settlementChunk().save();
 
             United.messenger().send(context.player(), "player.settlementchunk.forsale.success", UnitedLandsEconomyManager.instance().format(price));
         }

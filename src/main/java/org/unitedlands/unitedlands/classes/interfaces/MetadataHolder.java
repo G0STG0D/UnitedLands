@@ -10,5 +10,4 @@ public interface MetadataHolder {
     Map<String, MetaDataField<?>> getMetadata();
     MetaDataField<?> getMetadata(String key);
     void removeMetadata(String key);
-    void saveMetadata();
 }

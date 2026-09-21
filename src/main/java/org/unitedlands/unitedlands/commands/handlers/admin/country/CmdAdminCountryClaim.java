@@ -57,9 +57,8 @@ public class CmdAdminCountryClaim extends CountryAdminCommandHandler {
         region.setClaimStartTime(System.currentTimeMillis());
         region.setClaimEndTime(System.currentTimeMillis() + (claimDuration * 1000));
         region.startClaimTask();
-
-        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
-
+        region.saveAndRender();
+        
         United.messenger().send(player, "admin.country.claim.success", country.getCleanName(), region.getCleanName());
     }
 

@@ -57,7 +57,7 @@ public class CmdSettlementDelete extends SettlementCommandHandler {
                 settlementCitizen.removeSettlement();
                 settlementCitizen.removeSettlementRanks();
                 settlementCitizen.removeCountryRanks();
-                UnitedLandsDataManager.instance().updateCitizenDbData(settlementCitizen);
+                settlementCitizen.save();
             }
 
             UnitedLandsEconomyManager.instance().deleteAccount(context.settlement().getUuid());

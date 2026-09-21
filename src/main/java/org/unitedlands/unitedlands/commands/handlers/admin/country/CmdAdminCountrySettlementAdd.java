@@ -44,9 +44,9 @@ public class CmdAdminCountrySettlementAdd extends CountryAdminCommandHandler {
         }
 
         settlement.setCountry(country);
-        country.addSettlement(settlement);
+        settlement.saveAndRender();
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
+        country.addSettlement(settlement);
 
         United.messenger().send(sender, "admin.country.addsettlement.success", country.getName(), settlement.getName());
     }

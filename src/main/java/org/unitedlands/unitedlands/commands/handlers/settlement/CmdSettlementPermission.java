@@ -6,7 +6,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -124,9 +123,9 @@ public class CmdSettlementPermission extends SettlementCommandHandler {
                 return;
         }
 
-        United.messenger().send(context.player(), "player.settlement.permission.success", args[0], args[1], add ? "<green>on</green>" : "<red>off</red>");
+        context.settlement().save();
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
+        United.messenger().send(context.player(), "player.settlement.permission.success", args[0], args[1], add ? "<green>on</green>" : "<red>off</red>");
     }
 
 }

@@ -66,7 +66,7 @@ public class CmdAdminCountryRankRemove extends CountryAdminCommandHandler {
         }
 
         citizen.removeCountryRank(args[2]);
-        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+        citizen.save();
 
         United.messenger().send(sender, "admin.country.removerank.success", args[2], citizen.getName(), country.getName());
 

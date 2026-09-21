@@ -45,15 +45,14 @@ public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandl
         }
 
         settlement.removeCitizen(citizen);
+        settlement.saveAndRender();
 
         citizen.removeCountryRanks();
         citizen.removeSettlementRanks();
         citizen.removeSettlement();
+        citizen.save();
 
         (new SettlementPlayerLeaveEvent(settlement, citizen.getPlayer().getPlayer())).callEvent();
-
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
-        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
         United.messenger().send(sender, "admin.settlement.removecitizen.success", args[0], args[1]);
     }

@@ -66,11 +66,12 @@ public class CmdAdminCountryCreate extends CountryAdminCommandHandler {
         country.addRegion(region);
 
         region.setCountry(country);
+        region.saveAndRender();
+
         settlement.setCountry(country);
+        settlement.saveAndRender();
 
         UnitedLandsDataManager.instance().createCountryDbData(country);
-        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
         United.messenger().send(player, "admin.country.create.success", country.getCleanName(), settlement.getName(), region.getName());
 

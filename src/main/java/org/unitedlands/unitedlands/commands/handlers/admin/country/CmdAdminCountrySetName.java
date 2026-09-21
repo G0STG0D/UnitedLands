@@ -33,8 +33,7 @@ public class CmdAdminCountrySetName extends CountryAdminCommandHandler {
         var oldname = country.getName();
 
         country.setName(args[1]);
-
-        UnitedLandsDataManager.instance().updateCountryDbData(country, true);
+        country.saveAndRender();
 
         United.messenger().send(sender, "admin.country.setname.success", oldname, country.getName());
     }

@@ -1,12 +1,9 @@
 package org.unitedlands.unitedlands.tasks;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -27,36 +24,36 @@ public class NewDayTask implements Runnable {
 
         var settlements = UnitedLandsDataManager.instance().getSettlements();
 
-        Map<Country, Double> countryTaxTotals = new HashMap<>();
+        //Map<Country, Double> countryTaxTotals = new HashMap<>();
 
         for (Settlement settlement : settlements) {
 
-            var totalTax = 0;
-            for (Citizen citizen : settlement.getCitizens()) {
-                var citizenBalance = UnitedLandsEconomyManager.instance().getBalance(citizen.getUuid()).doubleValue();
-                if (settlement.useTaxPercent()) {
-                    // Percentage tax
-                    var tax = citizenBalance * settlement.getTax();
-                    UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax, "Daily taxes");
-                    totalTax += tax;
-                    notifyPlayer(citizen.getOfflinePlayer().getPlayer(), "new-day.citizen-tax-notice", tax);
-                } else {
-                    // Flat tax
-                    var tax = settlement.getTax();
-                    if (citizenBalance >= tax) {
-                        UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax, "Daily taxes");
-                        totalTax += tax;
-                        notifyPlayer(citizen.getOfflinePlayer().getPlayer(), "new-day.citizen-tax-notice", tax);
-                    } else {
-                        // TODO: kick citizen?
-                        notifyPlayer(settlement.getMayor().getOfflinePlayer().getPlayer(), "new-day.citizen-BANKRUPT", tax);
-                    }
-                }
-            }
+            // var totalTax = 0;
+            // for (Citizen citizen : settlement.getCitizens()) {
+            //     var citizenBalance = UnitedLandsEconomyManager.instance().getBalance(citizen.getUuid()).doubleValue();
+            //     if (settlement.useTaxPercent()) {
+            //         // Percentage tax
+            //         var tax = citizenBalance * settlement.getTax();
+            //         UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax, "Daily taxes");
+            //         totalTax += tax;
+            //         notifyPlayer(citizen.getOfflinePlayer().getPlayer(), "new-day.citizen-tax-notice", tax);
+            //     } else {
+            //         // Flat tax
+            //         var tax = settlement.getTax();
+            //         if (citizenBalance >= tax) {
+            //             UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), tax, "Daily taxes");
+            //             totalTax += tax;
+            //             notifyPlayer(citizen.getOfflinePlayer().getPlayer(), "new-day.citizen-tax-notice", tax);
+            //         } else {
+            //             // TODO: kick citizen?
+            //             notifyPlayer(settlement.getMayor().getOfflinePlayer().getPlayer(), "new-day.citizen-BANKRUPT", tax);
+            //         }
+            //     }
+            // }
 
-            United.logger().info("Settlement " + settlement.getName() + " collected " + UnitedLandsEconomyManager.instance().format(totalTax) + " taxes.", "UnitedLands");
-            UnitedLandsEconomyManager.instance().deposit(settlement.getUuid(), totalTax, "Citizen taxes");
-            notifyPlayers(settlement.getOnlinePlayers(), "new-day.settlement-tax-notice", totalTax);
+            // United.logger().info("Settlement " + settlement.getName() + " collected " + UnitedLandsEconomyManager.instance().format(totalTax) + " taxes.", "UnitedLands");
+            // UnitedLandsEconomyManager.instance().deposit(settlement.getUuid(), totalTax, "Citizen taxes");
+            // notifyPlayers(settlement.getOnlinePlayers(), "new-day.settlement-tax-notice", totalTax);
 
             var balance = UnitedLandsEconomyManager.instance().getBalance(settlement.getUuid()).doubleValue();
             var upkeep = CostUtils.getSettlementUpkeep(settlement);

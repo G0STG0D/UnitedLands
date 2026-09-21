@@ -73,12 +73,12 @@ public class CmdSettlementMerge extends SettlementCommandHandler {
             for (var chunk : targetSettlement.getChunks()) {
                 context.settlement().addChunk(chunk);
                 chunk.setSettlement(context.settlement());
-                UnitedLandsDataManager.instance().updateSettlementChunkDbData(chunk);
+                chunk.save();
             }
             for (var citizen : targetSettlement.getCitizens()) {
                 citizen.setSettlement(context.settlement());
                 citizen.removeSettlementRanks();
-                UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+                citizen.save();
             }
 
             if (targetSettlement.hasRegion()) {

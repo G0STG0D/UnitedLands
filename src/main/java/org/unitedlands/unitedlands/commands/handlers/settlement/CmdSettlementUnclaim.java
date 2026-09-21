@@ -60,7 +60,8 @@ public class CmdSettlementUnclaim extends SettlementCommandHandler {
         (new SettlementUnclaimEvent(context.settlement(), chunkCoords)).callEvent();
 
         UnitedLandsDataManager.instance().removeSettlementChunkDbData(existingChunk);
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
+        context.settlement().saveAndRender();
+
 
         United.messenger().send(context.player(), "player.settlement.unclaim.success", context.settlement().getCleanName(), chunkCoords.toString());
     }

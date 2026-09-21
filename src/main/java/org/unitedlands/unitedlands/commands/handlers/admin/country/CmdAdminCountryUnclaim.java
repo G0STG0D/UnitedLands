@@ -45,16 +45,16 @@ public class CmdAdminCountryUnclaim extends CountryAdminCommandHandler {
         for (var settlement : region.getSettlements()) {
             for (var citizen : settlement.getCitizens()) {
                 citizen.removeCountryRanks();
-                UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+                citizen.save();
             }
             settlement.removeCountry();
-            UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
+            settlement.saveAndRender();
         }
         region.removeCountry();
-        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+        region.saveAndRender();
 
         country.removeRegion(region);
-        UnitedLandsDataManager.instance().updateCountryDbData(country, true);
+        country.saveAndRender();
 
         United.messenger().send(player, "admin.country.unclaim.success", country.getCleanName(), region.getCleanName());
     }

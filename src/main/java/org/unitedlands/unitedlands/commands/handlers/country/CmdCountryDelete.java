@@ -43,13 +43,13 @@ public class CmdCountryDelete extends CountryCommandHandler {
                         continue;
                     for (var settlementCitizen : settlement.getCitizens()) {
                         settlementCitizen.removeCountryRanks();
-                        UnitedLandsDataManager.instance().updateCitizenDbData(settlementCitizen);
+                        settlementCitizen.save();
                     }
                     settlement.removeCountry();
-                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
+                    settlement.saveAndRender();
                 }
                 region.removeCountry();
-                UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+                region.saveAndRender();
             }
 
             UnitedLandsEconomyManager.instance().deleteAccount(context.country().getUuid());

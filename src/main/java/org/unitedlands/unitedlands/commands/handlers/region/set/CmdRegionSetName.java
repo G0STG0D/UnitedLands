@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.RegionCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -32,7 +31,7 @@ public class CmdRegionSetName extends RegionCommandHandler {
         var oldname = context.region().getName();
 
         context.region().setName(args[0]);
-        UnitedLandsDataManager.instance().updateRegionDbData(context.region(), true);
+        context.region().saveAndRender();
 
         United.messenger().send(context.player(), "player.region.setname.success", oldname,context.region().getName());
 

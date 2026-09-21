@@ -66,7 +66,7 @@ public class CmdAdminSettlementRankAdd extends SettlementAdminCommandHandler {
         }
 
         citizen.addSettlementRank(args[2]);
-        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+        citizen.save();
 
         United.messenger().send(sender, "admin.settlement.addrank.success", args[2], citizen.getName(), settlement.getName());
 

@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -35,7 +34,7 @@ public class CmdSettlementChunkEvict extends SettlementChunkCommandHandler {
         }
 
         context.settlementChunk().removeOwner();
-        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+        context.settlementChunk().save();
 
         United.messenger().send(context.player(), "player.settlementchunk.evict.success");
 

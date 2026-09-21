@@ -73,7 +73,7 @@ public class PlayerMovementListener implements Listener {
             citizen.setName(player.getName());
             citizen.setPlayer(player);
             citizen.setLastLogon(System.currentTimeMillis());
-            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+            citizen.save();
         }
 
     }

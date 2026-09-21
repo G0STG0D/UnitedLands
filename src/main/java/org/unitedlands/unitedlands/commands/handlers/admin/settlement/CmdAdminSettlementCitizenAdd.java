@@ -45,11 +45,11 @@ public class CmdAdminSettlementCitizenAdd extends SettlementAdminCommandHandler 
         }
 
         settlement.addCitizen(citizen);
+        settlement.saveAndRender();
+
         citizen.setSettlement(settlement);
-
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
-        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
-
+        citizen.save();
+        
         United.messenger().send(sender, "admin.settlement.addcitizen.success", citizen.getName(), settlement.getName());
     }
 

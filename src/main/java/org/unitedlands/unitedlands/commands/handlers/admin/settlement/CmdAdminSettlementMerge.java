@@ -43,12 +43,12 @@ public class CmdAdminSettlementMerge implements UnitedCommandExecutor {
         for (var chunk : targetSettlement.getChunks()) {
             sourceSettlement.addChunk(chunk);
             chunk.setSettlement(sourceSettlement);
-            UnitedLandsDataManager.instance().updateSettlementChunkDbData(chunk);
+            chunk.save();
         }
         for (var citizen : targetSettlement.getCitizens()) {
             citizen.setSettlement(sourceSettlement);
             citizen.removeSettlementRanks();
-            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+            citizen.save();
         }
 
         if (targetSettlement.hasRegion()) {

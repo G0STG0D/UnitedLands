@@ -8,7 +8,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -55,7 +54,7 @@ public class CmdSettlementChunkType extends SettlementChunkCommandHandler {
         }
 
         context.settlementChunk().setChunkType(type);
-        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+        context.settlementChunk().save();
 
         United.messenger().send(context.player(), "player.settlementchunk.settype.success", type);
 

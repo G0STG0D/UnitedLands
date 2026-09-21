@@ -101,7 +101,7 @@ public class CmdSettlementRankRemove extends SettlementCommandHandler {
                 return;
 
             targetCitizen.removeSettlementRank(args[1]);
-            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
+            targetCitizen.save();
 
             if (targetPlayer.isOnline()) {
                 United.messenger().send(targetPlayer, "player.settlement.removerank.lost", args[1]);

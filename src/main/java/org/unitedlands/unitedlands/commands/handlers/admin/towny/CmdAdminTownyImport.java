@@ -232,11 +232,12 @@ public class CmdAdminTownyImport implements UnitedCommandExecutor {
                     country.setCapital(settlement);
 
                     region.setCountry(country);
+                    region.saveAndRender();
+
                     settlement.setCountry(country);
+                    settlement.saveAndRender();
 
                     UnitedLandsDataManager.instance().createCountryDbData(country);
-                    UnitedLandsDataManager.instance().updateRegionDbData(region, true);
-                    UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
 
                     United.messenger().send(player, "admin.towny.import.success-country", country.getName());
                 }

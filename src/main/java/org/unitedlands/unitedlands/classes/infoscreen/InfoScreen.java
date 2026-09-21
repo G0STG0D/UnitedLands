@@ -31,6 +31,14 @@ public abstract class InfoScreen {
         components.add(index, new InfoScreenComponent(id, MiniMessage.miniMessage().deserialize(United.messenger().get(path, values))));
     }
 
+    public void addComponent(Audience sender, String id, String path, Object... values) {
+        components.add(new InfoScreenComponent(id, MiniMessage.miniMessage().deserialize(United.messenger().get(sender, path, values))));
+    }
+
+    public void addComponent(Audience sender, int index, String id, String path, Object... values) {
+        components.add(index, new InfoScreenComponent(id, MiniMessage.miniMessage().deserialize(United.messenger().get(sender, path, values))));
+    }
+
     public void addComponent(String afterKey, String id, Component content) {
         int index = 0;
         for (var c : components) {

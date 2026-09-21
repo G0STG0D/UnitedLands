@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -32,8 +31,7 @@ public class CmdSettlementSetName extends SettlementCommandHandler {
         var oldname = context.settlement().getName();
 
         context.settlement().setName(args[0]);
-
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
+        context.settlement().saveAndRender();
 
         United.messenger().send(context.player(), "player.settlement.setname.success", oldname, context.settlement().getName());
     }

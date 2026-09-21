@@ -8,7 +8,6 @@ import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -31,7 +30,7 @@ public class CmdSettlementLeave extends SettlementCommandHandler {
         var context = validate(sender, null);
         if (context == null)
             return;
-        
+
         if (context.citizen().hasSettlementRank("mayor")) {
             United.messenger().send(context.player(), "player.settlement.leave.is_mayor");
             return;
@@ -46,13 +45,14 @@ public class CmdSettlementLeave extends SettlementCommandHandler {
         leave.setRunnable(() -> {
 
             context.settlement().removeCitizen(context.citizen());
+            context.settlement().save();
+            
             context.citizen().removeSettlementRanks();
             context.citizen().removeSettlement();
+            context.citizen().save();
 
             (new SettlementPlayerLeaveEvent(context.settlement(), context.player())).callEvent();
 
-            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
-            UnitedLandsDataManager.instance().updateCitizenDbData(context.citizen());
 
             United.messenger().send(context.settlement().getOnlinePlayers(), "player.settlement.player-left", context.player().getName());
             United.messenger().send(context.player(), "player.settlement.leave.settlement-left", context.settlement().getCleanName());

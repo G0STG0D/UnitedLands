@@ -77,14 +77,15 @@ public class CmdCountryCreate implements UnitedCommandExecutor {
 
             region.setCountry(country);
             region.setAdministrator(citizen);
+            region.saveAndRender();
+
             settlement.setCountry(country);
+            settlement.saveAndRender();
 
             citizen.addCountryRank("leader");
+            citizen.save();
 
             UnitedLandsDataManager.instance().createCountryDbData(country);
-            UnitedLandsDataManager.instance().updateRegionDbData(region, true);
-            UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
-            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
 
             UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
             UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts, "Country creation costs");

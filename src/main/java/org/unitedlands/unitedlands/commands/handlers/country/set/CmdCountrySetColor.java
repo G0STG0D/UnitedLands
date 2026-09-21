@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.ColorUtils;
 import org.unitedlands.utils.United;
 
@@ -36,8 +35,7 @@ public class CmdCountrySetColor extends CountryCommandHandler {
 
         context.country().setFillColor(args[0] + "10");
         context.country().setStrokeColor(args[0]);
-
-        UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
+        context.country().saveAndRender();
 
         United.messenger().send(context.player(), "player.country.setcolor.success", args[0]);
     }

@@ -6,7 +6,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.commandhandlers.RegionCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -121,9 +120,9 @@ public class CmdRegionPermission extends RegionCommandHandler {
                 return;
         }
 
-        United.messenger().send(context.player(), "player.region.permission.success", args[0], args[1], add ? "<green>on</green>" : "<red>off</red>");
+        context.region().saveAndRender();
 
-        UnitedLandsDataManager.instance().updateRegionDbData(context.region(), false);
+        United.messenger().send(context.player(), "player.region.permission.success", args[0], args[1], add ? "<green>on</green>" : "<red>off</red>");
     }
 
 }

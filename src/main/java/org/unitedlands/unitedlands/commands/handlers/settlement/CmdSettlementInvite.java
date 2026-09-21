@@ -11,7 +11,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -53,23 +52,21 @@ public class CmdSettlementInvite extends SettlementCommandHandler {
         if (targetCitizen == null)
             return;
 
-        if (targetCitizen.hasSettlement())
-        {
+        if (targetCitizen.hasSettlement()) {
             United.messenger().send(context.player(), "player.settlement.invite.already-in-settlement");
             return;
         }
-
 
         Confirmation invite = new Confirmation("settlement-invite");
         invite.setRunnable(() -> {
 
             context.settlement().addCitizen(targetCitizen);
+            context.settlement().saveAndRender();
+
             targetCitizen.setSettlement(context.settlement());
+            targetCitizen.save();
 
-            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
-            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
-
-            United.messenger().send(context.settlement().getOnlinePlayers(),"player.settlement.invite.player-joined", targetPlayer.getName());
+            United.messenger().send(context.settlement().getOnlinePlayers(), "player.settlement.invite.player-joined", targetPlayer.getName());
             United.messenger().send(targetPlayer, "player.settlement.invite.player-message", context.settlement().getCleanName());
         })
                 .setTitle("player.settlement.invite.invite-message")

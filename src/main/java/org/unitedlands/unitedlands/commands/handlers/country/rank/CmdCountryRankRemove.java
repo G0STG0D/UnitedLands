@@ -102,8 +102,8 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
                 return;
 
             targetCitizen.removeCountryRank(args[1]);
-            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
-
+            targetCitizen.save();
+            
             if (targetPlayer.isOnline()) {
                 United.messenger().send(targetPlayer, "player.country.removerank.rank-lost", args[1]);
             }

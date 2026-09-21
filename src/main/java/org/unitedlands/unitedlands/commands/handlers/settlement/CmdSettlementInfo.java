@@ -46,7 +46,7 @@ public class CmdSettlementInfo extends SettlementCommandHandler {
             }
         }
 
-        var screen = new SettlementInfoScreen(settlement);
+        var screen = new SettlementInfoScreen(settlement, player);
         screen.send(player);
 
     }

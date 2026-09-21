@@ -6,7 +6,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementChunkCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -122,13 +121,13 @@ public class CmdSettlementChunkPermission extends SettlementChunkCommandHandler 
                 break;
             default:
                 United.messenger().send(context.player(),
-                        "player.settlement.permission.unknown-permission",  args[0]);
+                        "player.settlement.permission.unknown-permission", args[0]);
                 return;
         }
 
-        United.messenger().send(context.player(), "player.settlementchunk.permission.success", args[0], args[1], add ? "<green>on</green>" : "<red>off</red>");
+        context.settlementChunk().save();
 
-        UnitedLandsDataManager.instance().updateSettlementChunkDbData(context.settlementChunk());
+        United.messenger().send(context.player(), "player.settlementchunk.permission.success", args[0], args[1], add ? "<green>on</green>" : "<red>off</red>");
     }
 
 }

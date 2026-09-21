@@ -106,8 +106,7 @@ public class CmdCountryClaim extends CountryCommandHandler {
             region.setClaimStartTime(System.currentTimeMillis());
             region.setClaimEndTime(System.currentTimeMillis() + (Settings.regionClaimTime * 1000));
             region.startClaimTask();
-
-            UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+            region.saveAndRender();
 
             // Pl3xMapRenderer.instance().renderPolyRegion(region);
 

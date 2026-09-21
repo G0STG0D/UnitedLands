@@ -45,10 +45,9 @@ public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler 
         }
 
         settlement.removeCountry();
-        ;
-        country.removeSettlement(settlement);
+        settlement.saveAndRender();
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(settlement, true);
+        country.removeSettlement(settlement);
 
         United.messenger().send(sender, "admin.country.removesettlement.success", country.getName(), settlement.getName());
     }

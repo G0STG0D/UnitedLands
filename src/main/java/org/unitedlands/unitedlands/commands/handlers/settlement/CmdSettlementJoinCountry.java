@@ -9,7 +9,6 @@ import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -29,11 +28,10 @@ public class CmdSettlementJoinCountry extends SettlementCommandHandler {
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
 
-
         var context = validate(sender, "settlement.joincountry");
         if (context == null)
             return;
-        
+
         if (context.settlement().hasCountry()) {
             United.messenger().send(context.player(), "player.settlement.joincountry.already-in-country");
             return;
@@ -55,11 +53,12 @@ public class CmdSettlementJoinCountry extends SettlementCommandHandler {
         join.setRunnable(() -> {
 
             context.settlement().setCountry(country);
+            context.settlement().saveAndRender();
+
             country.addSettlement(context.settlement());
 
-            UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), true);
-
-            United.messenger().send(Bukkit.getServer(), "player.settlement.joincountry.broadcast-message", context.settlement().getCleanName(), country.getCleanName());
+            United.messenger().send(Bukkit.getServer(), "player.settlement.joincountry.broadcast-message", context.settlement().getCleanName(),
+                    country.getCleanName());
         })
                 .setTitle("player.settlement.joincountry.confirm")
                 .setReplacements(Map.of("country", country.getCleanName()))

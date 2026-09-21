@@ -67,7 +67,7 @@ public class CmdAdminCountryRankAdd extends CountryAdminCommandHandler {
         }
 
         citizen.addCountryRank(args[2]);
-        UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+        citizen.save();
 
         United.messenger().send(sender, "admin.country.addrank.success",
                 Map.of("rank", args[2], "citizen", citizen.getName(), "country", country.getName()));

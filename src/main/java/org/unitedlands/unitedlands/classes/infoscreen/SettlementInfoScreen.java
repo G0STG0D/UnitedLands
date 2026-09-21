@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bukkit.entity.Player;
 import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.LocationMembership;
 import org.unitedlands.unitedlands.classes.Settlement;
@@ -25,15 +26,15 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class SettlementInfoScreen extends InfoScreen {
 
-    public SettlementInfoScreen(Settlement settlement) {
+    public SettlementInfoScreen(Settlement settlement, Player player) {
         var header = buildHeader(settlement.getCleanName());
         addComponent("header", header);
 
-        addComponent("board",
+        addComponent(player, "board",
                 "info-screens.settlement.board",
                 settlement.getTownBoard() != null ? settlement.getTownBoard() : "/settlement setboard [msg]");
 
-        addComponent("region",
+        addComponent(player, "region",
                 "info-screens.settlement.region",
                 settlement.getRegion() != null ? settlement.getRegion().getCleanName() : "-",
                 settlement.getCountry() != null ? settlement.getCountry().getCleanName() : "-");
@@ -41,11 +42,11 @@ public class SettlementInfoScreen extends InfoScreen {
         var foundingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(settlement.getFoundingTimestamp());
         var founder = settlement.getFounderName() != null ? settlement.getFounderName() : "-";
 
-        addComponent("founded",
+        addComponent(player, "founded",
                 "info-screens.settlement.founded",
                 foundingDate, founder);
 
-        addComponent("mayor",
+        addComponent(player, "mayor",
                 "info-screens.settlement.mayor",
                 settlement.getMayor() != null ? settlement.getMayor().getName() : "-");
 
@@ -56,7 +57,7 @@ public class SettlementInfoScreen extends InfoScreen {
         var fire = settlement.allowFire() ? "<green>Fire</green>" : "<red>Fire</red>";
         var explosions = settlement.allowExplosions() ? "<green>Explosions</green>" : "<red>Explosions</red>";
 
-        addComponent("toggles",
+        addComponent(player, "toggles",
                 "info-screens.settlement.toggles",
                 isPublic,
                 pvp,
@@ -65,24 +66,24 @@ public class SettlementInfoScreen extends InfoScreen {
                 fire,
                 explosions);
 
-        addComponent("perm1",
+        addComponent(player, "perm1",
                 "info-screens.settlement.perm-1",
                 LocationMembership.toInfoScreenString(settlement.getBreakPermissions()),
                 LocationMembership.toInfoScreenString(settlement.getPlacePermissions()),
                 LocationMembership.toInfoScreenString(settlement.getContainerPermissions()));
-        addComponent("perm2", "info-screens.settlement.perm-2",
+        addComponent(player, "perm2", "info-screens.settlement.perm-2",
                 LocationMembership.toInfoScreenString(settlement.getSwitchPermissions()),
                 LocationMembership.toInfoScreenString(settlement.getBlockUsePermissions()),
                 LocationMembership.toInfoScreenString(settlement.getInteractPermissions()));
 
-        addComponent("balance",
+        addComponent(player, "balance",
                 "info-screens.settlement.balance",
                 UnitedLandsEconomyManager.instance().format(UnitedLandsEconomyManager.instance().getBalance(settlement.getUuid())));
 
         var taxString = settlement.useTaxPercent() ? String.format("%.2f%%", settlement.getTax() * 100)
                 : UnitedLandsEconomyManager.instance().format((double) settlement.getTax());
 
-        addComponent("taxes",
+        addComponent(player, "taxes",
                 "info-screens.settlement.taxes",
                 taxString);
 
@@ -96,14 +97,14 @@ public class SettlementInfoScreen extends InfoScreen {
                             .collect(Collectors
                                     .toList()));
         }
-        var citizens = MiniMessage.miniMessage().deserialize(United.messenger().get("info-screens.settlement.citizens",
+        var citizens = MiniMessage.miniMessage().deserialize(United.messenger().get(player, "info-screens.settlement.citizens",
                 String.valueOf(citizenCount)))
                 .hoverEvent(
                         HoverEvent.showText(
                                 Component.text(citizenNames)));
         addComponent("citizens", citizens);
 
-        addComponent("sizeupkeep", United.messenger().get("info-screens.settlement.sizeupkeep",
+        addComponent(player, "sizeupkeep", United.messenger().get("info-screens.settlement.sizeupkeep",
                 String.valueOf(settlement.getChunks().size()),
                 UnitedLandsEconomyManager.instance().format(CostUtils.getSettlementUpkeep(settlement))));
 

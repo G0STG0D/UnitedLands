@@ -7,7 +7,6 @@ import org.unitedlands.unitedlands.classes.Settings;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -62,8 +61,8 @@ public class CmdSettlementSetTaxes extends SettlementCommandHandler {
         var valueString = context.settlement().useTaxPercent() ? String.format("%.2f%%", value * 100)
                 : UnitedLandsEconomyManager.instance().format((double) value);
 
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
-
+        context.settlement().save();
+        
         United.messenger().send(context.player(), "player.settlement.settax.success", context.settlement().getCleanName(), valueString);
     }
 

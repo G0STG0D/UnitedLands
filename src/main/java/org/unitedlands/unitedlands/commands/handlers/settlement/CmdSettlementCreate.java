@@ -117,7 +117,7 @@ public class CmdSettlementCreate extends SettlementCommandHandler {
 
             citizen.setSettlement(settlement);
             citizen.addSettlementRank("mayor");
-            UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+            citizen.save();
 
             United.messenger().send(player, "player.settlement.create.player-message", settlement.getCleanName());
             United.messenger().send(Bukkit.getServer(), "player.settlement.create.broadcast-message", player.getName(), settlement.getCleanName(), regionInfo, countryInfo);

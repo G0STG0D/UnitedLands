@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.utils.CoordinateUtils;
 import org.unitedlands.utils.United;
 
@@ -33,8 +32,7 @@ public class CmdSettlementSetSpawn extends SettlementCommandHandler {
         }
 
         context.settlement().setSpawn(context.player().getLocation());
-
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
+        context.settlement().save();
 
         United.messenger().send(context.player(), "player.settlement.setspawn.success");
     }

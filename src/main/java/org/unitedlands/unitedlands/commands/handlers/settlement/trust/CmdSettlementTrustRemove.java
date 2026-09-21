@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -56,7 +55,7 @@ public class CmdSettlementTrustRemove extends SettlementCommandHandler {
         }
 
         context.settlement().removeTrusted(targetCitizen);
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
+        context.settlement().save();
 
         if (targetPlayer.isOnline()) {
             United.messenger().send(targetPlayer, "player.settlement.removetrust.untrusted", context.settlement().getCleanName());

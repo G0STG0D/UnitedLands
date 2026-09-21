@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementCommandHandler;
 
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -57,7 +56,7 @@ public class CmdSettlementTrustAdd extends SettlementCommandHandler {
             return;
 
         context.settlement().addTrusted(targetCitizen);
-        UnitedLandsDataManager.instance().updateSettlementDbData(context.settlement(), false);
+        context.settlement().save();
 
         if (targetPlayer.isOnline()) {
             United.messenger().send(targetPlayer, "player.settlement.addtrust.trusted", context.settlement().getCleanName());

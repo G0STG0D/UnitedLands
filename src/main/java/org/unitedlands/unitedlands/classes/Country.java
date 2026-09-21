@@ -238,19 +238,13 @@ public class Country extends GeopolObject {
         return CostUtils.getCountryUpkeep(this);
     }
 
-    @Override
-    public void saveMetadata() {
+    public void save() {
         UnitedLandsDataManager.instance().updateCountryDbData(this, false);
     }
 
-    @Override
-    public void saveAttributes() {
-        UnitedLandsDataManager.instance().updateCountryDbData(this, false);
+    public void saveAndRender() {
+        UnitedLandsDataManager.instance().updateCountryDbData(this, true);
     }
 
-    @Override
-    public void saveAttributeModifiers() {
-        UnitedLandsDataManager.instance().updateCountryDbData(this, false);
-    }
 
 }

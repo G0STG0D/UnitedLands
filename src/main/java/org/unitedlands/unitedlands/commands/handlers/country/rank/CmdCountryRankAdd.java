@@ -13,7 +13,6 @@ import org.unitedlands.unitedlands.classes.Confirmation;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 
 import org.unitedlands.unitedlands.managers.ConfirmationManager;
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.unitedlands.managers.PermissionManager;
 import org.unitedlands.utils.United;
 
@@ -97,10 +96,10 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
 
                 var currentLeader = context.country().getLeader();
                 currentLeader.removeCountryRank("leader");
-                targetCitizen.addCountryRank("leader");
+                currentLeader.save();
 
-                UnitedLandsDataManager.instance().updateCitizenDbData(currentLeader);
-                UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
+                targetCitizen.addCountryRank("leader");
+                targetCitizen.save();
 
                 if (currentLeader.getPlayer().isOnline()) {
                     United.messenger().send(currentLeader.getPlayer(),
@@ -126,7 +125,7 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
                 return;
 
             targetCitizen.addCountryRank(args[1]);
-            UnitedLandsDataManager.instance().updateCitizenDbData(targetCitizen);
+            targetCitizen.save();
 
             if (targetPlayer.isOnline()) {
                 United.messenger().send(targetPlayer, "player.country.addrank.rank-received", args[1]);

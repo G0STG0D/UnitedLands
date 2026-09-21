@@ -70,17 +70,17 @@ public class CmdCountryUnclaim extends CountryCommandHandler {
                         for (var countrySettlement : countrySettlements) {
                             for (var citizen : countrySettlement.getCitizens()) {
                                 citizen.removeCountryRanks();
-                                UnitedLandsDataManager.instance().updateCitizenDbData(citizen);
+                                citizen.save();
                             }
                             countrySettlement.removeCountry();
-                            UnitedLandsDataManager.instance().updateSettlementDbData(countrySettlement, true);
+                            countrySettlement.saveAndRender();
                         }
 
                         region.removeCountry();
-                        context.country().removeRegion(region);
+                        region.saveAndRender();
 
-                        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
-                        UnitedLandsDataManager.instance().updateCountryDbData(context.country(), true);
+                        context.country().removeRegion(region);
+                        context.country().saveAndRender();
 
                         United.messenger().send(context.player(), "player.country.unclaim.success");
                     })
@@ -101,7 +101,8 @@ public class CmdCountryUnclaim extends CountryCommandHandler {
                         region.removeClaimantCountry();
                         region.setClaimStartTime(null);
                         region.setClaimEndTime(null);
-                        UnitedLandsDataManager.instance().updateRegionDbData(region, true);
+                        region.saveAndRender();
+
                         United.messenger().send(context.player(), "player.country.unclaim.success");
                     }
                 }

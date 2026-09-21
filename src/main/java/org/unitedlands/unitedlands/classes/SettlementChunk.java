@@ -410,6 +410,10 @@ public class SettlementChunk implements Identifiable, PermissionHolder, Coordina
         this.allowExplosions = allowExplosions;
     }
 
+    public void save() {
+        UnitedLandsDataManager.instance().updateSettlementChunkDbData(this);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
