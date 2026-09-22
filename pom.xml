@@ -125,49 +125,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>shade-jar</id>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.j256.ormlite</pattern>
-                                    <shadedPattern>org.unitedlands.unitedlands.libs.ormlite</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.mysql</pattern>
-                                    <shadedPattern>org.unitedlands.unitedlands.libs.mysql</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.objecthunter.exp4j</pattern>
-                                    <shadedPattern>org.unitedlands.unitedlands.libs.exp4j</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.google.gson</pattern>
-                                    <shadedPattern>org.unitedlands.unitedlands.libs.gson</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>io.undertow</pattern>
-                                    <shadedPattern>org.unitedlands.unitedlands.libs.undertow</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>io.jsonwebtoken</pattern>
-                                    <shadedPattern>org.unitedlands.unitedlands.libs.jsonwebtoken</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
