@@ -1,7 +1,6 @@
 package org.unitedlands.unitedlands.commands.handlers.country.rank;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -61,7 +60,7 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
 
         var targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            United.messenger().send(context.player(), "general-errors.player-not-found");
+            United.messenger().send(context.player(), "general-errors.player-not-found", args[0]);
             return;
         }
 
@@ -70,7 +69,7 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
             return;
 
         if (!context.country().equals(targetCitizen.getCountry())) {
-            United.messenger().send(context.player(), "player.country.not-in-country", args[0], context.country().getName());
+            United.messenger().send(context.player(), "player.country.addrank.target-player-not-in-country", targetCitizen.getName(), context.country().getName());
             return;
         }
 
@@ -80,7 +79,7 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
         }
 
         if (targetCitizen.getCountryRanks().contains(args[1])) {
-            United.messenger().send(context.player(), "player.country.addrank.rank-already-owned", args[1], targetCitizen.getName());
+            United.messenger().send(context.player(), "player.country.addrank.rank-already-owned", targetCitizen.getName(), args[1]);
             return;
         }
 
@@ -103,16 +102,13 @@ public class CmdCountryRankAdd extends CountryCommandHandler {
 
                 if (currentLeader.getPlayer().isOnline()) {
                     United.messenger().send(currentLeader.getPlayer(),
-                            "player.country.removerank.rank-lost",
-                            Map.of("rank", "leader"));
+                            "player.country.removerank.rank-lost","leader");
                 }
                 if (targetPlayer.isOnline()) {
                     United.messenger().send(targetPlayer, "player.country.addrank.rank-received", "leader");
                 }
-
             })
-                    .setTitle("<yellow>Are you sure you want to give the leadership to " + args[0]
-                            + " permanently?</yellow>")
+                    .setTitle(United.messenger().get("player.country.addrank.confirm-new-leader", targetCitizen.getName()))
                     .setSender(context.player())
                     .setReceiver(context.player())
                     .send();

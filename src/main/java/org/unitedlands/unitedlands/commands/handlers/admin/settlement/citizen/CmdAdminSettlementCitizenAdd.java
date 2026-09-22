@@ -1,25 +1,25 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
+package org.unitedlands.unitedlands.commands.handlers.admin.settlement.citizen;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
-import org.unitedlands.unitedlands.classes.Citizen;
 import org.unitedlands.unitedlands.classes.commandhandlers.SettlementAdminCommandHandler;
-import org.unitedlands.unitedlands.classes.events.settlement.SettlementPlayerLeaveEvent;
 
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementCitizen.class,
-        name = "remove",
-        description = "Removes a citizen from a settlement",
-        usage = "/ula settlement citizen remove <settlement_name> <player>",
+        name = "add",
+        description = "Adds a citizen to a settlement",
+        usage = "/ula settlement citizen add <settlement_name> <player>",
         catchAll = true
 )
-public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandler {
+public class CmdAdminSettlementCitizenAdd extends SettlementAdminCommandHandler {
 
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
@@ -39,22 +39,18 @@ public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandl
             return;
         }
 
-        if (citizen.getSettlement() == null || !citizen.getSettlement().equals(settlement)) {
-            United.messenger().send(sender, "admin.settlement.citizen-not-in-settlement");
+        if (citizen.getSettlement() != null) {
+            United.messenger().send(sender, "admin.settlement.addcitizen.already-in-settlement", citizen.getName(), citizen.getSettlement().getCleanName());
             return;
         }
 
-        settlement.removeCitizen(citizen);
+        settlement.addCitizen(citizen);
         settlement.saveAndRender();
 
-        citizen.removeCountryRanks();
-        citizen.removeSettlementRanks();
-        citizen.removeSettlement();
+        citizen.setSettlement(settlement);
         citizen.save();
-
-        (new SettlementPlayerLeaveEvent(settlement, citizen.getPlayer().getPlayer())).callEvent();
-
-        United.messenger().send(sender, "admin.settlement.removecitizen.success", args[0], args[1]);
+        
+        United.messenger().send(sender, "admin.settlement.addcitizen.success", citizen.getName(), settlement.getCleanName());
     }
 
     @Override
@@ -63,8 +59,7 @@ public class CmdAdminSettlementCitizenRemove extends SettlementAdminCommandHandl
             case 1:
                 return UnitedLandsDataManager.instance().getSettlementNames();
             case 2:
-                var settlement = UnitedLandsDataManager.instance().getSettlement(args[0]);
-                return settlement.getCitizens().stream().map(Citizen::getName).collect(Collectors.toList());
+                return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         }
         return null;
     }

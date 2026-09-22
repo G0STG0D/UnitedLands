@@ -43,12 +43,17 @@ public class CmdAdminCountryCreate extends CountryAdminCommandHandler {
         var region = settlement.getRegion();
 
         if (region == null) {
-            United.messenger().send(player, "admin.country.create.no-region");
+            United.messenger().send(player, "admin.country.create.no-region", settlement.getCleanName());
             return;
         }
 
-        if (region.getCountry() != null) {
-            United.messenger().send(player, "admin.country.create.region-occupied", region.getCountry().getCleanName());
+        if (settlement.hasCountry()) {
+            United.messenger().send(player, "admin.country.create.already-in-country", settlement.getCleanName());
+            return;
+        }
+
+        if (region.hasCountry()) {
+            United.messenger().send(player, "admin.country.create.region-occupied", settlement.getCleanName());
             return;
         }
 

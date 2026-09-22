@@ -1,7 +1,6 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.country;
+package org.unitedlands.unitedlands.commands.handlers.admin.country.rank;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
@@ -15,12 +14,12 @@ import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountryRank.class,
-        name = "add",
-        description = "Adds a country rank to a player",
-        usage = "/ula country rank add <player> <rank>",
+        name = "remove",
+        description = "Removes a country rank from a player",
+        usage = "/ula country rank remove <player> <rank>",
         catchAll = true
 )
-public class CmdAdminCountryRankAdd extends CountryAdminCommandHandler {
+public class CmdAdminCountryRankRemove extends CountryAdminCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -57,7 +56,7 @@ public class CmdAdminCountryRankAdd extends CountryAdminCommandHandler {
         }
 
         if (!citizen.hasCountry() || !country.equals(citizen.getCountry())) {
-            United.messenger().send(sender, "admin.country.citizen-not-in-country", citizen.getName());
+            United.messenger().send(sender, "admin.country.citizen-not-in-country", citizen.getName(), country.getName());
             return;
         }
 
@@ -66,11 +65,10 @@ public class CmdAdminCountryRankAdd extends CountryAdminCommandHandler {
             return;
         }
 
-        citizen.addCountryRank(args[2]);
+        citizen.removeCountryRank(args[2]);
         citizen.save();
 
-        United.messenger().send(sender, "admin.country.addrank.success",
-                Map.of("rank", args[2], "citizen", citizen.getName(), "country", country.getName()));
+        United.messenger().send(sender, "admin.country.removerank.success", args[2], citizen.getName(), country.getName());
 
     }
 

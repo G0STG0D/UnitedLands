@@ -1,11 +1,9 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.country;
+package org.unitedlands.unitedlands.commands.handlers.admin.country.settlement;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
-import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryAdminCommandHandler;
 
 import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
@@ -13,12 +11,12 @@ import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountrySettlement.class,
-        name = "remove",
-        description = "Removes a settlement from a country",
-        usage = "/ula country settlement remove <settlement_name>",
+        name = "add",
+        description = "Adds a settlement to a player",
+        usage = "/ula country settlement add <settlement_name>",
         catchAll = true
 )
-public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler {
+public class CmdAdminCountrySettlementAdd extends CountryAdminCommandHandler {
 
     @Override
     public void handleCommand(CommandSender sender, String[] args) {
@@ -38,18 +36,22 @@ public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler 
             return;
         }
 
-        if (!settlement.hasCountry() || !country.equals(settlement.getCountry())) {
-            United.messenger().send(sender,
-                    "admin.country.removesettlement.not-in-country", settlement.getName());
+        if (settlement.hasCountry()) {
+            United.messenger().send(sender, "admin.country.addsettlement.settlement-has-country", settlement.getName());
             return;
         }
 
-        settlement.removeCountry();
+        if (!settlement.hasRegion() || !settlement.getRegion().getCountry().equals(country)) {
+            United.messenger().send(sender, "admin.country.addsettlement.not-country-region", settlement.getName());
+            return;
+        }
+
+        settlement.setCountry(country);
         settlement.saveAndRender();
 
-        country.removeSettlement(settlement);
+        country.addSettlement(settlement);
 
-        United.messenger().send(sender, "admin.country.removesettlement.success", country.getName(), settlement.getName());
+        United.messenger().send(sender, "admin.country.addsettlement.success", country.getCleanName(), settlement.getCleanName());
     }
 
     @Override
@@ -58,9 +60,7 @@ public class CmdAdminCountrySettlementRemove extends CountryAdminCommandHandler 
             case 1:
                 return UnitedLandsDataManager.instance().getCountryNames();
             case 2:
-                var country = UnitedLandsDataManager.instance().getCountry(args[0]);
-                if (country != null)
-                    return country.getSettlements().stream().map(Settlement::getName).collect(Collectors.toList());
+                return UnitedLandsDataManager.instance().getSettlementNames();
         }
         return null;
     }

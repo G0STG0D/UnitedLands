@@ -39,7 +39,6 @@ public class UnitedLands extends JavaPlugin {
     private static UnitedLands instance;
     private static Settings settings;
 
-    private ConfigFile messageConfig;
     private ConfigFile permissionConfig;
 
     UnitedLandsDataManager globalDataManager;
@@ -148,10 +147,6 @@ public class UnitedLands extends JavaPlugin {
 
     public static Settings getSettings() {
         return settings;
-    }
-
-    public ConfigFile getMessageConfig() {
-        return messageConfig;
     }
 
     public ConfigFile getPermissionConfig() {

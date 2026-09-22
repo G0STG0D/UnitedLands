@@ -35,11 +35,11 @@ public class CmdAdminCountryClaim extends CountryAdminCommandHandler {
 
         var region = UnitedLandsDataManager.instance().getRegion(args[1]);
         if (region == null) {
-            United.messenger().send(player, "admin.country.claim.no-region");
+            United.messenger().send(player, "admin.country.claim.no-region", args[1]);
             return;
         } else {
             if (region.getCountry() != null) {
-                United.messenger().send(player, "admin.country.claim.already-claimed");
+                United.messenger().send(player, "admin.country.claim.already-claimed", region.getCleanName(), region.getCountry().getCleanName());
                 return;
             }
         }
@@ -47,7 +47,7 @@ public class CmdAdminCountryClaim extends CountryAdminCommandHandler {
         long claimDuration = 0;
         if (args.length > 1) {
             try {
-                claimDuration = Long.parseLong(args[1]);
+                claimDuration = Long.parseLong(args[2]);
             } catch (Exception ex) {
                 United.messenger().send(player, "general-errors.wrong-number-format");
             }
@@ -59,7 +59,7 @@ public class CmdAdminCountryClaim extends CountryAdminCommandHandler {
         region.startClaimTask();
         region.saveAndRender();
         
-        United.messenger().send(player, "admin.country.claim.success", country.getCleanName(), region.getCleanName());
+        United.messenger().send(player, "admin.country.claim.success", region.getCleanName(), country.getCleanName());
     }
 
     @Override

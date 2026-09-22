@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.country;
+package org.unitedlands.unitedlands.commands.handlers.admin.country.set;
 
 import java.util.List;
 import org.bukkit.command.CommandSender;
@@ -30,12 +30,12 @@ public class CmdAdminCountrySetName extends CountryAdminCommandHandler {
             return;
         }
 
-        var oldname = country.getName();
+        var oldname = country.getCleanName();
 
         country.setName(args[1]);
         country.saveAndRender();
 
-        United.messenger().send(sender, "admin.country.setname.success", oldname, country.getName());
+        United.messenger().send(sender, "admin.country.setname.success", oldname, country.getCleanName());
     }
 
     @Override

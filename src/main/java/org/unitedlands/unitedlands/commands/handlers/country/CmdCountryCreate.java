@@ -90,12 +90,11 @@ public class CmdCountryCreate implements UnitedCommandExecutor {
             UnitedLandsEconomyManager.instance().createAccount(country.getUuid(), country.getName());
             UnitedLandsEconomyManager.instance().withdraw(citizen.getUuid(), Settings.countryCreateCosts, "Country creation costs");
 
-            // TODO: Move string to config
             United.messenger().send(player, "player.country.create.player-message", country.getCleanName());
             United.messenger().send(Bukkit.getServer(), "player.country.create.broadcast-message", player.getName(), country.getCleanName(),
                     region.getCleanName());
         })
-                .setTitle("Create country with name " + args[0] + "?")
+                .setTitle(United.messenger().get("player.country.create.create-confirm", args[0], UnitedLandsEconomyManager.instance().format(Settings.countryCreateCosts)))
                 .setSender(player)
                 .setReceiver(player)
                 .send();

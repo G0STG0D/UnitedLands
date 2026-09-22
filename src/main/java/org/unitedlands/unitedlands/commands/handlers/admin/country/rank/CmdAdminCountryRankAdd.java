@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.country;
+package org.unitedlands.unitedlands.commands.handlers.admin.country.rank;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,12 +14,12 @@ import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminCountryRank.class,
-        name = "remove",
-        description = "Removes a country rank from a player",
-        usage = "/ula country rank remove <player> <rank>",
+        name = "add",
+        description = "Adds a country rank to a player",
+        usage = "/ula country rank add <player> <rank>",
         catchAll = true
 )
-public class CmdAdminCountryRankRemove extends CountryAdminCommandHandler {
+public class CmdAdminCountryRankAdd extends CountryAdminCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -56,7 +56,7 @@ public class CmdAdminCountryRankRemove extends CountryAdminCommandHandler {
         }
 
         if (!citizen.hasCountry() || !country.equals(citizen.getCountry())) {
-            United.messenger().send(sender, "admin.country..citizen-not-in-country", citizen.getName());
+            United.messenger().send(sender, "admin.country.citizen-not-in-country", citizen.getName(), country.getCleanName());
             return;
         }
 
@@ -65,10 +65,11 @@ public class CmdAdminCountryRankRemove extends CountryAdminCommandHandler {
             return;
         }
 
-        citizen.removeCountryRank(args[2]);
+        citizen.addCountryRank(args[2]);
         citizen.save();
 
-        United.messenger().send(sender, "admin.country.removerank.success", args[2], citizen.getName(), country.getName());
+        United.messenger().send(sender, "admin.country.addrank.success",
+                args[2], citizen.getName(), country.getName());
 
     }
 

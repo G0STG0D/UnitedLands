@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
+package org.unitedlands.unitedlands.commands.handlers.admin.settlement.rank;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,12 +14,12 @@ import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlementRank.class,
-        name = "add",
-        description = "Adds a rank to a citizen",
-        usage = "/ula settlement rank add <settlement_name> <player> <rank>",
+        name = "remove",
+        description = "Removes a rank from a citizen",
+        usage = "/ula settlement rank remove <settlement_name> <player> <rank>",
         catchAll = true
 )
-public class CmdAdminSettlementRankAdd extends SettlementAdminCommandHandler {
+public class CmdAdminSettlementRankRemove extends SettlementAdminCommandHandler {
 
     @Override
     public List<String> handleTab(CommandSender sender, String[] args) {
@@ -56,7 +56,7 @@ public class CmdAdminSettlementRankAdd extends SettlementAdminCommandHandler {
         }
 
         if (!citizen.hasSettlement() || !settlement.equals(citizen.getSettlement())) {
-            United.messenger().send(sender, "admin.settlement.citizen-not-in-settlement", citizen.getName(), settlement.getName());
+            United.messenger().send(sender, "admin.settlement.citizen-not-in-settlement", citizen.getName(), settlement.getCleanName());
             return;
         }
 
@@ -65,10 +65,10 @@ public class CmdAdminSettlementRankAdd extends SettlementAdminCommandHandler {
             return;
         }
 
-        citizen.addSettlementRank(args[2]);
+        citizen.removeSettlementRank(args[2]);
         citizen.save();
 
-        United.messenger().send(sender, "admin.settlement.addrank.success", args[2], citizen.getName(), settlement.getName());
+        United.messenger().send(sender, "admin.settlement.removerank.success", args[2], citizen.getName(), settlement.getCleanName());
 
     }
 

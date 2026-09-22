@@ -1,8 +1,9 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
+package org.unitedlands.unitedlands.commands.handlers.admin.settlement.set;
 
 import org.bukkit.command.CommandSender;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.registrars.command.UnitedCommandExecutor;
+import org.unitedlands.unitedlands.commands.handlers.admin.settlement.CmdAdminSettlement;
 
 @UnitedSubCommand(
         parent = CmdAdminSettlement.class,

@@ -33,7 +33,6 @@ public class CmdCountryDelete extends CountryCommandHandler {
         if (context == null)
             return;
 
-        // TODO: move string to config
         Confirmation leave = new Confirmation("country-delete");
         leave.setRunnable(() -> {
 
@@ -61,8 +60,7 @@ public class CmdCountryDelete extends CountryCommandHandler {
             United.messenger().send(Bukkit.getServer(), "player.country.delete.broadcast-message", context.country().getCleanName());
 
         })
-                .setTitle("<red>Are you sure you want to delete <green>" + context.country().getCleanName()
-                        + "</green>? <bold>This cannot be undone!</bold></red>")
+                .setTitle(United.messenger().get("player.country.delete.delete-confirm", context.country().getCleanName()))
                 .setSender(context.player())
                 .setReceiver(context.player())
                 .send();

@@ -64,7 +64,7 @@ public class CmdAdminSettlementClaim extends SettlementAdminCommandHandler {
 
         UnitedLandsDataManager.instance().createSettlementChunkDbData(chunk);
 
-        United.messenger().send(player, "admin.settlement.claim.success", settlement.getCleanName(), chunkCoords.toString());
+        United.messenger().send(player, "admin.settlement.claim.success", chunkCoords.toString(), settlement.getCleanName());
     }
 
 }

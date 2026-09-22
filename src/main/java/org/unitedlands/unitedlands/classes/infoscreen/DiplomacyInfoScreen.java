@@ -2,7 +2,6 @@ package org.unitedlands.unitedlands.classes.infoscreen;
 
 import java.util.stream.Collectors;
 
-import org.unitedlands.unitedlands.UnitedLands;
 import org.unitedlands.unitedlands.classes.Country;
 import org.unitedlands.unitedlands.classes.Settlement;
 import org.unitedlands.utils.United;
@@ -10,10 +9,6 @@ import org.unitedlands.utils.United;
 public class DiplomacyInfoScreen extends InfoScreen {
 
         public DiplomacyInfoScreen(Country country) {
-
-                var configSection = UnitedLands.instance().getMessageConfig().get().getConfigurationSection("info-screens..diplomacy");
-                if (configSection == null)
-                        return;
 
                 var header = buildHeader(country.getCleanName());
                 addComponent("header", header);
@@ -26,7 +21,7 @@ public class DiplomacyInfoScreen extends InfoScreen {
                         allyNames = String.join(", ",
                                         countryAllies.stream().map(Country::getCleanName).collect(Collectors.toList()));
                 }
-                addComponent("allies", United.messenger().get("info-screens..diplomacy.allies", String.valueOf(allyCount), allyNames));
+                addComponent("allies", United.messenger().get("info-screens.diplomacy.allies", String.valueOf(allyCount), allyNames));
 
                 // TODO: treaties
                 var napCount = 0;

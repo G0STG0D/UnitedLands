@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.country;
+package org.unitedlands.unitedlands.commands.handlers.admin.country.set;
 
 import java.util.List;
 import org.bukkit.command.CommandSender;
@@ -13,7 +13,7 @@ import org.unitedlands.utils.United;
         parent = CmdAdminCountrySet.class,
         name = "color",
         description = "Sets a country color",
-        usage = "/ula country set color <#hexcolor>",
+        usage = "/ula country set color <country> <#hexcolor>",
         catchAll = true
 )
 public class CmdAdminCountrySetColor extends CountryAdminCommandHandler {
@@ -40,7 +40,7 @@ public class CmdAdminCountrySetColor extends CountryAdminCommandHandler {
         country.setStrokeColor(args[1]);
         country.saveAndRender();
 
-        United.messenger().send(sender, "admin.country.setcolor.success", country.getName(), args[1]);
+        United.messenger().send(sender, "admin.country.setcolor.success", country.getCleanName(), args[1]);
     }
 
     @Override

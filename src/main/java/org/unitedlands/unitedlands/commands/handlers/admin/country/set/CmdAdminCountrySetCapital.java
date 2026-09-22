@@ -1,7 +1,6 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.country;
+package org.unitedlands.unitedlands.commands.handlers.admin.country.set;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
@@ -16,7 +15,7 @@ import org.unitedlands.utils.United;
         parent = CmdAdminCountrySet.class,
         name = "capital",
         description = "Sets a country capital",
-        usage = "/ula country set capital <settlement_name>",
+        usage = "/ula country set capital <country> <settlement_name>",
         catchAll = true
 )
 public class CmdAdminCountrySetCapital extends CountryAdminCommandHandler {
@@ -54,8 +53,7 @@ public class CmdAdminCountrySetCapital extends CountryAdminCommandHandler {
 
         if (!settlement.hasCountry() || !country.equals(settlement.getCountry())) {
             United.messenger().send(sender,
-                    "admin.country.setcapital.settlement-not-in-country",
-                    Map.of("settlement", settlement.getName()));
+                    "admin.country.setcapital.settlement-not-in-country", settlement.getCleanName(), country.getCleanName());
             return;
         }
 

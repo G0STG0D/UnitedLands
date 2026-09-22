@@ -4,17 +4,18 @@ admin:
       success: <aqua>Successfully added rank {1} to {2} in country {3}.</aqua>
     addsettlement:
       settlement-has-country: <yellow>{1} is already in a country.</yellow>
+      not-country-region: <yellow>{1} is outside of the country's territory.</yellow>
       success: <aqua>Successfully added {1} to {2}.</aqua>
-    citzen-not-in-country: <yellow>{1} is not in the country</yellow>
+    citzen-not-in-country: <yellow>{1} is not a citizen of country {2}</yellow>
     claim:
-      already-claimed: <yellow>The region is already claimed.</yellow>
-      no-region: <yellow>This location has no region.</yellow>
+      already-claimed: <yellow>Region {1} is already claimed by {2}.</yellow>
+      no-region: <yellow>Region {1} does not exist.</yellow>
       success: <aqua>Successfully started claiming of {1} for {2}.</aqua>
     create:
-      no-region: <yellow>The selected capital is not in a region.</yellow>
-      region-occupied: <yellow>The selected capital is not in a region.</yellow>
-      success: <aqua>Successfully created {1} with capital {2} in region
-        {3}.</aqua>
+      no-region: <yellow>{1} is not in any region.</yellow>
+      already-in-country: <yellow>{1} is already part of a country.</yellow>
+      region-occupied: <yellow>{1} is not in an unowned region.</yellow>
+      success: <aqua>Successfully created {1} with capital {2} in region {3}.</aqua>
     delete:
       success: <aqua>Country {1} successfully deleted.</aqua>
     removerank:
@@ -23,25 +24,28 @@ admin:
       not-in-country: <yellow>{1} is not part of the country.</yellow>
       success: <aqua>Successfully removed {1} from {2}.</aqua>
     setcapital:
-      settlement-not-in-country: <yellow>{1} is not in the country.</yellow>
+      settlement-not-in-country: <yellow>{1} is not in country {2}.</yellow>
       success: <aqua>Successfully changed the capital of {1} to {2}.</aqua>
     setcolor:
       success: <aqua>Successfully changed color of {1} to {2}.</aqua>
     setname:
       success: <aqua>Successfully changed name of {1} to {2}.</aqua>
-    unknown-rank: <white>/ula country setname <country_name> <new_name></white>
+    unclaim:
+      not-claimed: <yellow>Region {1} is not claimed.</yellow>
+      success: <aqua>Successfully unclaimed region {1} from {2}</aqua>
+    unknown-rank: "<yellow>Unknown rank: {1}</yellow>"
   settlement:
     addcitizen:
       already-in-settlement: <yellow>{1} is already part of {2}.</yellow>
-      success: <aqua>Successfully added {1} to settlement {2}.</aqua>
+      success: <aqua>Successfully added {1} to {2}.</aqua>
     addrank:
       success: <aqua>Successfully added rank {1} to {2} in settlement {3}.</aqua>
-    citizen-not-in-settlement: <yellow>{1} is not a member of {2}.</yellow>
+    citizen-not-in-settlement: <yellow>{1} is not a citizen of {2}.</yellow>
     claim:
-      already-claimed: <yellow>The chunk is already claimed.</yellow>
+      already-claimed: <yellow>This chunk is already claimed.</yellow>
       success: <aqua>Chunk {1} claimed for {2}.</aqua>
     create:
-      already-claimed: <yellow>The chunk is already claimed.</yellow>
+      already-claimed: <yellow>This chunk is already claimed.</yellow>
       success: <aqua>Successfully created settlement {1}.</aqua>
     delete:
       is-capital: <yellow>Cannot delete a capital.</yellow>
@@ -177,34 +181,36 @@ new-day:
 player:
   country:
     addrank:
+      target-player-not-in-country: <yellow>Player {1} is not a citizen of {2}.</yellow>
       rank-already-owned: <yellow>{1} already has the rank {2}.</yellow>
       rank-received: <aqua>You've received the country rank of {1}.</aqua>
+      confirm-new-leader: <yellow>Are you sure you want to give the leadership to {1} permanently?</yellow>
       success: <aqua>Successfully added rank {1} to {2}.</aqua>
     claim:
       already-being-claimed: <yellow>This region is already being claimed by {1}</yellow>
-      already-claimed: <yellow>This region is already claimed.</yellow>
-      claimed-broadcast: <aqua><green>{1}</green> has claimed the region of
-        <red>{2}</red></aqua>
+      already-claimed: <yellow>This region is already claimed by {1}</yellow>
+      claimed-broadcast: <aqua><green>{1}</green> has claimed the region of <red>{2}</red></aqua>
+      claim-confirm: "Claiming this region will take {1} and cost {2}. Continue?"
       no-region: <yellow>There is no region in this location.</yellow>
       start-broadcast: <aqua><green>{1}</green> has started claiming the region
         of <red>{2}</red>. They will take control of it in {3}.</aqua>
-      too-many-claiming: <yellow>You cannot claim more than {1} region(s) at the
-        same time.</yellow>
+      too-many-claiming: <yellow>You cannot claim more than {1} region(s) at the same time.</yellow>
     create:
       broadcast-message: "<aqua>{1} has created the country of <green>{2}</green>
         (Region: <red>{3}</red>)"
+      create-confirm: "Creating the country of {1} will cost {2}. Continue?"
       player-message: <aqua>Congratulations, you have crated the country of <green>{1}</green>!
         Find out how to manage it on our /wiki and don't hesitate to ask other players
         in the chat.</aqua>
       region-occupied: <yellow>This region is already owned by {1}</yellow>
     delete:
-      broadcast-message: <aqua>{1} has ceased to exist.</aqua>
+      broadcast-message: <aqua>{1} has fallen.</aqua>
+      delete-confirm: "<red>Are you sure you want to delete {1}? <bold>This cannot be undone!</bold></red>"
     deposit:
       success: <aqua>You deposited {1} into the country bank.</aqua>
     not-in-country: <yellow>You're not member of a country.</yellow>
     removerank:
-      cannot-remove-leader: <yellow>You cannot remove the leader rank. You can only
-        pass it to another citizen.</yellow>
+      cannot-remove-leader: <yellow>You cannot remove the leader rank. You can only pass it to another citizen.</yellow>
       rank-lost: <aqua>You lost the country rank {1}.</aqua>
       rank-not-owned: <yellow>{1} doesn't have the rank {2}</yellow>
       rank-removed: <aqua>Removed country rank {1} from {2}.

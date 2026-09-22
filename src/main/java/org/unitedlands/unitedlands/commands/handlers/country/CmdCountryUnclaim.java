@@ -44,6 +44,8 @@ public class CmdCountryUnclaim extends CountryCommandHandler {
                 return;
             }
 
+            // TODO: CAPITAL CHECK
+
             if (region.getCountry() != null) {
                 if (!context.country().equals(region.getCountry())) {
                     // Claimed, but by someone else
@@ -54,13 +56,13 @@ public class CmdCountryUnclaim extends CountryCommandHandler {
 
                     Player player = (Player) sender;
 
-                    var confirmTitle = "player.country.unclaim.confirm";
+                    var confirmTitle = United.messenger().get("player.country.unclaim.confirm");
                     var countrySettlements = region.getSettlements(context.country());
                     if (countrySettlements.size() > 0) {
-                        confirmTitle += " " + "player.country.unclaim.confirm-warn-settlement";
+                        confirmTitle += " " + United.messenger().get("player.country.unclaim.confirm-warn-settlement");
                         var citizen = UnitedLandsDataManager.instance().getCitizen(player);
                         if (citizen != null && countrySettlements.stream().anyMatch(s -> s.getCitizens().contains(citizen))) {
-                            confirmTitle += " " + "player.country.unclaim.confirm-warn-leader";
+                            confirmTitle += " " + United.messenger().get("player.country.unclaim.confirm-warn-leader");
                         }
                     }
 

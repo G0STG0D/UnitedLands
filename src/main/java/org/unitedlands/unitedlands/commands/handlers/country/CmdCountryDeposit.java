@@ -3,12 +3,10 @@ package org.unitedlands.unitedlands.commands.handlers.country;
 import java.math.BigDecimal;
 import java.util.List;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.unitedlands.annotations.UnitedSubCommand;
 import org.unitedlands.unitedlands.classes.commandhandlers.CountryCommandHandler;
 
 import org.unitedlands.unitedlands.managers.UnitedLandsEconomyManager;
-import org.unitedlands.unitedlands.managers.UnitedLandsDataManager;
 import org.unitedlands.utils.United;
 
 @UnitedSubCommand(
@@ -33,32 +31,27 @@ public class CmdCountryDeposit extends CountryCommandHandler {
             return;
         }
 
-        var player = (Player) sender;
-        var citizen = UnitedLandsDataManager.instance().getCitizen(player);
-        if (citizen == null || citizen.getCountry() == null) {
-            United.messenger().send(player, "general-errors.not-in-country");
+        var context = validate(sender, null);
+        if (context == null)
             return;
-        }
-
-        var country = citizen.getCountry();
 
         BigDecimal amount = new BigDecimal(0);
         try {
             amount = new BigDecimal(args[0]);
         } catch (Exception ex) {
-            United.messenger().send(player, "general-errors.wrong-number-format", args[1]);
+            United.messenger().send(context.player(), "general-errors.wrong-number-format", args[1]);
             return;
         }
 
-        if (!UnitedLandsEconomyManager.instance().has(player.getUniqueId(), amount)) {
-            United.messenger().send(player, "general-errors.no-funds-player", UnitedLandsEconomyManager.instance().format(amount));
+        if (!UnitedLandsEconomyManager.instance().has(context.player().getUniqueId(), amount)) {
+            United.messenger().send(context.player(), "general-errors.no-funds-player", UnitedLandsEconomyManager.instance().format(amount));
             return;
         }
 
-        UnitedLandsEconomyManager.instance().withdraw(player.getUniqueId(), amount, "Deposit to " + country.getName());
-        UnitedLandsEconomyManager.instance().deposit(country.getUuid(), amount, "Deposit by " + player.getName());
+        UnitedLandsEconomyManager.instance().withdraw(context.player().getUniqueId(), amount, "Deposit to " + context.country().getName());
+        UnitedLandsEconomyManager.instance().deposit(context.country().getUuid(), amount, "Deposit by " + context.player().getName());
 
-        United.messenger().send(player, "player.country.deposit.success", UnitedLandsEconomyManager.instance().format(amount));
+        United.messenger().send(context.player(), "player.country.deposit.success", UnitedLandsEconomyManager.instance().format(amount));
     }
 
 }

@@ -74,7 +74,7 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
             return;
 
         if (!context.country().equals(targetCitizen.getCountry())) {
-            United.messenger().send(context.player(), "player.country.not-in-country", args[0]);
+            United.messenger().send(context.player(), "player.country.addrank.target-player-not-in-country", targetCitizen.getName(), context.country().getName());
             return;
         }
 
@@ -84,7 +84,7 @@ public class CmdCountryRankRemove extends CountryCommandHandler {
         }
 
         if (!targetCitizen.getCountryRanks().contains(args[1])) {
-            United.messenger().send(context.player(), "player.country.removerank.rank-not-owned", args[1], targetCitizen.getName());
+            United.messenger().send(context.player(), "player.country.removerank.rank-not-owned", targetCitizen.getName(), args[1]);
             return;
         }
 

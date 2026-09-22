@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
+package org.unitedlands.unitedlands.commands.handlers.admin.settlement.set;
 
 import java.util.List;
 import org.bukkit.command.CommandSender;
@@ -36,13 +36,14 @@ public class CmdAdminSettlementSetSpawn extends SettlementAdminCommandHandler {
 
         var chunkCoordinates = CoordinateUtils.locationToChunkCoordinates(player.getLocation());
         if (!settlement.hasChunkAtCoordinates(chunkCoordinates)) {
-            United.messenger().send(player, "admin.settlement.setspawn.not-in-claimS");
+            United.messenger().send(player, "admin.settlement.setspawn.not-in-claims");
             return;
         }
 
         settlement.setSpawn(player.getLocation());
+        settlement.save();
 
-        United.messenger().send(player, "admin.settlement.setspawn.success", settlement.getName());
+        United.messenger().send(player, "admin.settlement.setspawn.success", settlement.getCleanName());
     }
 
     @Override

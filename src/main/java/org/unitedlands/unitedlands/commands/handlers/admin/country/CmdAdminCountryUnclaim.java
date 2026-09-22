@@ -30,7 +30,7 @@ public class CmdAdminCountryUnclaim extends CountryAdminCommandHandler {
 
         var region = UnitedLandsDataManager.instance().getRegion(args[0]);
         if (region == null) {
-            United.messenger().send(player, "admin.country.claim.no-region");
+            United.messenger().send(player, "admin.country.claim.no-region", args[0]);
             return;
         } else {
             if (region.getCountry() == null) {
@@ -56,7 +56,7 @@ public class CmdAdminCountryUnclaim extends CountryAdminCommandHandler {
         country.removeRegion(region);
         country.saveAndRender();
 
-        United.messenger().send(player, "admin.country.unclaim.success", country.getCleanName(), region.getCleanName());
+        United.messenger().send(player, "admin.country.unclaim.success", region.getCleanName(), country.getCleanName());
     }
 
     @Override

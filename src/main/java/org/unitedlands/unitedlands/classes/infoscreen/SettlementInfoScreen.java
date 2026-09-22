@@ -104,9 +104,9 @@ public class SettlementInfoScreen extends InfoScreen {
                                 Component.text(citizenNames)));
         addComponent("citizens", citizens);
 
-        addComponent(player, "sizeupkeep", United.messenger().get("info-screens.settlement.sizeupkeep",
+        addComponent(player, "sizeupkeep", "info-screens.settlement.sizeupkeep",
                 String.valueOf(settlement.getChunks().size()),
-                UnitedLandsEconomyManager.instance().format(CostUtils.getSettlementUpkeep(settlement))));
+                UnitedLandsEconomyManager.instance().format(CostUtils.getSettlementUpkeep(settlement)));
 
         var metadata = settlement.getMetadata();
 

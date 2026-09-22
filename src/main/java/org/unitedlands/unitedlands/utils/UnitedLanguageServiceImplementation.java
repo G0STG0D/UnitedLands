@@ -8,7 +8,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataType;
 import org.unitedlands.UnitedLib;
 import org.unitedlands.services.UnitedLanguageService;
-import org.unitedlands.utils.United;
 
 public class UnitedLanguageServiceImplementation implements UnitedLanguageService {
 
@@ -23,8 +22,6 @@ public class UnitedLanguageServiceImplementation implements UnitedLanguageServic
 
             var pdc = player.getPersistentDataContainer();
             var languegString = pdc.get(getKey(), PersistentDataType.STRING);
-
-            United.logger().debug(languegString);
 
             if (languegString != null) {
                 try {

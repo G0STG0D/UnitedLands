@@ -1,4 +1,4 @@
-package org.unitedlands.unitedlands.commands.handlers.admin.settlement;
+package org.unitedlands.unitedlands.commands.handlers.admin.settlement.set;
 
 import java.util.List;
 import org.bukkit.command.CommandSender;
@@ -32,8 +32,9 @@ public class CmdAdminSettlementSetName extends SettlementAdminCommandHandler {
         var oldname = settlement.getName();
 
         settlement.setName(args[1]);
+        settlement.saveAndRender();
 
-        United.messenger().send(sender, "admin.settlement.setname.success", oldname, settlement.getName());
+        United.messenger().send(sender, "admin.settlement.setname.success", oldname, settlement.getCleanName());
     }
 
     @Override

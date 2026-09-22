@@ -39,7 +39,7 @@ public class CmdCountryClaim extends CountryCommandHandler {
             return;
         } else {
             if (region.getCountry() != null) {
-                United.messenger().send(context.player(), "player.country.claim.already-claimed", region.getCountry().getName());
+                United.messenger().send(context.player(), "player.country.claim.already-claimed", region.getCountry().getCleanName());
                 return;
             }
         }
@@ -60,9 +60,10 @@ public class CmdCountryClaim extends CountryCommandHandler {
         // if (preStartClaimEvent.isCancelled())
         // return;
 
-        // TODO: Move to config
-        var confirmationMessage = "Claiming this region will take " + United.formatter().formatDuration(Settings.regionClaimTime * 1000)
-                + " and cost " + UnitedLandsEconomyManager.instance().format(claimCost) + ". Continue?";
+        var confirmationMessage = United.messenger().get("player.country.claim.claim-confirm",
+                United.formatter().formatDuration(Settings.regionClaimTime * 1000),
+                UnitedLandsEconomyManager.instance().format(claimCost));
+
         var doubleClaim = false;
 
         if (region.getClaimantCountry() != null) {

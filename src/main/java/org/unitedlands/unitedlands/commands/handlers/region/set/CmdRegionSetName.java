@@ -33,7 +33,7 @@ public class CmdRegionSetName extends RegionCommandHandler {
         context.region().setName(args[0]);
         context.region().saveAndRender();
 
-        United.messenger().send(context.player(), "player.region.setname.success", oldname,context.region().getName());
+        United.messenger().send(context.player(), "player.region.setname.success", oldname, context.region().getName());
 
     }
 
